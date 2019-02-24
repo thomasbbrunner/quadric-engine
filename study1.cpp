@@ -11,6 +11,9 @@
 #include <video.h>
 #include <camera.h>
 #include <geometry.h>
+#include <geometry1D.h>
+#include <geometry2D.h>
+#include <geometry3D.h>
 #include <opengl.h>
 #include <shader.h>
 
@@ -50,7 +53,7 @@ Video video(opengl.window_width(), opengl.window_height());
 #endif
 
 // Cube geometry(10.0f);
-Plane geometry(2, 50, 200);
+Cube geometry(10);
 Sphere light1(0.2f);
 Sphere light2(0.2f);
 

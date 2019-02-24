@@ -3,7 +3,6 @@
 
 /*** COMPATIBILITY FUNCTIONS ***/
 #ifdef OPENGL_ES
-// #extension GL_ARB_texture_buffer_object : enable
 precision mediump float;
 #else
 
@@ -53,7 +52,6 @@ struct Vertex_Data
 out Vertex_Data frag_data;
 
 // Texture data test
-// uniform sampler2D tex_ver_data;
 uniform samplerBuffer tex_ver_data;
 
 /*** LIGHTING ***/

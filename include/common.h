@@ -20,6 +20,7 @@
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
+#include <algorithm>
 
 #define TIME_REAL 1
 #define TIME_TICK 2
