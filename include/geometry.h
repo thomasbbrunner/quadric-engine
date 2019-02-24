@@ -19,7 +19,7 @@ class Geometry
     unsigned int EBO_contour = 0;
     unsigned int VAO_contour = 0;
 
-    unsigned int vertexTexture = 0;
+    unsigned int texture_vertex_data = 0;
 
     unsigned int numelements_mesh = 0;
     unsigned int numelements_contour = 0;
@@ -37,7 +37,7 @@ class Geometry
 
         glBindVertexArray(VAO_mesh);
 
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDrawElements(GL_TRIANGLES, numelements_mesh, GL_UNSIGNED_INT, 0);
     }
 
@@ -47,7 +47,7 @@ class Geometry
 
         glBindVertexArray(VAO_contour);
 
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDrawElements(GL_LINES, numelements_contour, GL_UNSIGNED_INT, 0);
     }
 
@@ -55,12 +55,12 @@ class Geometry
     {
         update_shader();
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, vertexTexture);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, vertexTexture);
 
         glBindVertexArray(VAO_mesh);
 
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glDrawElements(GL_TRIANGLES, numelements_mesh, GL_UNSIGNED_INT, 0);
     }
 
@@ -977,6 +977,8 @@ class Plane : public Geometry
             }
         }
 
+        // Print::array(indices_mesh);
+
         std::vector<unsigned int> indices_dots(vertices.size());
 
         for (unsigned int i = 0; i < indices_dots.size(); i++)
@@ -1007,12 +1009,16 @@ class Plane : public Geometry
         glEnableVertexAttribArray(1);
 
         // Texture
-        glGenTextures(1, &vertexTexture);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, vertexTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 3* dx *dz, 1, 0, GL_RGB, GL_FLOAT, (void *)vertices.data());
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glGenTextures(1, &texture_vertex_data);
+        glBindTexture(GL_TEXTURE_BUFFER, texture_vertex_data);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, VBO_mesh);
+
+
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, vertexTexture);
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 3* dx *dz, 1, 0, GL_RGB, GL_FLOAT, (void *)vertices.data());
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         // glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, VBO_mesh);
         // std::vector<float> pixels(30);
         // float pixels[100] = {0.0};
@@ -1042,7 +1048,7 @@ class Plane : public Geometry
     {
         glBindVertexArray(VAO_dots);
 
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glDrawElements(GL_POINTS, numelements_dots, GL_UNSIGNED_INT, 0);
     }
 

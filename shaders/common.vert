@@ -1,5 +1,5 @@
-#version 300 es
-#define OPENGL_ES
+#version 330 core
+// #define OPENGL_ES
 
 /*** COMPATIBILITY FUNCTIONS ***/
 #ifdef OPENGL_ES
@@ -20,7 +20,7 @@ float bring_vel = 5.0;
 
 float bring_timecoeff = 1.0; // Mess around! (coefficient for relative velocity between wave and mesh)
 
-float tube_dx = 100.0; // Size of mesh (dx)
+int tube_dx = 50; // Size of mesh (dx)
 float tube_timeq = 10.0; // Time coefficient for how fast to do transition
 float tube_timed = 1.0; // Time delay until start of animation
 
@@ -53,14 +53,14 @@ struct Vertex_Data
 out Vertex_Data frag_data;
 
 // Texture data test
-uniform sampler2D tex_ver_data;
-// uniform samplerBuffer tex_ver_data;
+// uniform sampler2D tex_ver_data;
+uniform samplerBuffer tex_ver_data;
 
 /*** LIGHTING ***/
 
 void lighting(vec4 newcoords)
 {
-    frag_data.vert_normal_view = mat3(transpose(inverse(view * model))) * normal;
+//     frag_data.vert_normal_view = mat3(transpose(inverse(view * model))) * normal;
     // vertex_data.vert_normal_view = normal;
     frag_data.vert_pos_view = vec3(view * model * newcoords);
 }
@@ -77,14 +77,15 @@ vec3 bring(vec3 newcoords)
 
 /*** TUBE ***/
 
-vec3 tube(vec3 newcoords) 
-{    
+vec3 tube_transform(vec3 newcoords)
+{
     if (time <= tube_timed)
     {
         return newcoords;
     }
     if (time >= tube_timed && time < tube_timed+tube_timeq*0.5)
     {
+        tube_r = tube_dx/(4.0*M_PI); 
         tube_r /= mod((time-tube_timed)/tube_timeq,0.5);
         float q = 4.0*M_PI*mod((time-tube_timed)/(tube_timeq),0.5);
 
@@ -93,11 +94,19 @@ vec3 tube(vec3 newcoords)
     }   
     if(time >= tube_timed+tube_timeq*0.5)
     {
+        tube_r = tube_dx/(4.0*M_PI); 
         tube_r /= 0.5;
         float q = 2.0*M_PI;
         // A' (x',y',z') = ( R*cos(x*(2Pi/L)) , R*sin(x*(2Pi/L)) , z*(H'/H))
         return vec3(tube_r*cos(newcoords.x*(q/tube_dx) - M_PI/2.0), tube_r*sin(newcoords.x*(q/tube_dx) - M_PI/2.0) + tube_r, newcoords.z);
     }
+}
+vec3 tube(vec3 newcoords) 
+{    
+    tube_r = tube_dx/(4.0*M_PI) / 0.5;
+    float q = 2.0*M_PI;
+    // A' (x',y',z') = ( R*cos(x*(2Pi/L)) , R*sin(x*(2Pi/L)) , z*(H'/H))
+    return vec3(tube_r*cos(newcoords.x*(q/tube_dx) - M_PI/2.0), tube_r*sin(newcoords.x*(q/tube_dx) - M_PI/2.0) + tube_r, newcoords.z);
 }
 
 /*** NOISE ***/
@@ -135,7 +144,7 @@ vec3 noise(vec3 newcoords)
 
 vec3 wave(vec3 newcoords)
 {
-    newcoords.y += 0.2 * sin(time) * sin(coords.x + M_PI/2.0) + 0.15 * sin(time) * cos(newcoords.z-bring_vel*bring_timecoeff*time);
+    newcoords.y += 0.2 * sin(time) * sin(newcoords.x + M_PI/2.0) + 0.15 * sin(time) * cos(newcoords.z-bring_vel*bring_timecoeff*time);
 
     return newcoords;
 }

@@ -95,7 +95,7 @@ class Camera
         return glm::lookAt(Position, Position + Front, Up);
     }
 
-    glm::mat4 view_rotate_around(glm::vec3 point = glm::vec3(0.0, 0.0, 0.0), float vel = 0.2, float radius = 28.0, float height = 5.0)
+    glm::mat4 view_rotate_around(glm::vec3 point = glm::vec3(0.0, 0.0, 0.0), float vel = 0.5, float radius = 28.0, float height = 5.0)
     {
         float camX = sin(vel * tetra_time.get()) * radius;
         float camZ = cos(vel * tetra_time.get()) * radius;

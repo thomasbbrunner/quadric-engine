@@ -8,7 +8,7 @@
 // Toggle MSAA
 // #define MSAA
 
-#define MSAA_SAMPLES 4
+#define MSAA_SAMPLES 2
 #define WINDOW_HEIGHT 800
 #define WINDOW_WIDTH 800
 

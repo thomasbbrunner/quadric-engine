@@ -49,7 +49,8 @@ void tetra_update();
 Video video(opengl.window_width(), opengl.window_height());
 #endif
 
-Plane geometry(1, 50, 50);
+// Cube geometry(10.0f);
+Plane geometry(5, 50, 200);
 Sphere light1(0.2f);
 Sphere light2(0.2f);
 

@@ -1,5 +1,5 @@
-#version 300 es
-#define OPENGL_ES
+#version 330 core
+// #define OPENGL_ES
 
 /*** COMPATIBILITY FUNCTIONS ***/
 #ifdef OPENGL_ES
@@ -15,7 +15,7 @@ float modulo(float x, float y)
 
 /*** INPUTS ***/
 
-float ambient_strength = 0.1;
+float ambient_strength = 0.5;
 float specular_strength = 0.5;
 int specular_shininess = 256; // powers of two (2,4,8,16...256)
 float attenuation_constant = 1.0;
