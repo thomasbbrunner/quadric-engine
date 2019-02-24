@@ -53,7 +53,7 @@ Video video(opengl.window_width(), opengl.window_height());
 #endif
 
 // Cube geometry(10.0f);
-Cube geometry(10);
+Plane geometry(5, 50,200);
 Sphere light1(0.2f);
 Sphere light2(0.2f);
 
@@ -72,7 +72,7 @@ void loop()
     light2.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 10.0f)));
     light2.draw_fill();
 
-    geometry.draw_fill();
+    geometry.draw_wireframe();
 }
 
 int main()

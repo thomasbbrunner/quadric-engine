@@ -131,8 +131,6 @@ class Camera
     }
 };
 
-// Declarations
-
 Camera camera;
 
 #endif

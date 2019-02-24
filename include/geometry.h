@@ -55,7 +55,7 @@ class Geometry
     {
         update_shader();
 
-        glBindTexture(GL_TEXTURE_BUFFER, texture_vertex_data);
+        // glBindTexture(GL_TEXTURE_BUFFER, texture_vertex_data);
 
         glBindVertexArray(VAO_mesh);
 
@@ -213,7 +213,7 @@ class Mesh
             for (unsigned int j = 0; j < vertices.at(i).adjacent_vertex_id.size() - 1; j += 2)
             // Iterating through adjacent vertices
             {
-                if (vertices.at(i).adjacent_vertex_id.size() == 6 && j == 5)
+                if (vertices.at(i).adjacent_vertex_id.size() == 12 && j == 11)
                 // Check if main vertex is surrounded by all sides with other vertices
                 // Corresponds to special case
                 {
@@ -233,32 +233,47 @@ class Mesh
 
         // Generating raw data
         raw_vertex_data = generate_raw_vertex_data();
+        raw_vertex_coordinates = generate_raw_vertex_coordinates();
         raw_vertex_indices = generate_raw_vertex_indices();
 
-        Print::array(raw_vertex_data);
-
-        print_face_data();
-        print_vertex_data();
+        // print_face_data();
+        // print_vertex_data();
     }
 
     /*** Functions for exporting data to buffer format ***/
 
     float *get_raw_vertex_data()
+    // Gets interleaved vertex coordinates and normals
     {
         return raw_vertex_data.data();
     }
 
     unsigned int get_raw_vertex_data_size()
+    // Gets size of interleaved vertex coordinates and normals
     {
         return raw_vertex_data.size() * sizeof(float);
     }
 
+    float *get_raw_vertex_coordinates()
+    // Gets vertex coordinates
+    {
+        return raw_vertex_coordinates.data();
+    }
+
+    unsigned int get_raw_vertex_coordinates_size()
+    // Gets size of vertex coordinates
+    {
+        return raw_vertex_coordinates.size() * sizeof(float);
+    }
+
     unsigned int *get_raw_vertex_indices()
+    // Gets vertex indices
     {
         return raw_vertex_indices.data();
     }
 
     unsigned int get_raw_vertex_indices_size()
+    // Gets size of vertex indices
     {
         return raw_vertex_indices.size() * sizeof(unsigned int);
     }
@@ -270,6 +285,7 @@ class Mesh
 
     // Raw data
     std::vector<float> raw_vertex_data;
+    std::vector<float> raw_vertex_coordinates;
     std::vector<unsigned int> raw_vertex_indices;
 
     std::vector<float> generate_raw_vertex_data()
@@ -292,6 +308,23 @@ class Mesh
         }
 
         return vertex_data;
+    }
+
+    std::vector<float> generate_raw_vertex_coordinates()
+    {
+        std::vector<float> vertex_coordinates;
+
+        for (unsigned int i = 0; i < vertices.size(); i++)
+        // Iterating through vertices
+        {
+            for (unsigned int j = 0; j < 3; j++)
+            // Iterating through coordinate elements
+            {
+                vertex_coordinates.push_back(vertices.at(i).coordinates[j]);
+            }
+        }
+
+        return vertex_coordinates;
     }
 
     std::vector<unsigned int> generate_raw_vertex_indices()

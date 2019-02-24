@@ -7,41 +7,40 @@
 #include <light.h>
 #include <geometry.h>
 
-
 /*** 3D GEOMETRY ***/
 
 class Cube : public Geometry
 {
   public:
-    Cube(float d = 0.5f)
+    Cube(float size = 0.5f)
     {
-        std::vector<glm::vec3> vertices_fill{
-            glm::vec3(-d / 2, -d / 2, -d / 2),
-            glm::vec3(d / 2, -d / 2, -d / 2),
-            glm::vec3(d / 2, d / 2, -d / 2),
-            glm::vec3(-d / 2, d / 2, -d / 2),
-            glm::vec3(-d / 2, -d / 2, d / 2),
-            glm::vec3(d / 2, -d / 2, d / 2),
-            glm::vec3(d / 2, d / 2, d / 2),
-            glm::vec3(-d / 2, d / 2, d / 2),
-            glm::vec3(-d / 2, d / 2, d / 2),
-            glm::vec3(-d / 2, d / 2, -d / 2),
-            glm::vec3(-d / 2, -d / 2, -d / 2),
-            glm::vec3(-d / 2, -d / 2, d / 2),
-            glm::vec3(d / 2, d / 2, d / 2),
-            glm::vec3(d / 2, d / 2, -d / 2),
-            glm::vec3(d / 2, -d / 2, -d / 2),
-            glm::vec3(d / 2, -d / 2, d / 2),
-            glm::vec3(-d / 2, -d / 2, -d / 2),
-            glm::vec3(d / 2, -d / 2, -d / 2),
-            glm::vec3(d / 2, -d / 2, d / 2),
-            glm::vec3(-d / 2, -d / 2, d / 2),
-            glm::vec3(-d / 2, d / 2, -d / 2),
-            glm::vec3(d / 2, d / 2, -d / 2),
-            glm::vec3(d / 2, d / 2, d / 2),
-            glm::vec3(-d / 2, d / 2, d / 2)};
+        std::vector<glm::vec3> vertex_coordinates_mesh{
+            glm::vec3(-size / 2, -size / 2, -size / 2),
+            glm::vec3(size / 2, -size / 2, -size / 2),
+            glm::vec3(size / 2, size / 2, -size / 2),
+            glm::vec3(-size / 2, size / 2, -size / 2),
+            glm::vec3(-size / 2, -size / 2, size / 2),
+            glm::vec3(size / 2, -size / 2, size / 2),
+            glm::vec3(size / 2, size / 2, size / 2),
+            glm::vec3(-size / 2, size / 2, size / 2),
+            glm::vec3(-size / 2, size / 2, size / 2),
+            glm::vec3(-size / 2, size / 2, -size / 2),
+            glm::vec3(-size / 2, -size / 2, -size / 2),
+            glm::vec3(-size / 2, -size / 2, size / 2),
+            glm::vec3(size / 2, size / 2, size / 2),
+            glm::vec3(size / 2, size / 2, -size / 2),
+            glm::vec3(size / 2, -size / 2, -size / 2),
+            glm::vec3(size / 2, -size / 2, size / 2),
+            glm::vec3(-size / 2, -size / 2, -size / 2),
+            glm::vec3(size / 2, -size / 2, -size / 2),
+            glm::vec3(size / 2, -size / 2, size / 2),
+            glm::vec3(-size / 2, -size / 2, size / 2),
+            glm::vec3(-size / 2, size / 2, -size / 2),
+            glm::vec3(size / 2, size / 2, -size / 2),
+            glm::vec3(size / 2, size / 2, size / 2),
+            glm::vec3(-size / 2, size / 2, size / 2)};
 
-        std::vector<unsigned int> indices_fill{
+        std::vector<unsigned int> vertex_indices_mesh{
             0, 2, 1,
             0, 3, 2,
             4, 5, 6,
@@ -55,17 +54,17 @@ class Cube : public Geometry
             20, 22, 21,
             20, 23, 22};
 
-        Mesh mesh(vertices_fill, indices_fill);
+        Mesh mesh(vertex_coordinates_mesh, vertex_indices_mesh);
 
         float vertices_contour[] = {
-            d / 2, d / 2, d / 2,
-            -d / 2, d / 2, d / 2,
-            -d / 2, -d / 2, d / 2,
-            d / 2, -d / 2, d / 2,
-            d / 2, d / 2, -d / 2,
-            -d / 2, d / 2, -d / 2,
-            -d / 2, -d / 2, -d / 2,
-            d / 2, -d / 2, -d / 2};
+            size / 2, size / 2, size / 2,
+            -size / 2, size / 2, size / 2,
+            -size / 2, -size / 2, size / 2,
+            size / 2, -size / 2, size / 2,
+            size / 2, size / 2, -size / 2,
+            -size / 2, size / 2, -size / 2,
+            -size / 2, -size / 2, -size / 2,
+            size / 2, -size / 2, -size / 2};
 
         unsigned int indices_contour[] = {
             0, 1,
@@ -491,89 +490,87 @@ class Plane : public Geometry
   public:
     unsigned int VAO_dots = 0;
     unsigned int EBO_dots = 0;
+    unsigned int VBO_texture = 0;
     unsigned int numelements_dots = 0;
 
     Plane(int dotres, int dx, int dz)
     {
-        std::vector<std::vector<glm::vec3>> coords = create(dotres, dx, dz);
+        /*** MESH ***/
+
+        // Generating vertex coordinates arranged in 2D format
+        std::vector<std::vector<glm::vec3>> coords = generate_vertices(dotres, dx, dz);
 
         // Print::array(coords);
 
-        unsigned int coords_size = coords.size() * coords.at(0).size();
-
-        std::vector<glm::vec3> vertices(coords_size);
-
+        // Transforming vertex coordinates to 1D format
+        std::vector<glm::vec3> vertex_coordinates;
         for (unsigned int i = 0; i < coords.size(); i++)
         {
             for (unsigned int j = 0; j < coords.at(0).size(); j++)
             {
-                vertices.at(i * coords.at(0).size() + j) = coords.at(i).at(j);
+                // Vertex coordinates
+                vertex_coordinates.push_back(coords.at(i).at(j));
             }
         }
 
-        // Print::array(vertices);
-
-        for (unsigned int i = 0; i < coords_size; i++)
-        {
-            vertices.push_back(glm::vec3(0.0, 1.0, 0.0));
-        }
-
-        // Print::array(vertices);
-
-        std::vector<unsigned int> indices_mesh(3 * (coords.at(0).size() - 1) * 2 * (coords.size() - 1));
-
-        int m = 0;
+        // Generating indices for mesh
+        std::vector<unsigned int> vertex_indices_mesh;
         for (unsigned int i = 0; i < coords.size() - 1; i++)
         {
             for (unsigned int j = 0; j < coords.at(0).size() - 1; j++)
             {
-                indices_mesh.at(m) = j + i * coords.at(0).size();
-                indices_mesh.at(m + 1) = j + (i + 1) * coords.at(0).size() + 1;
-                indices_mesh.at(m + 2) = j + (i + 1) * coords.at(0).size();
-                indices_mesh.at(m + 3) = j + i * coords.at(0).size();
-                indices_mesh.at(m + 4) = j + i * coords.at(0).size() + 1;
-                indices_mesh.at(m + 5) = j + (i + 1) * coords.at(0).size() + 1;
-                m += 6;
+                vertex_indices_mesh.push_back(j + i * coords.at(0).size());
+                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).size() + 1);
+                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).size());
+                vertex_indices_mesh.push_back(j + i * coords.at(0).size());
+                vertex_indices_mesh.push_back(j + i * coords.at(0).size() + 1);
+                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).size() + 1);
             }
         }
 
-        // Print::array(indices_mesh);
+        Mesh mesh(vertex_coordinates, vertex_indices_mesh);
 
-        std::vector<unsigned int> indices_dots(vertices.size());
+        numelements_mesh = vertex_indices_mesh.size();
+
+        /*** DOTS ***/
+
+        // Generating indices for dots
+        std::vector<unsigned int> indices_dots(vertex_coordinates.size());
 
         for (unsigned int i = 0; i < indices_dots.size(); i++)
         {
             indices_dots.at(i) = i;
         }
 
-        numelements_mesh = indices_mesh.size();
-
         numelements_dots = indices_dots.size();
 
-        // Mesh
+        /*** MESH ***/
         glGenVertexArrays(1, &VAO_mesh);
         glBindVertexArray(VAO_mesh);
 
         glGenBuffers(1, &VBO_mesh);
         glBindBuffer(GL_ARRAY_BUFFER, VBO_mesh);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices.at(0)) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh.get_raw_vertex_data_size(), mesh.get_raw_vertex_data(), GL_STATIC_DRAW);
 
         glGenBuffers(1, &EBO_mesh);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_mesh);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_mesh.at(0)) * indices_mesh.size(), indices_mesh.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.get_raw_vertex_indices_size(), mesh.get_raw_vertex_indices(), GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)(sizeof(vertices.at(0)) * coords_size));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
         // Texture
+        glGenBuffers(1, &VBO_texture);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO_texture);
+        glBufferData(GL_ARRAY_BUFFER, mesh.get_raw_vertex_coordinates_size(), mesh.get_raw_vertex_coordinates(), GL_STATIC_DRAW);
         glGenTextures(1, &texture_vertex_data);
         glBindTexture(GL_TEXTURE_BUFFER, texture_vertex_data);
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, VBO_mesh);
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, VBO_texture);
 
-        // Dots
+        /*** DOTS ***/
         glGenVertexArrays(1, &VAO_dots);
         glBindVertexArray(VAO_dots);
 
@@ -598,7 +595,7 @@ class Plane : public Geometry
     }
 
   private:
-    static std::vector<std::vector<glm::vec3>> create(int dotres, int dx, int dz)
+    static std::vector<std::vector<glm::vec3>> generate_vertices(int dotres, int dx, int dz)
     {
         int numdotsx = (int)(dotres * dx + 1.0);
         int numdotsz = (int)(dotres * dz + 1.0);
