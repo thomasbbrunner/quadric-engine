@@ -17,34 +17,6 @@
 #include <opengl.h>
 #include <shader.h>
 
-/*** TODO ***
- * - Save vertex data into texture data
- * - Add geometry specific for "sun" type lighting
- * - Take neighboring triangles into consideration at normals calculator
- * - Add shadow support
- * - Recover old animations (everything in one big file)
- * - Create tutorial for storing vertex data in texture? Geometry shader for WebGL/OpenGL ES
- */
-
-/*** IDEAS ***
- * - add light source to light the landspace (like a rising sun)
- * - clouds are small planes with wave shader applied to them floating around
- * - play with FOV
- * - explore "two lights underneath plane.mp4"
- * - quadrics / superquadrics
- */
-
-/*** DOCUMENTATION ***
- * 
- * Transformations
- * Adding a translation to the transformation matrix
- *  trans = glm::translate(trans, glm::vec3(0.0f, 0.0f, 0.0f));
- * Adding a rotation
- *  trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
- * Adding a scaling
- *  trans = glm::scale(trans, glm::vec3(1.0, 1.0, 1.0));
- */
-
 void tetra_terminate(int signal);
 void tetra_update();
 
@@ -93,11 +65,6 @@ int main()
     // Sphere light2(0.1f);
     light2.set_light_source();
     light2.set_shader(shader1);
-
-    // TODO
-    // Lighting Sun;
-    // Sun.add_source(0);
-    // Sun.set_color(1.0,1.0,1.0,1.0);
 
     // Geometry
     printf("--Creating geometries--\n");
