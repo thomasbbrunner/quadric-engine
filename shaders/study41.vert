@@ -12,7 +12,7 @@ void main()
     vec3 vertex_data = effects(vec3(texelFetch(tex_ver_data, gl_VertexID)));
     vec3 adj_vertex_data[7];
 
-    int mesh_dim = (tube_dx) * 20; // Size of mesh times resolution and something else? if lighting is strange, change here
+    int mesh_dim = (tube_dx) * 8; // Size of mesh times resolution and something else? if lighting is strange, change here
 
     adj_vertex_data[0] = effects(vec3(texelFetch(tex_ver_data, gl_VertexID - 1)));
     globals();
