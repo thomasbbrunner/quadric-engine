@@ -2,8 +2,9 @@
 # Variables
 FILE_NUM = 1
 FILE_PATH = ./study$(FILE_NUM).cpp
-INCLUDE_PATH = ./include
-BIN_PATH = ../bin
+INC_PATH = ./inc
+LIB_PATH = ./lib
+BIN_PATH = ./bin
 CC = g++
 WCC = em++
 
@@ -15,13 +16,13 @@ run: rb
 
 # OpenGL
 bin:
-	$ $(CC) -Wall --std=c++11 -DOPENGL -I $(INCLUDE_PATH) $(FILE_PATH) ./include/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
+	$ $(CC) -Wall --std=c++11 -DOPENGL -I $(INC_PATH) -I $(LIB_PATH) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
 
 rb:
 	$ $(BIN_PATH)/study$(FILE_NUM)
 
 dbg:
-	$ $(CC) -Wall -g --std=c++11 -DOPENGL -I $(INCLUDE_PATH) $(FILE_PATH) ./include/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
+	$ $(CC) -Wall -g --std=c++11 -DOPENGL -I $(INC_PATH)  -I $(LIB_PATH) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
 	$ gdb $(BIN_PATH)/study$(FILE_NUM)
 
 # # WebGL
