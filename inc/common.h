@@ -166,6 +166,22 @@ class Print
         }
     }
 
+    static void array(std::vector<std::vector<unsigned int>> arr)
+    {
+        for (unsigned int i = 0; i < arr.size(); i++)
+        {
+            for (unsigned int j = 0; j < arr.at(i).size(); j++)
+            {
+                printf("%u ", arr.at(i).at(j));
+                printf("%u ", arr.at(i).at(j));
+                printf("%u ", arr.at(i).at(j));
+                printf("\n");
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
     static void array(std::vector<glm::vec3> arr)
     {
         for (unsigned int i = 0; i < arr.size(); i++)

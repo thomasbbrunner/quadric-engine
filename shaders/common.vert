@@ -37,6 +37,11 @@ void globals()
 
 layout (location = 0) in vec3 coords;
 layout (location = 1) in vec3 normal;
+layout (location = 2) in uvec3 adjacents0;
+layout (location = 3) in uvec3 adjacents1;
+layout (location = 4) in ivec4 adjacents_seq0;
+layout (location = 5) in ivec4 adjacents_seq1;
+layout (location = 6) in ivec4 adjacents_seq2;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;

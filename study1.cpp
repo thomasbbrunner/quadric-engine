@@ -25,7 +25,7 @@ Video video(opengl.window_width(), opengl.window_height());
 #endif
 
 // Cube geometry(10.0f);
-Plane geometry(2, 50, 200);
+Plane geometry(1, 5, 5);
 Cube light1(0.2f);
 Cube light2(0.2f);
 
@@ -44,7 +44,7 @@ void loop()
     light2.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 10.0f)));
     light2.draw_fill();
 
-    geometry.draw_fill();
+    geometry.draw_wireframe();
 }
 
 int main()
