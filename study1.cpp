@@ -25,9 +25,9 @@ Video video(opengl.window_width(), opengl.window_height());
 #endif
 
 // Cube geometry(10.0f);
-Plane geometry(2, 50,200);
-Sphere light1(0.2f);
-Sphere light2(0.2f);
+Plane geometry(2, 50, 200);
+Cube light1(0.2f);
+Cube light2(0.2f);
 
 void loop()
 {
@@ -44,7 +44,7 @@ void loop()
     light2.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 10.0f)));
     light2.draw_fill();
 
-    geometry.draw_wireframe();
+    geometry.draw_fill();
 }
 
 int main()
@@ -58,11 +58,9 @@ int main()
     Shader shader2("./shaders/study41.vert", "./shaders/study41.frag");
 
     // Lights
-    // Sphere light1(0.1f);
     light1.set_light_source();
     light1.set_shader(shader1);
 
-    // Sphere light2(0.1f);
     light2.set_light_source();
     light2.set_shader(shader1);
 
