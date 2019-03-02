@@ -11,7 +11,7 @@ void main()
     vec3 smooth_normal;
     vec4 position;
 
-    if (true)
+    if (false)
     {
         vec3 vertex_data = effects(vec3(texelFetch(tex_ver_data, gl_VertexID)));
         vec3 adj_vertex_data[7];
@@ -45,7 +45,7 @@ void main()
         smooth_normal = normal;
 
         normalize(smooth_normal);
-        position = vec4(coords, 1.0);
+        position = vec4((coords), 1.0);
     }
 
 
