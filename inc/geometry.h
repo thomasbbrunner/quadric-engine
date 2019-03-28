@@ -393,8 +393,9 @@ class Mesh : public Model
         raw_vertex_adjacents_sequence = generate_raw_vertex_adjacents_sequence();
         raw_vertex_indices = generate_raw_vertex_indices();
 
+        // Printing for debug 
         // print_face_data();
-        print_vertex_data();
+        // print_vertex_data();
     }
 };
 
@@ -500,10 +501,6 @@ class Geometry
         glEnableVertexAttribArray(1);
 
         // Adjacents 0
-        // TODO Found it!!
-        // GLSL is messing up the data types
-        // see "Can't get integer vertex attributes working in GLSL 1.5"
-        // int in GLSL is apparently 32 bits and int in cpu might be 64 :/
         glVertexAttribIPointer(2, 3, GL_INT, 3 * sizeof(int),
                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes()));
         glEnableVertexAttribArray(2);
@@ -515,7 +512,6 @@ class Geometry
         glEnableVertexAttribArray(3);
 
         // Adjacents sequence 0
-        // TODO change here also
         glVertexAttribIPointer(4, 4, GL_BYTE, 4 * sizeof(char),
                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
                                                  mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1)));
@@ -539,7 +535,6 @@ class Geometry
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_mesh);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.get_raw_vertex_indices_size_bytes(), mesh.get_raw_vertex_indices(), GL_STATIC_DRAW);
 
-        // texture (move from here?)
         glGenBuffers(1, &VBO_texture);
         glBindBuffer(GL_ARRAY_BUFFER, VBO_texture);
         glBufferData(GL_ARRAY_BUFFER, mesh.get_raw_vertex_coordinates_size_bytes(), mesh.get_raw_vertex_coordinates(), GL_STATIC_DRAW);

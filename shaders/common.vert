@@ -58,7 +58,6 @@ out Vertex_Data frag_data;
 flat out ivec3 DEBUG0;
 flat out int DEBUG1;
 
-// Texture data test
 uniform samplerBuffer tex_ver_data;
 
 /*** LIGHTING ***/

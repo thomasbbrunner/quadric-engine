@@ -12,7 +12,7 @@
 class Cube : public Geometry
 {
   public:
-    Cube(float size = 0.5f)
+    Cube(float size = 0.5f, int dotres = 1)
     {
         /*** MESH ***/
 
@@ -98,119 +98,55 @@ class Cube : public Geometry
     }
 };
 
-// class Icosahedron
-// {
-//   public:
-//     unsigned int VBO;
-//     unsigned int EBO;
-//     unsigned int VAO;
+class Icosahedron : public Geometry
+{
+  public:
+    Icosahedron(float d = 1.0f)
+    {
+        float t = (1.0f + std::sqrt(5.0f)) / 2.0f;
+        float a = 1.0f / (std::sqrt(1.0f + t * t));
 
-//     unsigned int numelements;
+        std::vector<glm::vec3> vertex_coordinates_mesh{
+            d * glm::vec3(a * t, a, 0),
+            d * glm::vec3(-a * t, a, 0),
+            d * glm::vec3(a * t, -a, 0),
+            d * glm::vec3(-a * t, -a, 0),
+            d * glm::vec3(a, 0, a * t),
+            d * glm::vec3(a, 0, -a * t),
+            d * glm::vec3(-a, 0, a * t),
+            d * glm::vec3(-a, 0, -a * t),
+            d * glm::vec3(0, a * t, a),
+            d * glm::vec3(0, -a * t, a),
+            d * glm::vec3(0, a * t, -a),
+            d * glm::vec3(0, -a * t, -a)};
 
-//     glm::mat4 model;
-//     glm::vec4 color;
+        std::vector<unsigned int> vertex_indices_mesh{
+            0, 8, 4,
+            0, 5, 10,
+            2, 4, 9,
+            2, 11, 5,
+            1, 6, 8,
+            1, 10, 7,
+            3, 9, 6,
+            3, 7, 11,
+            0, 10, 8,
+            1, 8, 10,
+            2, 9, 11,
+            3, 9, 11,
+            4, 2, 0,
+            5, 0, 2,
+            6, 1, 3,
+            7, 3, 1,
+            8, 6, 4,
+            9, 4, 6,
+            10, 5, 7,
+            11, 7, 5};
 
-//     // Constructor
-//     Icosahedron(float d = 1.0f, glm::vec3 coords = glm::vec3(0.0f, 0.0f, 0.0f))
-//     {
-//         model = glm::mat4(1.0f);
+        Mesh mesh(vertex_coordinates_mesh, vertex_indices_mesh);
 
-//         float t = (1.0f + std::sqrt(5.0f)) / 2.0f;
-//         float a = 1.0f / (std::sqrt(1.0f + t * t));
-
-//         float vertices[12 * 3] =
-//             {a * t, a, 0,
-//              -a * t, a, 0,
-//              a * t, -a, 0,
-//              -a * t, -a, 0,
-//              a, 0, a * t,
-//              a, 0, -a * t,
-//              -a, 0, a * t,
-//              -a, 0, -a * t,
-//              0, a * t, a,
-//              0, -a * t, a,
-//              0, a * t, -a,
-//              0, -a * t, -a};
-
-//         for (int i = 0; i < 12 * 3; i++)
-//         {
-//             vertices[i] *= d;
-//         }
-
-//         for (int i = 0; i < 12 * 3; i += 3)
-//         {
-//             vertices[i] += coords.x;
-//             vertices[i + 1] += coords.y;
-//             vertices[i + 2] += coords.z;
-//         }
-
-//         unsigned int indices[20 * 3] =
-//             {0, 8, 4,
-//              0, 5, 10,
-//              2, 4, 9,
-//              2, 11, 5,
-//              1, 6, 8,
-//              1, 10, 7,
-//              3, 9, 6,
-//              3, 7, 11,
-//              0, 10, 8,
-//              1, 8, 10,
-//              2, 9, 11,
-//              3, 9, 11,
-//              4, 2, 0,
-//              5, 0, 2,
-//              6, 1, 3,
-//              7, 3, 1,
-//              8, 6, 4,
-//              9, 4, 6,
-//              10, 5, 7,
-//              11, 7, 5};
-
-//         numelements = sizeof(indices) / sizeof(indices[0]);
-//         // numelements = 16*3;
-
-//         // Vertex array object
-//         glGenVertexArrays(1, &VAO);
-//         // InitialisationchangeValue
-//         // 1. bind Vertex Array Object
-//         glBindVertexArray(VAO);
-//         // 2. copy our vertices array in a vertex buffer for OpenGL to use
-//         glGenBuffers(1, &VBO);
-//         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//         // 3. copy our index array in a element buffer for OpenGL to use
-//         glGenBuffers(1, &EBO);
-//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-//         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-//         // 4. then set the vertex attributes pointers
-//         // Specifying how OpenGL should interpret the vertex values
-//         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-//         glEnableVertexAttribArray(0);
-//     }
-
-//     void draw_wireframe()
-//     {
-//         // Bind buffer
-//         glBindVertexArray(VAO);
-
-//         // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wirerame mode
-//         glDrawElements(GL_TRIANGLES, numelements, GL_UNSIGNED_INT, 0);
-//     }
-
-//     void draw_fill()
-//     {
-//         // Bind buffer
-//         glBindVertexArray(VAO);
-
-//         // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Fill mode
-//         glDrawElements(GL_TRIANGLES, numelements, GL_UNSIGNED_INT, 0);
-//     }
-
-//     void setmodel(glm::mat4 modeltemp)
-//     {
-//         model = modeltemp;
-//     }
-// };
+        generate_buffers(mesh);
+    }
+};
 
 // class Sphere : public Geometry
 // {
@@ -466,14 +402,12 @@ class Cube : public Geometry
 class Plane : public Geometry
 {
   public:
-    Plane(int dotres, int dx, int dz)
+    Plane(int dx, int dz, int dotres)
     {
         /*** MESH ***/
 
         // Generating vertex coordinates arranged in 2D format
         std::vector<std::vector<glm::vec3>> coords = generate_vertices(dotres, dx, dz);
-
-        // Print::array(coords);
 
         // Transforming vertex coordinates to 1D format
         std::vector<glm::vec3> vertex_coordinates;
@@ -513,7 +447,6 @@ class Plane : public Geometry
     }
 
   private:
-
     static std::vector<std::vector<glm::vec3>> generate_vertices(int dotres, int dx, int dz)
     {
         int numdotsx = (int)(dotres * dx + 1.0);
