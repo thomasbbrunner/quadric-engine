@@ -31,14 +31,14 @@ float tube_r;
 void globals()
 {
     tube_r = tube_dx/(4.0*M_PI); 
-}
+}   
 
 /*** VARIABLES ***/
 
 layout (location = 0) in vec3 coords;
 layout (location = 1) in vec3 normal;
-layout (location = 2) in uvec3 adjacents0;
-layout (location = 3) in uvec3 adjacents1;
+layout (location = 2) in ivec3 adjacents0;
+layout (location = 3) in ivec3 adjacents1;
 layout (location = 4) in ivec4 adjacents_seq0;
 layout (location = 5) in ivec4 adjacents_seq1;
 layout (location = 6) in ivec4 adjacents_seq2;
@@ -55,6 +55,8 @@ struct Vertex_Data
 };
 
 out Vertex_Data frag_data;
+flat out ivec3 DEBUG0;
+flat out int DEBUG1;
 
 // Texture data test
 uniform samplerBuffer tex_ver_data;

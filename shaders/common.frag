@@ -25,7 +25,8 @@ float attenuation_quadratic = 0.002;
 #define M_PI 3.1415926535897932384626433832795
 
 /*** VARIABLES ***/
-
+flat in ivec3 DEBUG0;
+flat in int DEBUG1;
 out vec4 frag_color;
 uniform vec4 color;
 uniform float time;

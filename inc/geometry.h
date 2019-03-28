@@ -31,6 +31,7 @@ class Model
   public:
     /*** Functions for exporting data to buffer format ***/
 
+    // Coordinates
     float *get_raw_vertex_coordinates()
     {
         return raw_vertex_coordinates.data();
@@ -41,6 +42,7 @@ class Model
         return raw_vertex_coordinates.size() * sizeof(float);
     }
 
+    // Normals
     float *get_raw_vertex_normals()
     {
         return raw_vertex_normals.data();
@@ -51,21 +53,18 @@ class Model
         return raw_vertex_normals.size() * sizeof(float);
     }
 
-    unsigned int *get_raw_vertex_adjacents(unsigned int index)
+    // Adjacents
+    int *get_raw_vertex_adjacents(unsigned int index)
     {
         return raw_vertex_adjacents.at(index).data();
     }
 
     unsigned int get_raw_vertex_adjacents_size_bytes(unsigned int index)
     {
-        return raw_vertex_adjacents.at(index).size() * sizeof(float);
+        return raw_vertex_adjacents.at(index).size() * sizeof(int);
     }
 
-    unsigned int get_raw_vertex_adjacents_size(unsigned int index)
-    {
-        return raw_vertex_adjacents.at(index).size();
-    }
-
+    // Adjacents sequence
     char *get_raw_vertex_adjacents_sequence(unsigned int index)
     {
         return raw_vertex_adjacents_sequence.at(index).data();
@@ -76,16 +75,13 @@ class Model
         return raw_vertex_adjacents_sequence.at(index).size() * sizeof(char);
     }
 
-    unsigned int get_raw_vertex_adjacents_sequence_size(unsigned int index)
-    {
-        return raw_vertex_adjacents_sequence.at(index).size();
-    }
-
+    // Max adjacents
     unsigned int get_max_number_adjacent_vertex()
     {
         return max_number_adjacent_vertex;
     }
 
+    // Indices
     unsigned int *get_raw_vertex_indices()
     {
         return raw_vertex_indices.data();
@@ -109,7 +105,7 @@ class Model
     // Raw data
     std::vector<float> raw_vertex_coordinates;
     std::vector<float> raw_vertex_normals;
-    std::vector<std::vector<unsigned int>> raw_vertex_adjacents;
+    std::vector<std::vector<int>> raw_vertex_adjacents;
     std::vector<std::vector<char>> raw_vertex_adjacents_sequence;
     std::vector<unsigned int> raw_vertex_indices;
 
@@ -149,15 +145,15 @@ class Model
         return vec;
     }
 
-    std::vector<std::vector<unsigned int>> generate_raw_vertex_adjacents()
+    std::vector<std::vector<int>> generate_raw_vertex_adjacents()
     {
         // Splitting adjacent vertex ids into several vectors
-        std::vector<std::vector<unsigned int>> vec(2);
-
+        std::vector<std::vector<int>> vec(2);
+        
         for (unsigned int i = 0; i < vertices.size(); i++)
         // Iterating through vertices
         {
-            fix logic here maybe?
+            // fix logic here maybe?
             for (unsigned int j = 0; j < 6; j++)
             // Iterating through coordinate elements
             {
@@ -169,12 +165,12 @@ class Model
                 }
                 else
                 {
-                    vec.at(k).push_back(0xFFFFFFFF);
+                    vec.at(k).push_back(60000); // TODO change to bigger value
                 }
             }
         }
 
-        Print::array(vec);
+        // Print::array(vec);
 
         return vec;
     }
@@ -202,6 +198,8 @@ class Model
                 }
             }
         }
+
+        // Print::array(vec);
 
         return vec;
     }
@@ -491,10 +489,6 @@ class Geometry
                             mesh.get_raw_vertex_adjacents_sequence_size_bytes(0) + mesh.get_raw_vertex_adjacents_sequence_size_bytes(1),
                         mesh.get_raw_vertex_adjacents_sequence_size_bytes(2), mesh.get_raw_vertex_adjacents_sequence(2));
 
-        glGenBuffers(1, &EBO_mesh);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_mesh);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.get_raw_vertex_indices_size_bytes(), mesh.get_raw_vertex_indices(), GL_STATIC_DRAW);
-
         // Vertex coordinates
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
                               (void *)0);
@@ -506,35 +500,44 @@ class Geometry
         glEnableVertexAttribArray(1);
 
         // Adjacents 0
-        glVertexAttribPointer(2, 3, GL_UNSIGNED_INT, GL_FALSE, 3 * sizeof(unsigned int),
+        // TODO Found it!!
+        // GLSL is messing up the data types
+        // see "Can't get integer vertex attributes working in GLSL 1.5"
+        // int in GLSL is apparently 32 bits and int in cpu might be 64 :/
+        glVertexAttribIPointer(2, 3, GL_INT, 3 * sizeof(int),
                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes()));
         glEnableVertexAttribArray(2);
 
         // Adjacents 1
-        glVertexAttribPointer(3, 3, GL_UNSIGNED_INT, GL_FALSE, 3 * sizeof(unsigned int),
+        glVertexAttribIPointer(3, 3, GL_INT, 3 * sizeof(int),
                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
                                                  mesh.get_raw_vertex_adjacents_size_bytes(0)));
         glEnableVertexAttribArray(3);
 
         // Adjacents sequence 0
-        glVertexAttribPointer(4, 4, GL_BYTE, GL_FALSE, 4 * sizeof(char),
+        // TODO change here also
+        glVertexAttribIPointer(4, 4, GL_BYTE, 4 * sizeof(char),
                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
                                                  mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1)));
         glEnableVertexAttribArray(4);
 
         // Adjacents sequence 1
-        glVertexAttribPointer(5, 4, GL_BYTE, GL_FALSE, 4 * sizeof(char),
+        glVertexAttribIPointer(5, 4, GL_BYTE, 4 * sizeof(char),
                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
                                                  mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1) +
                                                  mesh.get_raw_vertex_adjacents_sequence_size_bytes(0)));
         glEnableVertexAttribArray(5);
 
         // Adjacents sequence 2
-        glVertexAttribPointer(6, 4, GL_BYTE, GL_FALSE, 4 * sizeof(char),
+        glVertexAttribIPointer(6, 4, GL_BYTE, 4 * sizeof(char),
                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
                                                  mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1) +
                                                  mesh.get_raw_vertex_adjacents_sequence_size_bytes(0) + mesh.get_raw_vertex_adjacents_sequence_size_bytes(1)));
         glEnableVertexAttribArray(6);
+
+        glGenBuffers(1, &EBO_mesh);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_mesh);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.get_raw_vertex_indices_size_bytes(), mesh.get_raw_vertex_indices(), GL_STATIC_DRAW);
 
         // texture (move from here?)
         glGenBuffers(1, &VBO_texture);

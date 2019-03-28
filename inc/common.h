@@ -121,6 +121,18 @@ class Print
         printf("\n");
     }
 
+    static void array(int *arr, int dim1, int dim2 = 1)
+    {
+        for (int i = 0; i < dim1; i++)
+        {
+            for (int j = 0; j < dim2; j++)
+            {
+                printf("%u ", arr[i * dim2 + j]);
+            }
+        }
+        printf("\n");
+    }
+
     static void array(glm::vec3 *arr, int dim1, int dim2 = 1)
     {
         for (int i = 0; i < dim1; i++)
@@ -166,14 +178,26 @@ class Print
         }
     }
 
-    static void array(std::vector<std::vector<unsigned int>> arr)
+    static void array(std::vector<std::vector<int>> arr)
     {
         for (unsigned int i = 0; i < arr.size(); i++)
         {
             for (unsigned int j = 0; j < arr.at(i).size(); j++)
             {
-                printf("%u ", arr.at(i).at(j));
-                printf("%u ", arr.at(i).at(j));
+                printf("%i ", arr.at(i).at(j));
+                printf("\n");
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    static void array(std::vector<std::vector<char>> arr)
+    {
+        for (unsigned int i = 0; i < arr.size(); i++)
+        {
+            for (unsigned int j = 0; j < arr.at(i).size(); j++)
+            {
                 printf("%u ", arr.at(i).at(j));
                 printf("\n");
             }
