@@ -1,9 +1,10 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
-#include <common.h>
 #include <video.h>
-#include <camera.h>
+
+#include <stdio.h>
+#include <iostream>
 
 // Toggle MSAA
 // #define MSAA

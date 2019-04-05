@@ -7,14 +7,26 @@
 #undef OPENGL_ES
 #endif
 
-#include <common.h>
+#ifdef OPENGL_ES // Including files for OpenGL ES
+#include <GLES3/gl3.h>
+#include <emscripten/emscripten.h>
+#else // Including files for OpenGL
+#include <glad/glad.h>
+#endif
+
+#include <opengl.h>
 #include <video.h>
 #include <camera.h>
 #include <geometry.h>
 #include <geometry2D.h>
 #include <geometry3D.h>
-#include <opengl.h>
 #include <shader.h>
+
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <signal.h>
 
 void tetra_terminate(int signal);
 void tetra_update();

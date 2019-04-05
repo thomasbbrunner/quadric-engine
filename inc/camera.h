@@ -1,8 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <common.h>
 #include <opengl.h>
+#include <time.h>
+
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <GLFW/glfw3.h>
 
 #define CAMERA_STATIC 0x1
 #define CAMERA_ROTATE_AROUND 0x2

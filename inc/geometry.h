@@ -1,11 +1,14 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <common.h>
 #include <shader.h>
+#include <opengl.h>
 #include <camera.h>
 #include <print.h>
 #include <light.h>
+#include <time.h>
+
+#include <algorithm>
 
 /*** PARENT CLASSES ***/
 
@@ -554,8 +557,8 @@ class Geometry
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
 
-                // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)(intptr_t)(dots.get_raw_vertex_coordinates_size_bytes()));
-                // glEnableVertexAttribArray(1);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)(intptr_t)(dots.get_raw_vertex_coordinates_size_bytes()));
+        // glEnableVertexAttribArray(1);
     }
 
     /*** DRAW ***/

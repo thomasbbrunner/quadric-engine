@@ -1,26 +1,10 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef TIME_H
+#define TIME_H
 
-#ifdef OPENGL_ES // Including files for OpenGL ES
-#include <GLES3/gl3.h>
-#include <emscripten/emscripten.h>
-#else // Including files for OpenGL
-#include <glad/glad.h>
-#endif
 #include <GLFW/glfw3.h>
-#include <iostream>
+
 #include <cstdlib>
-#include <math.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <vector>
-#include <signal.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <unistd.h>
-#include <algorithm>
+#include <stdio.h>
 
 #define TIME_REAL 1
 #define TIME_TICK 2

@@ -1,11 +1,8 @@
 #ifndef GEOMETRY3D_H
 #define GEOMETRY3D_H
 
-#include <common.h>
-#include <shader.h>
-#include <camera.h>
-#include <light.h>
 #include <geometry.h>
+#include <print.h>
 
 /*** 3D GEOMETRY ***/
 

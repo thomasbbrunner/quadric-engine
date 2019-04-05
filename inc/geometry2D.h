@@ -1,12 +1,8 @@
 #ifndef GEOMETRY2D_H
 #define GEOMETRY2D_H
 
-#include <common.h>
-#include <shader.h>
-#include <camera.h>
-#include <light.h>
-#include <print.h>
 #include <geometry.h>
+#include <print.h>
 
 /*** 2D GEOMETRY ***/
 
