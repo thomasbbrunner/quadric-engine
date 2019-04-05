@@ -2,7 +2,7 @@
 
 vec3 effects(vec3 newcoords)
 {
-    return (((noise(newcoords))));
+    return ((((newcoords))));
 }
 
 void main() 

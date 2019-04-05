@@ -147,262 +147,227 @@ class Icosahedron : public Geometry
         generate_buffers(mesh);
     }
 };
+/*
+class Sphere : public Geometry
+{
+  public:
+    Sphere(float d = 1.0f)
+    {
+        float t = (1.0f + std::sqrt(5.0f)) / 2.0f;
+        float a = 1.0f / (std::sqrt(1.0f + t * t));
 
-// class Sphere : public Geometry
-// {
-//   public:
-//     Sphere(float d = 1.0f, glm::vec3 coords = glm::vec3(0.0f, 0.0f, 0.0f))
-//     {
-//         float t = (1.0f + std::sqrt(5.0f)) / 2.0f;
-//         float a = 1.0f / (std::sqrt(1.0f + t * t));
+        std::vector<glm::vec3> vertex_coordinates_mesh{
+            d * glm::vec3(a * t, a, 0),
+            d * glm::vec3(-a * t, a, 0),
+            d * glm::vec3(a * t, -a, 0),
+            d * glm::vec3(-a * t, -a, 0),
+            d * glm::vec3(a, 0, a * t),
+            d * glm::vec3(a, 0, -a * t),
+            d * glm::vec3(-a, 0, a * t),
+            d * glm::vec3(-a, 0, -a * t),
+            d * glm::vec3(0, a * t, a),
+            d * glm::vec3(0, -a * t, a),
+            d * glm::vec3(0, a * t, -a),
+            d * glm::vec3(0, -a * t, -a)};
 
-//         float vertices0[12][3] =
-//             {{a * t, a, 0},
-//              {-a * t, a, 0},
-//              {a * t, -a, 0},
-//              {-a * t, -a, 0},
-//              {a, 0, a * t},
-//              {a, 0, -a * t},
-//              {-a, 0, a * t},
-//              {-a, 0, -a * t},
-//              {0, a * t, a},
-//              {0, -a * t, a},
-//              {0, a * t, -a},
-//              {0, -a * t, -a}};
+        std::vector<unsigned int> vertex_indices_mesh{
+            0, 8, 4,
+            0, 5, 10,
+            2, 4, 9,
+            2, 11, 5,
+            1, 6, 8,
+            1, 10, 7,
+            3, 9, 6,
+            3, 7, 11,
+            0, 10, 8,
+            1, 8, 10,
+            2, 9, 11,
+            3, 9, 11,
+            4, 2, 0,
+            5, 0, 2,
+            6, 1, 3,
+            7, 3, 1,
+            8, 6, 4,
+            9, 4, 6,
+            10, 5, 7,
+            11, 7, 5};
 
-//         unsigned int indices0[20 * 3] =
-//             {0, 8, 4,
-//              0, 5, 10,
-//              2, 4, 9,
-//              2, 11, 5,
-//              1, 6, 8,
-//              1, 10, 7,
-//              3, 9, 6,
-//              3, 7, 11,
-//              0, 10, 8,
-//              1, 8, 10,
-//              2, 9, 11,
-//              3, 9, 11,
-//              4, 2, 0,
-//              5, 0, 2,
-//              6, 1, 3,
-//              7, 3, 1,
-//              8, 6, 4,
-//              9, 4, 6,
-//              10, 5, 7,
-//              11, 7, 5};
+        // Normalizing vertices
+        for (int i = 0; i < 12; i++)
+        {
+            vertex_coordinates_mesh.at(i) = glm::normalize(vertex_coordinates_mesh.at(i));
+        }
 
-//         // Normalizing vertices
-//         for (int i = 0; i < 12; i++)
-//         {
-//             float norm = std::sqrt(std::pow(vertices0[i][0], 2) + std::pow(vertices0[i][1], 2) + std::pow(vertices0[i][2], 2));
+        // Creating new vertices
+        for (int i = 0; i < 20 * 3; i += 3)
+        {
+            vertices2[i][0] = (vertices0[indices0[i]][0] + vertices0[indices0[i + 1]][0]) / 2;
+            vertices2[i][1] = (vertices0[indices0[i]][1] + vertices0[indices0[i + 1]][1]) / 2;
+            vertices2[i][2] = (vertices0[indices0[i]][2] + vertices0[indices0[i + 1]][2]) / 2;
 
-//             for (int j = 0; j < 3; j++)
-//             {
-//                 vertices0[i][j] /= norm;
-//             }
-//         }
+            vertices2[i + 1][0] = (vertices0[indices0[i + 1]][0] + vertices0[indices0[i + 2]][0]) / 2;
+            vertices2[i + 1][1] = (vertices0[indices0[i + 1]][1] + vertices0[indices0[i + 2]][1]) / 2;
+            vertices2[i + 1][2] = (vertices0[indices0[i + 1]][2] + vertices0[indices0[i + 2]][2]) / 2;
 
-//         // Creating new vertices
-//         float vertices2[20 * 3][3] = {{0.0f}};
-//         for (int i = 0; i < 20 * 3; i += 3)
-//         {
-//             vertices2[i][0] = (vertices0[indices0[i]][0] + vertices0[indices0[i + 1]][0]) / 2;
-//             vertices2[i][1] = (vertices0[indices0[i]][1] + vertices0[indices0[i + 1]][1]) / 2;
-//             vertices2[i][2] = (vertices0[indices0[i]][2] + vertices0[indices0[i + 1]][2]) / 2;
+            vertices2[i + 2][0] = (vertices0[indices0[i + 2]][0] + vertices0[indices0[i]][0]) / 2;
+            vertices2[i + 2][1] = (vertices0[indices0[i + 2]][1] + vertices0[indices0[i]][1]) / 2;
+            vertices2[i + 2][2] = (vertices0[indices0[i + 2]][2] + vertices0[indices0[i]][2]) / 2;
+        }
 
-//             vertices2[i + 1][0] = (vertices0[indices0[i + 1]][0] + vertices0[indices0[i + 2]][0]) / 2;
-//             vertices2[i + 1][1] = (vertices0[indices0[i + 1]][1] + vertices0[indices0[i + 2]][1]) / 2;
-//             vertices2[i + 1][2] = (vertices0[indices0[i + 1]][2] + vertices0[indices0[i + 2]][2]) / 2;
+        float vertices3[30][3] = {{0.0f}};
 
-//             vertices2[i + 2][0] = (vertices0[indices0[i + 2]][0] + vertices0[indices0[i]][0]) / 2;
-//             vertices2[i + 2][1] = (vertices0[indices0[i + 2]][1] + vertices0[indices0[i]][1]) / 2;
-//             vertices2[i + 2][2] = (vertices0[indices0[i + 2]][2] + vertices0[indices0[i]][2]) / 2;
-//         }
+        int k = 0;
+        int repeated = -1;
 
-//         float vertices3[30][3] = {{0.0f}};
+        // Removing repeated vertices
+        for (int i = 0; i < 20 * 3; i++)
+        {
+            for (int j = 0; j < 30; j++)
+            {
+                if ((std::abs(vertices2[i][0] - vertices3[j][0]) < 0.01f) && (std::abs(vertices2[i][1] - vertices3[j][1]) < 0.01f) && (std::abs(vertices2[i][2] - vertices3[j][2]) < 0.01f))
+                {
+                    // found repeated
+                    repeated = 1;
+                    break;
+                }
+                if (j == 30 - 1)
+                {
+                    // found not repeated
+                    repeated = 0;
+                }
+            }
+            if (repeated == 0)
+            {
+                vertices3[k][0] = vertices2[i][0];
+                vertices3[k][1] = vertices2[i][1];
+                vertices3[k][2] = vertices2[i][2];
 
-//         int k = 0;
-//         int repeated = -1;
+                k++;
+            }
+        }
 
-//         // Removing repeated vertices
-//         for (int i = 0; i < 20 * 3; i++)
-//         {
-//             for (int j = 0; j < 30; j++)
-//             {
-//                 if ((std::abs(vertices2[i][0] - vertices3[j][0]) < 0.01f) && (std::abs(vertices2[i][1] - vertices3[j][1]) < 0.01f) && (std::abs(vertices2[i][2] - vertices3[j][2]) < 0.01f))
-//                 {
-//                     // found repeated
-//                     repeated = 1;
-//                     break;
-//                 }
-//                 if (j == 30 - 1)
-//                 {
-//                     // found not repeated
-//                     repeated = 0;
-//                 }
-//             }
-//             if (repeated == 0)
-//             {
-//                 vertices3[k][0] = vertices2[i][0];
-//                 vertices3[k][1] = vertices2[i][1];
-//                 vertices3[k][2] = vertices2[i][2];
+        // Joining new and old vertices
+        float vertices4[42][3] = {{0.0f}};
 
-//                 k++;
-//             }
-//         }
+        for (int i = 0; i < 42; i++)
+        {
+            if (i < 12)
+            {
+                vertices4[i][0] = vertices0[i][0];
+                vertices4[i][1] = vertices0[i][1];
+                vertices4[i][2] = vertices0[i][2];
+            }
+            else
+            {
+                vertices4[i][0] = vertices3[i - 12][0];
+                vertices4[i][1] = vertices3[i - 12][1];
+                vertices4[i][2] = vertices3[i - 12][2];
+            }
+        }
 
-//         // Joining new and old vertices
-//         float vertices4[42][3] = {{0.0f}};
+        // Create indices
+        unsigned int indices1[20 * 4][3] = {{0}};
 
-//         for (int i = 0; i < 42; i++)
-//         {
-//             if (i < 12)
-//             {
-//                 vertices4[i][0] = vertices0[i][0];
-//                 vertices4[i][1] = vertices0[i][1];
-//                 vertices4[i][2] = vertices0[i][2];
-//             }
-//             else
-//             {
-//                 vertices4[i][0] = vertices3[i - 12][0];
-//                 vertices4[i][1] = vertices3[i - 12][1];
-//                 vertices4[i][2] = vertices3[i - 12][2];
-//             }
-//         }
+        float dist = std::abs(std::sqrt(std::pow(vertices0[0][0] - vertices0[8][0], 2) + std::pow(vertices0[0][1] - vertices0[8][1], 2) + std::pow(vertices0[0][2] - vertices0[8][2], 2)));
 
-//         // Create indices
-//         unsigned int indices1[20 * 4][3] = {{0}};
+        int l = 0;
+        for (unsigned int i = 0; i < 42; i++)
+        {
+            for (unsigned int j = 0; j < 42; j++)
+            {
+                for (unsigned int k = 0; k < 42; k++)
+                {
+                    if (i != j && i != k && k != j)
+                    {
+                        float dist1 = std::abs(std::sqrt(std::pow(vertices4[i][0] - vertices4[j][0], 2) + std::pow(vertices4[i][1] - vertices4[j][1], 2) + std::pow(vertices4[i][2] - vertices4[j][2], 2)));
+                        float dist2 = std::abs(std::sqrt(std::pow(vertices4[i][0] - vertices4[k][0], 2) + std::pow(vertices4[i][1] - vertices4[k][1], 2) + std::pow(vertices4[i][2] - vertices4[k][2], 2)));
+                        float dist3 = std::abs(std::sqrt(std::pow(vertices4[k][0] - vertices4[j][0], 2) + std::pow(vertices4[k][1] - vertices4[j][1], 2) + std::pow(vertices4[k][2] - vertices4[j][2], 2)));
 
-//         float dist = std::abs(std::sqrt(std::pow(vertices0[0][0] - vertices0[8][0], 2) + std::pow(vertices0[0][1] - vertices0[8][1], 2) + std::pow(vertices0[0][2] - vertices0[8][2], 2)));
+                        if (std::abs(dist1 - dist2) < 0.001 && std::abs(dist1 - dist3) < 0.001 && std::abs(dist3 - dist2) < 0.001)
+                        {
+                            if (dist1 < dist)
+                            {
+                                int repeated = -1;
+                                for (int m = 0; m < 20 * 4; m++)
+                                {
+                                    if (i == indices1[m][0])
+                                    {
+                                        if (j == indices1[m][1] || j == indices1[m][2])
+                                        {
+                                            if (k == indices1[m][1] || k == indices1[m][2])
+                                            {
+                                                repeated = 1;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (j == indices1[m][0])
+                                    {
+                                        if (i == indices1[m][1] || i == indices1[m][2])
+                                        {
+                                            if (k == indices1[m][1] || k == indices1[m][2])
+                                            {
+                                                repeated = 1;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (k == indices1[m][0])
+                                    {
+                                        if (j == indices1[m][1] || j == indices1[m][2])
+                                        {
+                                            if (i == indices1[m][1] || i == indices1[m][2])
+                                            {
+                                                repeated = 1;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (m == 20 * 4 - 1)
+                                    {
+                                        repeated = 0;
+                                    }
+                                }
+                                if (repeated == 0)
+                                {
+                                    indices1[l][0] = i;
+                                    indices1[l][1] = j;
+                                    indices1[l][2] = k;
 
-//         int l = 0;
-//         for (unsigned int i = 0; i < 42; i++)
-//         {
-//             for (unsigned int j = 0; j < 42; j++)
-//             {
-//                 for (unsigned int k = 0; k < 42; k++)
-//                 {
-//                     if (i != j && i != k && k != j)
-//                     {
-//                         float dist1 = std::abs(std::sqrt(std::pow(vertices4[i][0] - vertices4[j][0], 2) + std::pow(vertices4[i][1] - vertices4[j][1], 2) + std::pow(vertices4[i][2] - vertices4[j][2], 2)));
-//                         float dist2 = std::abs(std::sqrt(std::pow(vertices4[i][0] - vertices4[k][0], 2) + std::pow(vertices4[i][1] - vertices4[k][1], 2) + std::pow(vertices4[i][2] - vertices4[k][2], 2)));
-//                         float dist3 = std::abs(std::sqrt(std::pow(vertices4[k][0] - vertices4[j][0], 2) + std::pow(vertices4[k][1] - vertices4[j][1], 2) + std::pow(vertices4[k][2] - vertices4[j][2], 2)));
+                                    l++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-//                         if (std::abs(dist1 - dist2) < 0.001 && std::abs(dist1 - dist3) < 0.001 && std::abs(dist3 - dist2) < 0.001)
-//                         {
-//                             if (dist1 < dist)
-//                             {
-//                                 int repeated = -1;
-//                                 for (int m = 0; m < 20 * 4; m++)
-//                                 {
-//                                     if (i == indices1[m][0])
-//                                     {
-//                                         if (j == indices1[m][1] || j == indices1[m][2])
-//                                         {
-//                                             if (k == indices1[m][1] || k == indices1[m][2])
-//                                             {
-//                                                 repeated = 1;
-//                                                 break;
-//                                             }
-//                                         }
-//                                     }
-//                                     if (j == indices1[m][0])
-//                                     {
-//                                         if (i == indices1[m][1] || i == indices1[m][2])
-//                                         {
-//                                             if (k == indices1[m][1] || k == indices1[m][2])
-//                                             {
-//                                                 repeated = 1;
-//                                                 break;
-//                                             }
-//                                         }
-//                                     }
-//                                     if (k == indices1[m][0])
-//                                     {
-//                                         if (j == indices1[m][1] || j == indices1[m][2])
-//                                         {
-//                                             if (i == indices1[m][1] || i == indices1[m][2])
-//                                             {
-//                                                 repeated = 1;
-//                                                 break;
-//                                             }
-//                                         }
-//                                     }
-//                                     if (m == 20 * 4 - 1)
-//                                     {
-//                                         repeated = 0;
-//                                     }
-//                                 }
-//                                 if (repeated == 0)
-//                                 {
-//                                     indices1[l][0] = i;
-//                                     indices1[l][1] = j;
-//                                     indices1[l][2] = k;
+        // Normalizing vertices
+        for (int i = 0; i < 42; i++)
+        {
+            float norm = std::sqrt(std::pow(vertices4[i][0], 2) + std::pow(vertices4[i][1], 2) + std::pow(vertices4[i][2], 2));
 
-//                                     l++;
-//                                 }
-//                             }
-//                         }
-//                     }
-//                 }
-//             }
-//         }
+            for (int j = 0; j < 3; j++)
+            {
+                vertices4[i][j] /= norm;
+            }
+        }
 
-//         // Normalizing vertices
-//         for (int i = 0; i < 42; i++)
-//         {
-//             float norm = std::sqrt(std::pow(vertices4[i][0], 2) + std::pow(vertices4[i][1], 2) + std::pow(vertices4[i][2], 2));
-
-//             for (int j = 0; j < 3; j++)
-//             {
-//                 vertices4[i][j] /= norm;
-//             }
-//         }
-
-//         for (int i = 0; i < 42; i++)
-//         {
-//             for (int j = 0; j < 3; j++)
-//             {
-//                 vertices4[i][j] *= d;
-//             }
-//         }
-
-//         for (int i = 0; i < 42; i++)
-//         {
-//             vertices4[i][0] += coords.x;
-//             vertices4[i][1] += coords.y;
-//             vertices4[i][2] += coords.z;
-//         }
-
-//         numelements_mesh = sizeof(indices1) / sizeof(indices1[0][0]);
-//         numelements_contour = numelements_mesh;
-
-//         // Mesh
-//         glGenVertexArrays(1, &VAO_mesh);
-
-//         glBindVertexArray(VAO_mesh);
-
-//         glGenBuffers(1, &VBO_mesh);
-//         glBindBuffer(GL_ARRAY_BUFFER, VBO_mesh);
-//         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices4), vertices4, GL_STATIC_DRAW);
-
-//         glGenBuffers(1, &EBO_mesh);
-//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_mesh);
-//         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices1), indices1, GL_STATIC_DRAW);
-
-//         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-//         glEnableVertexAttribArray(0);
-
-//         // contour
-//         VAO_contour = VAO_mesh;
-//     }
-// };
-
+        for (int i = 0; i < 42; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                vertices4[i][j] *= d;
+            }
+        }
+    }
+};
+*/
 class Plane : public Geometry
 {
   public:
-    Plane(int dx, int dz, int dotres)
+    Plane(int dx, int dz, int dotres=1)
     {
         /*** MESH ***/
 

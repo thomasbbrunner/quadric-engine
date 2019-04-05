@@ -5,202 +5,145 @@
 #include <shader.h>
 #include <camera.h>
 #include <light.h>
+#include <print.h>
 #include <geometry.h>
-
 
 /*** 2D GEOMETRY ***/
 
-// class Geometry_2D : public Geometry
-// {
-//   public:
-//     // Uses GL_TRIANGLE_FAN instead of GL_TRIANGLES
-//     void draw_fill()
-//     {
-//         update_shader();
+class Geometry_2D : public Geometry
+{
+  public:
+    // Uses GL_TRIANGLE_FAN instead of GL_TRIANGLES
+    void draw_fill()
+    {
+        update_shader();
 
-//         glBindVertexArray(VAO_mesh);
+        glBindTexture(GL_TEXTURE_BUFFER, texture_vertex_data);
 
-//         // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//         glDrawElements(GL_TRIANGLE_FAN, numelements_mesh, GL_UNSIGNED_INT, 0);
-//     }
+        glBindVertexArray(VAO_contour);
 
-//     void draw_wireframe()
-//     {
-//         update_shader();
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glDrawElements(GL_TRIANGLE_FAN, numelements_contour, GL_UNSIGNED_INT, 0);
+    }
 
-//         glBindVertexArray(VAO_mesh);
+    void draw_wireframe()
+    {
+        update_shader();
 
-//         // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//         glDrawElements(GL_TRIANGLE_FAN, numelements_mesh, GL_UNSIGNED_INT, 0);
-//     }
-// };
+        glBindTexture(GL_TEXTURE_BUFFER, texture_vertex_data);
 
-// class Pentagon : public Geometry_2D
-// {
-//   public:
-//     Pentagon(float d = 0.5f)
-//     {
-//         float h = d * sqrt(3) / 2;
-//         float vertices[] = {
-//             d, 0.0f, 0.0f,
-//             d / 2, h, 0.0f,
-//             -d / 2, h, 0.0f,
-//             -d, 0.0f, 0.0f,
-//             -d / 2, -h, 0.0f,
-//             d / 2, -h, 0.0f};
+        glBindVertexArray(VAO_contour);
 
-//         unsigned int indices_contour[] = {
-//             // note that we start from 0!
-//             0, 1,
-//             1, 2,
-//             2, 3,
-//             3, 4,
-//             4, 5,
-//             5, 0};
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawElements(GL_TRIANGLE_FAN, numelements_contour, GL_UNSIGNED_INT, 0);
+    }
+};
 
-//         numelements_contour = sizeof(indices_contour) / sizeof(indices_contour[0]);
-//         numelements_mesh = 12;
+class Pentagon : public Geometry_2D
+{
+  public:
+    Pentagon(float d = 1.0f)
+    {
+        float h = d * sqrt(3) / 2;
+        std::vector<glm::vec3> vertex_coordinates{
+            glm::vec3(d, 0.0f, 0.0f),
+            glm::vec3(d / 2, h, 0.0f),
+            glm::vec3(-d / 2, h, 0.0f),
+            glm::vec3(-d, 0.0f, 0.0f),
+            glm::vec3(-d / 2, -h, 0.0f),
+            glm::vec3(d / 2, -h, 0.0f)};
 
-//         // Contour
-//         glGenVertexArrays(1, &VAO_contour);
+        std::vector<unsigned int> vertex_indices{
+            0, 1,
+            1, 2,
+            2, 3,
+            3, 4,
+            4, 5,
+            5, 0};
 
-//         glBindVertexArray(VAO_contour);
+        /*** MESH/CONTOUR ***/
 
-//         glGenBuffers(1, &VBO_contour);
-//         glBindBuffer(GL_ARRAY_BUFFER, VBO_contour);
-//         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        Contour contour(vertex_coordinates, vertex_indices);
 
-//         glGenBuffers(1, &EBO_contour);
-//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_contour);
-//         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_contour), indices_contour, GL_STATIC_DRAW);
+        generate_buffers(contour);
 
-//         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-//         glEnableVertexAttribArray(0);
+        /*** DOTS ***/
 
-//         // Mesh
-//         VAO_mesh = VAO_contour;
-//     }
-// };
+        Dots dots(vertex_coordinates);
 
-// class Tetra : public Geometry_2D
-// {
-//   public:
-//     Tetra(float size = 1.0f, glm::vec3 coords = glm::vec3(0.0f, 0.0f, 0.0f))
-//     {
-//         float h = 0.55f;
-//         float d = 1.0f;
-//         float dT = 0.4f;
-//         float vertices[] =
-//             {d, -h, 0,
-//              d + dT, h, 0,
-//              -d, h, 0,
-//              -d - dT, -h, 0};
+        generate_buffers(dots);
+    }
+};
 
-//         for (unsigned int i = 0; i < sizeof(vertices) / sizeof(vertices[0]); i++)
-//         {
-//             vertices[i] *= size;
-//         }
+class Tetra : public Geometry_2D
+{
+  public:
+    Tetra(float size = 1.0f)
+    {
+        float h = 0.55f;
+        float d = 1.0f;
+        float dT = 0.4f;
 
-//         for (unsigned int i = 0; i < sizeof(vertices) / sizeof(vertices[0]); i += 3)
-//         {
-//             vertices[i] += coords.x;
-//             vertices[i + 1] += coords.y;
-//             vertices[i + 2] += coords.z;
-//         }
+        std::vector<glm::vec3> vertex_coordinates{
+            size * glm::vec3(d, -h, 0),
+            size * glm::vec3(d + dT, h, 0),
+            size * glm::vec3(-d, h, 0),
+            size * glm::vec3(-d - dT, -h, 0)};
 
-//         unsigned int indices_contour[] =
-//             {0, 1,
-//              1, 2,
-//              2, 3,
-//              3, 0};
+        std::vector<unsigned int> vertex_indices{
+            0, 1,
+            1, 2,
+            2, 3,
+            3, 0};
 
-//         numelements_contour = sizeof(indices_contour) / sizeof(indices_contour[0]);
-//         numelements_mesh = 6;
+        /*** MESH/CONTOUR ***/
 
-//         // Contour
-//         glGenVertexArrays(1, &VAO_contour);
+        Contour contour(vertex_coordinates, vertex_indices);
 
-//         glBindVertexArray(VAO_contour);
+        generate_buffers(contour);
 
-//         glGenBuffers(1, &VBO_contour);
-//         glBindBuffer(GL_ARRAY_BUFFER, VBO_contour);
-//         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        /*** DOTS ***/
 
-//         glGenBuffers(1, &EBO_contour);
-//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_contour);
-//         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices_contour), indices_contour, GL_STATIC_DRAW);
+        Dots dots(vertex_coordinates);
 
-//         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-//         glEnableVertexAttribArray(0);
+        generate_buffers(dots);
+    }
+};
 
-//         // Mesh
-//         VAO_mesh = VAO_contour;
-//     }
-// };
+class Circle : public Geometry_2D
+{
+  public:
+    Circle(float d = 5.0f, unsigned int numlin = 100)
+    {
+        std::vector<glm::vec3> vertex_coordinates;
+        std::vector<unsigned int> vertex_indices;
 
-// class Circle : public Geometry_2D
-// {
-//   public:
-//     Circle(float d = 5.0f, int numlin = 20)
-//     {
-//         float vertices[numlin * 3] = {0};
-//         unsigned int indices[numlin * 2] = {0};
+        for (unsigned int i = 0; i < numlin; i++)
+        {
+            vertex_coordinates.push_back(glm::vec3(
+                d * std::cos(i * 2 * M_PI / numlin),
+                d * std::sin(i * 2 * M_PI / numlin),
+                0.0));
 
-//         int helper = 0;
+            vertex_indices.push_back(i);
+            if (i == numlin - 1)    
+                vertex_indices.push_back(0);
+            else
+                vertex_indices.push_back(i + 1);
+        }
 
-//         for (unsigned int i = 0; i < sizeof(vertices) / sizeof(vertices[0]); i++)
-//         {
-//             if (i % 3 == 0) // x coordinates
-//             {
-//                 vertices[i] = d * std::cos(helper * 2 * M_PI / numlin);
-//             }
-//             else if (i % 3 == 1) // y coordinates
-//             {
-//                 vertices[i] = d * std::sin(helper * 2 * M_PI / numlin);
-//             }
-//             else if (i % 3 == 2) // z coordinates
-//             {
-//                 vertices[i] = -1.0f;
-//                 helper++;
-//             }
-//             else
-//             {
-//                 printf("Error: unexpected condition when building circle\n");
-//                 exit(0);
-//             }
-//         }
+        /*** MESH/CONTOUR ***/
 
-//         for (unsigned int i = 0; i < sizeof(indices) / sizeof(indices[0]) / 2; i++)
-//         {
-//             indices[2 * i] = i;
-//             if (2 * i + 1 == sizeof(indices) / sizeof(indices[0]) - 1)
-//                 indices[2 * i + 1] = 0;
-//             else
-//                 indices[2 * i + 1] = i + 1;
-//         }
+        Contour contour(vertex_coordinates, vertex_indices);
 
-//         numelements_contour = sizeof(indices) / sizeof(indices[0]);
-//         numelements_mesh = sizeof(indices) / sizeof(indices[0]);
+        generate_buffers(contour);
 
-//         // Contour
-//         glGenVertexArrays(1, &VAO_contour);
+        /*** DOTS ***/
 
-//         glBindVertexArray(VAO_contour);
+        Dots dots(vertex_coordinates);
 
-//         glGenBuffers(1, &VBO_contour);
-//         glBindBuffer(GL_ARRAY_BUFFER, VBO_contour);
-//         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-//         glGenBuffers(1, &EBO_contour);
-//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_contour);
-//         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-//         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-//         glEnableVertexAttribArray(0);
-
-//         // Mesh
-//         VAO_mesh = VAO_contour;
-//     }
-// };
+        generate_buffers(dots);
+    }
+};
 
 #endif

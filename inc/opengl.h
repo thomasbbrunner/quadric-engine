@@ -70,6 +70,10 @@ class OpenGL
         // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         // glfwSetCursorPosCallback(window, mouse_callback);
 
+        // Debuging messages
+        // glEnable(GL_DEBUG_OUTPUT);
+        // glDebugMessageCallback();
+
         // Printing OpenGL version
         printf("%s\n", glGetString(GL_VERSION));
     }
