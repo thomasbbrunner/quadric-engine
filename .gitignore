@@ -3,3 +3,4 @@ vid
 .~lock.*
 emsdk.zip
 *.pyc
+.vscode
