@@ -53,13 +53,9 @@ class Cube : public Geometry
             20, 22, 21,
             20, 23, 22};
 
-        Mesh mesh(vertex_coordinates_mesh, vertex_indices_mesh);
-
-        generate_buffers(mesh);
-
         /*** CONTOUR ***/
 
-        std::vector<glm::vec3> vertices_contour{
+        std::vector<glm::vec3> vertex_coordinates_contour{
             glm::vec3(size / 2, size / 2, size / 2),
             glm::vec3(-size / 2, size / 2, size / 2),
             glm::vec3(-size / 2, -size / 2, size / 2),
@@ -69,7 +65,7 @@ class Cube : public Geometry
             glm::vec3(-size / 2, -size / 2, -size / 2),
             glm::vec3(size / 2, -size / 2, -size / 2)};
 
-        std::vector<unsigned int> indices_contour{
+        std::vector<unsigned int> vertex_indices_contour{
             0, 1,
             1, 2,
             2, 3,
@@ -83,15 +79,9 @@ class Cube : public Geometry
             2, 6,
             3, 7};
 
-        Contour contour(vertices_contour, indices_contour);
-
-        generate_buffers(contour);
-
         /*** DOTS ***/
 
-        Dots dots(vertices_contour);
-
-        generate_buffers(dots);
+        std::vector<glm::vec3> vertices_coordinates_dots = vertex_coordinates_contour;
     }
 };
 
@@ -138,10 +128,6 @@ class Icosahedron : public Geometry
             9, 4, 6,
             10, 5, 7,
             11, 7, 5};
-
-        Mesh mesh(vertex_coordinates_mesh, vertex_indices_mesh);
-
-        generate_buffers(mesh);
     }
 };
 /*
@@ -364,7 +350,7 @@ class Sphere : public Geometry
 class Plane : public Geometry
 {
   public:
-    Plane(int dx, int dz, int dotres=1)
+    Plane(int dx, int dz, int dotres = 1)
     {
         /*** MESH ***/
 
@@ -372,13 +358,13 @@ class Plane : public Geometry
         std::vector<std::vector<glm::vec3>> coords = generate_vertices(dotres, dx, dz);
 
         // Transforming vertex coordinates to 1D format
-        std::vector<glm::vec3> vertex_coordinates;
+        std::vector<glm::vec3> vertex_coordinates_mesh;
         for (unsigned int i = 0; i < coords.size(); i++)
         {
             for (unsigned int j = 0; j < coords.at(0).size(); j++)
             {
                 // Vertex coordinates
-                vertex_coordinates.push_back(coords.at(i).at(j));
+                vertex_coordinates_mesh.push_back(coords.at(i).at(j));
             }
         }
 
@@ -397,15 +383,9 @@ class Plane : public Geometry
             }
         }
 
-        Mesh mesh(vertex_coordinates, vertex_indices_mesh);
-
-        generate_buffers(mesh);
-
         /*** DOTS ***/
 
-        Dots dots(vertex_coordinates);
-
-        generate_buffers(dots);
+        std::vector<glm::vec3> vertex_coordinates_dots = vertex_coordinates_mesh;
     }
 
   private:

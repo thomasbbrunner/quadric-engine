@@ -2,12 +2,16 @@
 #define OPENGL_H
 
 #include <video.h>
+#include <time.h>
+#include <camera.h>
+
+#include <GLFW/glfw3.h>
 
 #include <stdio.h>
 #include <iostream>
 
 // Toggle MSAA
-// #define MSAA
+#define MSAA
 
 #define MSAA_SAMPLES 2
 #define WINDOW_HEIGHT 800
@@ -24,6 +28,9 @@ class OpenGL
         int window_width = WINDOW_WIDTH;
 
         printf("--Initialising--\n");
+
+        // Adding SIGINT function
+        signal(SIGINT, this->terminate);
 
         // Initialising GLFW
         glfwInit();
@@ -109,6 +116,26 @@ class OpenGL
         // Check for events and swap buffer
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        camera.update(this->window);
+        tiktok.update();
+#ifdef VIDEO_OUT
+        video.record();
+#endif
+
+        // Clearing screen
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void terminate(int signal = 0)
+    {
+        std::cout << "--Terminating--" << std::endl;
+        glfwTerminate();
+#ifdef VIDEO_OUT
+        video.terminate();
+#endif
+        exit(0);
     }
 
     void mouse_input_callback(GLFWwindow *window, double xpos, double ypos)

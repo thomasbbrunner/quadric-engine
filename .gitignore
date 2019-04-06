@@ -4,3 +4,5 @@ vid
 emsdk.zip
 *.pyc
 .vscode
+__pycache__
+

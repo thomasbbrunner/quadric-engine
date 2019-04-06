@@ -47,6 +47,6 @@ class Time
     }
 };
 
-Time tetra_time(TIME_USE);
+Time tiktok(TIME_USE);
 
 #endif
