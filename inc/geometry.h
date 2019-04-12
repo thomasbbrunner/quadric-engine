@@ -1,10 +1,14 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <common.h>
 #include <shader.h>
+#include <opengl.h>
 #include <camera.h>
+#include <print.h>
 #include <light.h>
+#include <time.h>
+
+#include <algorithm>
 
 /*** PARENT CLASSES ***/
 
@@ -13,7 +17,7 @@ class Vertex
   public:
     unsigned int vertex_id;                       // ID of vertex
     glm::vec3 coordinates;                        // Positional vector of this vertex
-    std::vector<unsigned int> face_id;            // ID of polygons that contain this vertex
+    std::vector<unsigned int> polygon_id;         // ID of polygons that contain this vertex
     std::vector<unsigned int> adjacent_vertex_id; // Unique ID of vertices that are adjacent to this vertex
     std::vector<char> adjacent_vertex_sequence;   // Sequence of adjacent vertices for cross product operation
     glm::vec3 normal;                             // Directional vector of vertex's normal
@@ -22,7 +26,7 @@ class Vertex
 class Polygon
 {
   public:
-    unsigned int face_id;                // ID of polygon element
+    unsigned int polygon_id;             // ID of polygon element
     std::vector<unsigned int> vertex_id; // ID of vertices inside this polygon
 };
 
@@ -149,7 +153,7 @@ class Model
     {
         // Splitting adjacent vertex ids into several vectors
         std::vector<std::vector<int>> vec(2);
-        
+
         for (unsigned int i = 0; i < vertices.size(); i++)
         // Iterating through vertices
         {
@@ -220,49 +224,6 @@ class Model
 
         return vec;
     }
-
-    void print_vertex_data()
-    {
-        printf("Vertex data:\n");
-        for (unsigned int i = 0; i < vertices.size(); i++)
-        {
-            printf("%u", vertices.at(i).vertex_id);
-
-            printf("\tCoordinates:\t%.3f\t%.3f\t%.3f\n",
-                   vertices.at(i).coordinates.x, vertices.at(i).coordinates.y, vertices.at(i).coordinates.z);
-
-            printf("\tNormal:\t\t%.3f\t%.3f\t%.3f\n",
-                   vertices.at(i).normal.x, vertices.at(i).normal.y, vertices.at(i).normal.z);
-
-            printf("\tPolygon ID:\t");
-            for (unsigned int j = 0; j < vertices.at(i).face_id.size(); j++)
-            {
-                printf("%u\t", vertices.at(i).face_id.at(j));
-            }
-            printf("\n\tAdjc vert ID:\t");
-            for (unsigned int j = 0; j < vertices.at(i).adjacent_vertex_id.size(); j++)
-            {
-                printf("%u\t", vertices.at(i).adjacent_vertex_id.at(j));
-            }
-            printf("\n\tAdjc vert seq:\t");
-            for (unsigned int j = 0; j < vertices.at(i).adjacent_vertex_sequence.size(); j++)
-            {
-                printf("%u\t", vertices.at(i).adjacent_vertex_sequence.at(j));
-            }
-            printf("\n");
-        }
-    }
-
-    void print_face_data()
-    {
-        printf("Polygon data:\n");
-        for (unsigned int i = 0; i < polygons.size(); i++)
-        {
-            printf("%u\t%u\t%u\t%u\n",
-                   polygons.at(i).face_id,
-                   polygons.at(i).vertex_id.at(0), polygons.at(i).vertex_id.at(1), polygons.at(i).vertex_id.at(2));
-        }
-    }
 };
 
 class Mesh : public Model
@@ -291,55 +252,55 @@ class Mesh : public Model
         for (unsigned int i = 0; i < index_data.size(); i += 3)
         {
             polygons.push_back(Polygon());
-            polygons.back().face_id = polygons.size() - 1;
+            polygons.back().polygon_id = polygons.size() - 1;
             polygons.back().vertex_id = std::vector<unsigned int>{index_data.at(i), index_data.at(i + 1), index_data.at(i + 2)};
 
             // Adding polygon information to vertices array
-            vertices.at(polygons.back().vertex_id.at(0)).face_id.push_back(polygons.back().face_id);
-            vertices.at(polygons.back().vertex_id.at(1)).face_id.push_back(polygons.back().face_id);
-            vertices.at(polygons.back().vertex_id.at(2)).face_id.push_back(polygons.back().face_id);
+            vertices.at(polygons.back().vertex_id.at(0)).polygon_id.push_back(polygons.back().polygon_id);
+            vertices.at(polygons.back().vertex_id.at(1)).polygon_id.push_back(polygons.back().polygon_id);
+            vertices.at(polygons.back().vertex_id.at(2)).polygon_id.push_back(polygons.back().polygon_id);
         }
 
         // Gathering adjacent vertices
         for (unsigned int i = 0; i < vertices.size(); i++)
         // Iterating through main vertices
         {
-            for (unsigned int j = 0; j < vertices.at(i).face_id.size(); j++)
+            for (unsigned int j = 0; j < vertices.at(i).polygon_id.size(); j++)
             // Iterating through the polygons that contain the main vertex
             {
                 // Iterating through vertices inside polygons that contain the main vertex
                 // with algorithm for keeping correct polygon positive direction
 
-                if (polygons.at(vertices.at(i).face_id.at(j)).vertex_id.at(0) == vertices.at(i).vertex_id)
+                if (polygons.at(vertices.at(i).polygon_id.at(j)).vertex_id.at(0) == vertices.at(i).vertex_id)
                 // If main vertex is the first in the polygon
                 {
                     vertices.at(i).adjacent_vertex_id.push_back(
-                        polygons.at(vertices.at(i).face_id.at(j))
+                        polygons.at(vertices.at(i).polygon_id.at(j))
                             .vertex_id.at(1));
                     vertices.at(i).adjacent_vertex_id.push_back(
-                        polygons.at(vertices.at(i).face_id.at(j))
+                        polygons.at(vertices.at(i).polygon_id.at(j))
                             .vertex_id.at(2));
                 }
 
-                if (polygons.at(vertices.at(i).face_id.at(j)).vertex_id.at(1) == vertices.at(i).vertex_id)
+                if (polygons.at(vertices.at(i).polygon_id.at(j)).vertex_id.at(1) == vertices.at(i).vertex_id)
                 // If main vertex is the second in the polygon
                 {
                     vertices.at(i).adjacent_vertex_id.push_back(
-                        polygons.at(vertices.at(i).face_id.at(j))
+                        polygons.at(vertices.at(i).polygon_id.at(j))
                             .vertex_id.at(2));
                     vertices.at(i).adjacent_vertex_id.push_back(
-                        polygons.at(vertices.at(i).face_id.at(j))
+                        polygons.at(vertices.at(i).polygon_id.at(j))
                             .vertex_id.at(0));
                 }
 
-                if (polygons.at(vertices.at(i).face_id.at(j)).vertex_id.at(2) == vertices.at(i).vertex_id)
+                if (polygons.at(vertices.at(i).polygon_id.at(j)).vertex_id.at(2) == vertices.at(i).vertex_id)
                 // If main vertex is the third in the polygon
                 {
                     vertices.at(i).adjacent_vertex_id.push_back(
-                        polygons.at(vertices.at(i).face_id.at(j))
+                        polygons.at(vertices.at(i).polygon_id.at(j))
                             .vertex_id.at(0));
                     vertices.at(i).adjacent_vertex_id.push_back(
-                        polygons.at(vertices.at(i).face_id.at(j))
+                        polygons.at(vertices.at(i).polygon_id.at(j))
                             .vertex_id.at(1));
                 }
             }
@@ -393,8 +354,9 @@ class Mesh : public Model
         raw_vertex_adjacents_sequence = generate_raw_vertex_adjacents_sequence();
         raw_vertex_indices = generate_raw_vertex_indices();
 
-        // print_face_data();
-        print_vertex_data();
+        // Printing for debug
+        // Print::print_polygons(polygons);
+        // Print::print_vertices(vertices);
     }
 };
 
@@ -412,6 +374,9 @@ class Contour : public Model
         }
 
         raw_vertex_indices = index_data;
+
+        // Print::array(vertex_data);
+        // Print::array(index_data);
     }
 };
 
@@ -500,46 +465,40 @@ class Geometry
         glEnableVertexAttribArray(1);
 
         // Adjacents 0
-        // TODO Found it!!
-        // GLSL is messing up the data types
-        // see "Can't get integer vertex attributes working in GLSL 1.5"
-        // int in GLSL is apparently 32 bits and int in cpu might be 64 :/
         glVertexAttribIPointer(2, 3, GL_INT, 3 * sizeof(int),
-                              (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes()));
+                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes()));
         glEnableVertexAttribArray(2);
 
         // Adjacents 1
         glVertexAttribIPointer(3, 3, GL_INT, 3 * sizeof(int),
-                              (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
-                                                 mesh.get_raw_vertex_adjacents_size_bytes(0)));
+                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
+                                                  mesh.get_raw_vertex_adjacents_size_bytes(0)));
         glEnableVertexAttribArray(3);
 
         // Adjacents sequence 0
-        // TODO change here also
         glVertexAttribIPointer(4, 4, GL_BYTE, 4 * sizeof(char),
-                              (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
-                                                 mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1)));
+                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
+                                                  mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1)));
         glEnableVertexAttribArray(4);
 
         // Adjacents sequence 1
         glVertexAttribIPointer(5, 4, GL_BYTE, 4 * sizeof(char),
-                              (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
-                                                 mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1) +
-                                                 mesh.get_raw_vertex_adjacents_sequence_size_bytes(0)));
+                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
+                                                  mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1) +
+                                                  mesh.get_raw_vertex_adjacents_sequence_size_bytes(0)));
         glEnableVertexAttribArray(5);
 
         // Adjacents sequence 2
         glVertexAttribIPointer(6, 4, GL_BYTE, 4 * sizeof(char),
-                              (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
-                                                 mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1) +
-                                                 mesh.get_raw_vertex_adjacents_sequence_size_bytes(0) + mesh.get_raw_vertex_adjacents_sequence_size_bytes(1)));
+                               (void *)(intptr_t)(mesh.get_raw_vertex_coordinates_size_bytes() + mesh.get_raw_vertex_normals_size_bytes() +
+                                                  mesh.get_raw_vertex_adjacents_size_bytes(0) + mesh.get_raw_vertex_adjacents_size_bytes(1) +
+                                                  mesh.get_raw_vertex_adjacents_sequence_size_bytes(0) + mesh.get_raw_vertex_adjacents_sequence_size_bytes(1)));
         glEnableVertexAttribArray(6);
 
         glGenBuffers(1, &EBO_mesh);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_mesh);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.get_raw_vertex_indices_size_bytes(), mesh.get_raw_vertex_indices(), GL_STATIC_DRAW);
 
-        // texture (move from here?)
         glGenBuffers(1, &VBO_texture);
         glBindBuffer(GL_ARRAY_BUFFER, VBO_texture);
         glBufferData(GL_ARRAY_BUFFER, mesh.get_raw_vertex_coordinates_size_bytes(), mesh.get_raw_vertex_coordinates(), GL_STATIC_DRAW);
@@ -556,7 +515,6 @@ class Geometry
         numelements_contour = contour.get_raw_vertex_indices_size();
 
         glGenVertexArrays(1, &VAO_contour);
-
         glBindVertexArray(VAO_contour);
 
         glGenBuffers(1, &VBO_contour);
@@ -582,8 +540,9 @@ class Geometry
 
         if (VBO_mesh == 0)
         {
-            printf("ERROR: VBO_mesh was not initialized\n");
-            exit(0);
+            glGenBuffers(1, &VBO_dots);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO_dots);
+            glBufferData(GL_ARRAY_BUFFER, dots.get_raw_vertex_coordinates_size_bytes(), dots.get_raw_vertex_coordinates(), GL_STATIC_DRAW);
         }
         else
         {
@@ -598,8 +557,8 @@ class Geometry
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)(intptr_t)(dots.get_raw_vertex_coordinates_size_bytes()));
-        glEnableVertexAttribArray(1);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)(intptr_t)(dots.get_raw_vertex_coordinates_size_bytes()));
+        // glEnableVertexAttribArray(1);
     }
 
     /*** DRAW ***/
@@ -695,7 +654,7 @@ class Geometry
         shader.use();
     }
 
-  private:
+  protected:
     unsigned int VAO_mesh = 0;
     unsigned int VBO_mesh = 0;
     unsigned int EBO_mesh = 0;

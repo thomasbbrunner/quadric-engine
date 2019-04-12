@@ -7,15 +7,26 @@
 #undef OPENGL_ES
 #endif
 
-#include <common.h>
+#ifdef OPENGL_ES // Including files for OpenGL ES
+#include <GLES3/gl3.h>
+#include <emscripten/emscripten.h>
+#else // Including files for OpenGL
+#include <glad/glad.h>
+#endif
+
+#include <opengl.h>
 #include <video.h>
 #include <camera.h>
 #include <geometry.h>
-#include <geometry1D.h>
 #include <geometry2D.h>
 #include <geometry3D.h>
-#include <opengl.h>
 #include <shader.h>
+
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <signal.h>
 
 void tetra_terminate(int signal);
 void tetra_update();
@@ -24,8 +35,10 @@ void tetra_update();
 Video video(opengl.window_width(), opengl.window_height());
 #endif
 
+// Icosahedron geometry(10.0f);
 // Cube geometry(10.0f);
-Plane geometry(3, 50, 50);
+Plane geometry(50, 200, 2);
+// Circle geometry(2.0);
 Cube light1(0.2f);
 Cube light2(0.2f);
 
@@ -36,15 +49,17 @@ void loop()
 
     // Drawing
     // shader_rainbow.set_vec4("color", glm::vec4(-sin(tetra_time.get() - 2.0) / 2.0 + 0.5, sin(tetra_time.get()) / 2.0 + 0.5, sin(tetra_time.get() + 2.0) / 2.0 + 0.5, 1.0));
-    light1.set_color(glm::vec4(1.0, 0.0, 0.0, 1.0)); //glm::vec4(-sin(tetra_time.get() - 2.0) / 2.0 + 0.5, -sin(tetra_time.get()) / 2.0 + 0.5, -sin(tetra_time.get() + 2.0) / 2.0 + 0.5, 1.0));
+    // light1.set_color(glm::vec4(1.0, 0.0, 0.0, 1.0));
+    light1.set_color(glm::vec4(-sin(tetra_time.get() - 2.0) / 2.0 + 0.5, -sin(tetra_time.get()) / 2.0 + 0.5, -sin(tetra_time.get() + 2.0) / 2.0 + 0.5, 1.0));
     light1.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, -10.0f)));
     light1.draw_fill();
 
-    light2.set_color(glm::vec4(0.0, 1.0, 0.0, 1.0)); //(glm::vec4(sin(tetra_time.get() - 2.0) / 2.0 + 0.5, sin(tetra_time.get()) / 2.0 + 0.5, sin(tetra_time.get() + 2.0) / 2.0 + 0.5, 1.0));
+    // light2.set_color(glm::vec4(0.0, 1.0, 0.0, 1.0));
+    light2.set_color(glm::vec4(sin(tetra_time.get() - 2.0) / 2.0 + 0.5, sin(tetra_time.get()) / 2.0 + 0.5, sin(tetra_time.get() + 2.0) / 2.0 + 0.5, 1.0));
     light2.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 10.0f)));
     light2.draw_fill();
 
-    geometry.draw_fill();
+    geometry.draw_dots();
 }
 
 int main()
@@ -68,7 +83,7 @@ int main()
     printf("--Creating geometries--\n");
     // Plane geometry(1, 5, 5);
     geometry.set_shader(shader2);
-    geometry.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -3.0f, 0.0f)));
+    geometry.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 8.0f)));
     geometry.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     // Camera
@@ -114,4 +129,6 @@ void tetra_update()
     // Clearing screen
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 }

@@ -1,69 +1,12 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef PRINT_H
+#define PRINT_H
 
-#ifdef OPENGL_ES // Including files for OpenGL ES
-#include <GLES3/gl3.h>
-#include <emscripten/emscripten.h>
-#else // Including files for OpenGL
-#include <glad/glad.h>
-#endif
-#include <GLFW/glfw3.h>
-#include <iostream>
-#include <cstdlib>
-#include <math.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <stdio.h>
+#include <iostream>
 #include <vector>
-#include <signal.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <unistd.h>
-#include <algorithm>
+// #include <geometry.h>
 
-#define TIME_REAL 1
-#define TIME_TICK 2
-
-#define TIME_USE TIME_TICK
-
-class Time
-{
-  public:
-    double time_real = 0.0;
-    double time_tick = 0.0;
-    double time_tick_step = 1.0 / 60.0;
-    short type = 0;
-
-    Time(short type_in)
-    {
-        if (type_in == TIME_REAL || type_in == TIME_TICK)
-            type = type_in;
-        else
-        {
-            printf("error in time\n");
-            exit(0);
-        }
-    }
-
-    double get()
-    {
-        if (type == TIME_REAL)
-            return time_real;
-        else if (type == TIME_TICK)
-            return time_tick;
-        else
-            return -1.0;
-    }
-
-    void update()
-    {
-        time_real = glfwGetTime();
-        time_tick += time_tick_step;
-    }
-};
-
-Time tetra_time(TIME_USE);
 
 class Print
 {
@@ -237,6 +180,49 @@ class Print
         }
         printf("\n");
     }
+
+    // static void print_vertices(std::vector<Vertex> vertices)
+    // {
+    //     printf("Vertex data:\n");
+    //     for (unsigned int i = 0; i < vertices.size(); i++)
+    //     {
+    //         printf("%u", vertices.at(i).vertex_id);
+
+    //         printf("\tCoordinates:\t%.3f\t%.3f\t%.3f\n",
+    //                vertices.at(i).coordinates.x, vertices.at(i).coordinates.y, vertices.at(i).coordinates.z);
+
+    //         printf("\tNormal:\t\t%.3f\t%.3f\t%.3f\n",
+    //                vertices.at(i).normal.x, vertices.at(i).normal.y, vertices.at(i).normal.z);
+
+    //         printf("\tPolygon ID:\t");
+    //         for (unsigned int j = 0; j < vertices.at(i).polygon_id.size(); j++)
+    //         {
+    //             printf("%u\t", vertices.at(i).polygon_id.at(j));
+    //         }
+    //         printf("\n\tAdjc vert ID:\t");
+    //         for (unsigned int j = 0; j < vertices.at(i).adjacent_vertex_id.size(); j++)
+    //         {
+    //             printf("%u\t", vertices.at(i).adjacent_vertex_id.at(j));
+    //         }
+    //         printf("\n\tAdjc vert seq:\t");
+    //         for (unsigned int j = 0; j < vertices.at(i).adjacent_vertex_sequence.size(); j++)
+    //         {
+    //             printf("%u\t", vertices.at(i).adjacent_vertex_sequence.at(j));
+    //         }
+    //         printf("\n");
+    //     }
+    // }
+
+    // static void print_polygons(std::vector<Polygon> polygons);
+    // {
+    //     printf("Polygon data:\n");
+    //     for (unsigned int i = 0; i < polygons.size(); i++)
+    //     {
+    //         printf("%u\t%u\t%u\t%u\n",
+    //                polygons.at(i).polygon_id,
+    //                polygons.at(i).vertex_id.at(0), polygons.at(i).vertex_id.at(1), polygons.at(i).vertex_id.at(2));
+    //     }
+    // }
 };
 
 #endif

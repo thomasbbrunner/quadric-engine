@@ -1,9 +1,10 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
-#include <common.h>
 #include <video.h>
-#include <camera.h>
+
+#include <stdio.h>
+#include <iostream>
 
 // Toggle MSAA
 // #define MSAA
@@ -69,6 +70,10 @@ class OpenGL
         // Mouse
         // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         // glfwSetCursorPosCallback(window, mouse_callback);
+
+        // Debuging messages
+        // glEnable(GL_DEBUG_OUTPUT);
+        // glDebugMessageCallback();
 
         // Printing OpenGL version
         printf("%s\n", glGetString(GL_VERSION));
