@@ -1,12 +1,7 @@
 #ifndef PRINT_H
 #define PRINT_H
 
-#include <glm/glm.hpp>
-#include <stdio.h>
-#include <iostream>
-#include <vector>
-// #include <geometry.h>
-
+#include <common.h>
 
 class Print
 {

@@ -1,84 +1,96 @@
 #ifndef THING_H
 #define THING_H
 
-#include <geometry.h>
-#include <time.h>
+#include <common.h>
 
 class Thing
 {
   public:
-	//   Thing() {}
+    void add_geometry(Geometry geometry)
+    {
+        // Create model and append to thing's
+        mesh.append(geometry.vertex_coordinates_mesh, geometry.vertex_indices_mesh);
 
-	void add_geometry(Geometry geometry)
-	{
-		geometries.push_back(geometry);
-	}
+        contour.append(geometry.vertex_coordinates_contour, geometry.vertex_indices_contour);
 
-	void generate_mesh()
-	{
-		std::vector<glm::vec3> vertex_data;
+        dots.append(geometry.vertex_coordinates_dots);
+    }
 
-		for (unsigned int i = 0; i < geometries.size(); i++)
-		{
-			// vertex_data.push_back(geometries.at(i).vertex_coordinates_mesh);
-		}
-	}
+    void draw(unsigned int type)
+    {
+        update_shader();
 
-	void update_shader()
-	{
-		shader.set_mat4("model", model);
-		shader.set_vec4("color", color);
-		shader.set_mat4("view", camera.get_view());
-		shader.set_mat4("aspect", camera.get_aspect());
-		shader.set_mat4("proj", camera.get_proj());
+        drawer.draw(&buffers, type);
+    }
 
-		shader.update_time(tiktok.get());
+    void generate_buffers()
+    {
+        buffers.mesh = BufferGeneration::generate_from_mesh(mesh.model);
+        buffers.contour = BufferGeneration::generate_from_contour(contour.model);
+        buffers.dots = BufferGeneration::generate_from_dots(dots.model);
+    }
 
-		// send light info to shader
-		// if (light_ID == -1)
-		// 	lighting.update_shader(shader);
+    void update_shader()
+    {
+        shader.set_mat4("model", model);
+        shader.set_vec4("color", color);
+        shader.set_mat4("view", camera.get_view());
+        shader.set_mat4("aspect", camera.get_aspect());
+        shader.set_mat4("proj", camera.get_proj());
 
-		shader.use();
-	}
+        shader.update_time(tiktok.get());
 
-	/*** VARIABLE ACCESS ***/
+        // send light info to shader
+        // if (light_ID == -1)
+        // 	lighting.update_shader(shader);
 
-	void set_shader(Shader shader_in)
-	{
-		shader = shader_in;
-	}
+        shader.use();
+    }
 
-	// void set_light_source()
-	// {
-	// 	light_ID = lighting.add_source(1);
-	// }
+    /*** VARIABLE ACCESS ***/
 
-	void set_model(glm::mat4 model_temp)
-	{
-		model = model_temp;
+    void set_shader(Shader shader_in)
+    {
+        shader = shader_in;
+    }
 
-		// update light (if applicable)
-		// if (light_ID != -1)
-		//     lighting.set_position(light_ID, glm::vec3(model_temp[3][0], model_temp[3][1], model_temp[3][2]));
-	}
+    // void set_light_source()
+    // {
+    // 	light_ID = lighting.add_source(1);
+    // }
 
-	void set_color(glm::vec4 color_temp)
-	{
-		color = color_temp;
+    void set_model(glm::mat4 model_temp)
+    {
+        model = model_temp;
 
-		// update light (if applicable)
-		// if (light_ID != -1)
-		// 	lighting.set_color(light_ID, color_temp);
-	}
+        // update light (if applicable)
+        // if (light_ID != -1)
+        //     lighting.set_position(light_ID, glm::vec3(model_temp[3][0], model_temp[3][1], model_temp[3][2]));
+    }
+
+    void set_color(glm::vec4 color_temp)
+    {
+        color = color_temp;
+
+        // update light (if applicable)
+        // if (light_ID != -1)
+        // 	lighting.set_color(light_ID, color_temp);
+    }
 
   private:
-	glm::mat4 model = glm::mat4(0.0f);
-	glm::vec4 color = glm::vec4(0.0f);
+    Mesh mesh;
+    Contour contour;
+    Dots dots;
 
-	Shader shader;
-	int light_ID = -1;
+    Buffers buffers;
 
-	std::vector<Geometry> geometries;
+    Drawer drawer;
+
+    glm::mat4 model = glm::mat4(0.0f);
+    glm::vec4 color = glm::vec4(0.0f);
+
+    Shader shader;
+    int light_ID = -1;
 };
 
 #endif

@@ -1,14 +1,7 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
-#include <video.h>
-#include <time.h>
-#include <camera.h>
-
-#include <GLFW/glfw3.h>
-
-#include <stdio.h>
-#include <iostream>
+#include <common.h>
 
 // Toggle MSAA
 #define MSAA
@@ -30,7 +23,7 @@ class OpenGL
         printf("--Initialising--\n");
 
         // Adding SIGINT function
-        signal(SIGINT, this->terminate);
+        signal(SIGINT, terminate);
 
         // Initialising GLFW
         glfwInit();
@@ -128,7 +121,7 @@ class OpenGL
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void terminate(int signal = 0)
+    static void terminate(int signal = 0)
     {
         std::cout << "--Terminating--" << std::endl;
         glfwTerminate();

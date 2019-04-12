@@ -1,9 +1,8 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include <shader.h>
+#include <common.h>
 
-#include <sstream>
 
 class Lighting
 {

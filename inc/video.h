@@ -1,7 +1,7 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include <fstream>
+#include <common.h>
 
 class Video
 {

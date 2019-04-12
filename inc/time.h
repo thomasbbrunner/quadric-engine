@@ -1,10 +1,9 @@
 #ifndef TIME_H
 #define TIME_H
 
-#include <GLFW/glfw3.h>
+#include <common.h>
 
-#include <cstdlib>
-#include <stdio.h>
+#include <GLFW/glfw3.h>
 
 #define TIME_REAL 1
 #define TIME_TICK 2
