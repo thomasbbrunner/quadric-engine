@@ -3,6 +3,19 @@
 
 #include <common.h>
 
+class Light
+{
+  public:
+    glm::vec3 position = glm::vec3(0.0);
+    glm::vec4 color = glm::vec4(0.0);
+    int type = -1;
+    // Directional light has w = 0
+    // Positional light has w = 1
+
+    Light(int type_in) : type(type_in)
+    {
+    }
+};
 
 class Lighting
 {
@@ -24,7 +37,7 @@ class Lighting
         {
             std::stringstream temp;
             temp << "light[" << i << "]";
-            
+
             shader.set_vec4(temp.str() + ".color", light.at(i).color);
             shader.set_vec3(temp.str() + ".pos", light.at(i).position);
             shader.set_int(temp.str() + ".type", light.at(i).type);
@@ -42,20 +55,6 @@ class Lighting
     }
 
   private:
-    class Light
-    {
-      public:
-        glm::vec3 position = glm::vec3(0.0);
-        glm::vec4 color = glm::vec4(0.0);
-        int type = -1;
-        // Directional light has w = 0
-        // Positional light has w = 1
-
-        Light(int type_in) : type(type_in)
-        {
-        }
-    };
-
     std::vector<Light> light;
 };
 

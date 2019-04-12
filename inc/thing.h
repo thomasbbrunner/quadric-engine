@@ -8,26 +8,70 @@ class Thing
   public:
     void add_geometry(Geometry geometry)
     {
-        // Create model and append to thing's
-        mesh.append(geometry.vertex_coordinates_mesh, geometry.vertex_indices_mesh);
+        this->geometry.vertex_coordinates_mesh.insert(
+            this->geometry.vertex_coordinates_mesh.end(),
+            geometry.vertex_coordinates_mesh.begin(),
+            geometry.vertex_coordinates_mesh.end());
 
-        contour.append(geometry.vertex_coordinates_contour, geometry.vertex_indices_contour);
+        // Print::array(this->geometry.vertex_coordinates_mesh);
 
-        dots.append(geometry.vertex_coordinates_dots);
-    }
+        this->geometry.vertex_coordinates_contour.insert(
+            this->geometry.vertex_coordinates_contour.end(),
+            geometry.vertex_coordinates_contour.begin(),
+            geometry.vertex_coordinates_contour.end());
 
-    void draw(unsigned int type)
-    {
-        update_shader();
+        this->geometry.vertex_coordinates_dots.insert(
+            this->geometry.vertex_coordinates_dots.end(),
+            geometry.vertex_coordinates_dots.begin(),
+            geometry.vertex_coordinates_dots.end());
 
-        drawer.draw(&buffers, type);
+        // Adapting indices to new vertex IDs
+        unsigned int max_index;
+        if (this->geometry.vertex_indices_mesh.size() != 0)
+        {
+            max_index = 1 + *std::max_element(this->geometry.vertex_indices_mesh.begin(), this->geometry.vertex_indices_mesh.end());
+        }
+        else
+        {
+            max_index = 0;
+        }
+
+        Math::add_to_each(&geometry.vertex_indices_mesh, max_index);
+
+        this->geometry.vertex_indices_mesh.insert(
+            this->geometry.vertex_indices_mesh.end(),
+            geometry.vertex_indices_mesh.begin(),
+            geometry.vertex_indices_mesh.end());
+
+        // Adapting indices to new vertex IDs
+        if (this->geometry.vertex_indices_contour.size() != 0)
+        {
+            max_index = 1 + *std::max_element(this->geometry.vertex_indices_contour.begin(), this->geometry.vertex_indices_contour.end());
+        }
+        else
+        {
+            max_index = 0;
+        }
+
+        Math::add_to_each(&geometry.vertex_indices_contour, max_index);
+
+        this->geometry.vertex_indices_contour.insert(
+            this->geometry.vertex_indices_contour.end(),
+            geometry.vertex_indices_contour.begin(),
+            geometry.vertex_indices_contour.end());
     }
 
     void generate_buffers()
     {
-        buffers.mesh = BufferGeneration::generate_from_mesh(mesh.model);
-        buffers.contour = BufferGeneration::generate_from_contour(contour.model);
-        buffers.dots = BufferGeneration::generate_from_dots(dots.model);
+        // Generate models
+        Mesh mesh(this->geometry.vertex_coordinates_mesh, this->geometry.vertex_indices_mesh);
+        Contour contour(this->geometry.vertex_coordinates_contour, this->geometry.vertex_indices_contour);
+        Dots dots(this->geometry.vertex_coordinates_dots);
+
+        // Generate buffers
+        buffers.mesh = BufferGeneration::generate_from_mesh(mesh);
+        buffers.contour = BufferGeneration::generate_from_contour(contour);
+        buffers.dots = BufferGeneration::generate_from_dots(dots);
     }
 
     void update_shader()
@@ -45,6 +89,13 @@ class Thing
         // 	lighting.update_shader(shader);
 
         shader.use();
+    }
+
+    void draw(unsigned int type)
+    {
+        update_shader();
+
+        drawer.draw(&buffers, type);
     }
 
     /*** VARIABLE ACCESS ***/
@@ -78,9 +129,7 @@ class Thing
     }
 
   private:
-    Mesh mesh;
-    Contour contour;
-    Dots dots;
+    Geometry geometry;
 
     Buffers buffers;
 

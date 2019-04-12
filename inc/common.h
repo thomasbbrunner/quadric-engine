@@ -23,6 +23,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <math.h>
 #include <print.h>
 #include <time.h>
 #include <camera.h>
@@ -38,5 +39,6 @@
 #include <thing.h>
 #include <draw.h>
 #include <light.h>
+
 
 #endif

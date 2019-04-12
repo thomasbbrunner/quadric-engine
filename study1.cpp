@@ -38,7 +38,7 @@ void loop()
     // light2.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 10.0f)));
     // light2.draw_fill();
 
-    thing.draw(DW_FILL);
+    thing.draw(DW_CONTOUR);
 }
 
 int main()
@@ -52,14 +52,15 @@ int main()
     printf("--Creating geometries--\n");
     // 1. Initialize used geometries
     Cube cube(10.0f);
-    // Icosahedron geometry(10.0f);
+    // Icosahedron ico(10.0f);
     // Plane geometry(50, 50, 1);
-    // Circle geometry(2.0);
+    // Circle circle(2.0);
     // Cube light1(0.2f);
     // Cube light2(0.2f);
     // Plane geometry(1, 5, 5);
 
     // 2. Add geometries to Thing object
+    thing.add_geometry(circle);
     thing.add_geometry(cube);
 
     // (2.5 Generate buffers)
