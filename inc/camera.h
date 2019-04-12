@@ -1,12 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <opengl.h>
-#include <time.h>
-
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <GLFW/glfw3.h>
+#include <common.h>
 
 #define CAMERA_STATIC 0x1
 #define CAMERA_ROTATE_AROUND 0x2
@@ -44,8 +39,8 @@ class Camera
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
             Front += cameraSpeed * glm::normalize(glm::cross(Up, Front));
 
-        aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.window_height() / (float)opengl.window_width(), 1.0f, 1.0f));
-
+        // aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.window_height() / (float)opengl.window_width(), 1.0f, 1.0f));
+        aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)800 / (float)800, 1.0f, 1.0f));
         proj = glm::perspective<float>(glm::radians(45.0f), 1.0f, 1.0f, 1000.0f);
         //proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
     }
@@ -101,14 +96,14 @@ class Camera
 
     glm::mat4 view_rotate_around(glm::vec3 point = glm::vec3(0.0, 0.0, 0.0), float vel = 0.5, float radius = 28.0, float height = 5.0)
     {
-        float camX = sin(vel * tetra_time.get()) * radius;
-        float camZ = cos(vel * tetra_time.get()) * radius;
+        float camX = sin(vel * tiktok.get()) * radius;
+        float camZ = cos(vel * tiktok.get()) * radius;
         return glm::lookAt(glm::vec3(camX, height, camZ), -glm::vec3(camX, height, camZ) + point, glm::vec3(0.0, 1.0, 0.0));
     }
 
     glm::mat4 view_rotate()
     {
-        return glm::rotate(glm::lookAt(Position, Position + Front, glm::vec3(0.0, 1.0, 0.0)), 0.5f * (float)tetra_time.get(), Front);
+        return glm::rotate(glm::lookAt(Position, Position + Front, glm::vec3(0.0, 1.0, 0.0)), 0.5f * (float)tiktok.get(), Front);
     }
 
     glm::mat4 view_backwards()
@@ -124,12 +119,12 @@ class Camera
     {
         if (lasttime == -1.0f)
         {
-            lasttime = tetra_time.get();
+            lasttime = tiktok.get();
         }
 
-        float out = 5.0f * (tetra_time.get() - lasttime);
+        float out = 5.0f * (tiktok.get() - lasttime);
 
-        lasttime = tetra_time.get();
+        lasttime = tiktok.get();
 
         return out;
     }

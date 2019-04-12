@@ -3,6 +3,7 @@
 FILE_NUM = 1
 FILE_PATH = ./study$(FILE_NUM).cpp
 INC_PATH = ./inc
+INCS = -I $(INC_PATH) -I $(LIB_PATH)
 LIB_PATH = ./lib
 BIN_PATH = ./bin
 CC = g++
@@ -15,14 +16,16 @@ run: rb
 .PHONY: bin web 
 
 # OpenGL
-bin:
-	$ $(CC) -Wall --std=c++11 -DOPENGL -I $(INC_PATH) -I $(LIB_PATH) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
+bin: main
+
+main:
+	$ $(CC) -Wall --std=c++11 -DOPENGL $(INCS) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
 
 rb:
 	$ $(BIN_PATH)/study$(FILE_NUM)
 
 dbg:
-	$ $(CC) -Wall -g --std=c++11 -DOPENGL -I $(INC_PATH)  -I $(LIB_PATH) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
+	$ $(CC) -Wall --std=c++11 -DOPENGL $(INCS) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
 	$ gdb $(BIN_PATH)/study$(FILE_NUM)
 
 # # WebGL
