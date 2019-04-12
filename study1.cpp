@@ -25,7 +25,7 @@ Video video(opengl.window_width(), opengl.window_height());
 #endif
 
 // Cube geometry(10.0f);
-Plane geometry(2, 50, 200);
+Plane geometry(3, 50, 50);
 Cube light1(0.2f);
 Cube light2(0.2f);
 
@@ -55,9 +55,9 @@ int main()
     // Build and compile shaders
     printf("--Building and compiling shaders--\n");
     Shader shader1;
-    Shader shader2("./shaders/study41.vert", "./shaders/study41.frag");
+    Shader shader2("/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/study41.vert", "/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/study41.frag");
 
-    // Lights
+    // // Lights
     light1.set_light_source();
     light1.set_shader(shader1);
 

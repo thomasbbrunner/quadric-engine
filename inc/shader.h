@@ -7,9 +7,12 @@ class Shader
 {
   public:
     unsigned int ID;
+    std::string shader_folder_path = "~/Nextcloud/Projects/Art/'quadric engine'/shaders/";
+
     // constructor generates the shader on the fly
     // ------------------------------------------------------------------------
-    Shader(const char *vertex_path = "./shaders/std.vert", const char *fragment_path = "./shaders/std.frag")
+    Shader(std::string vertex_path = "/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/std.vert",
+           std::string fragment_path = "/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/std.frag")
     {
         // Retrieve code from files
         std::string vertex_code;
@@ -34,15 +37,15 @@ class Shader
         {
             std::stringstream vertex_stream, fragment_stream;
 
-            vertex_file.open(vertex_path);
-            vertex_std.open("./shaders/common.vert");
+            vertex_file.open(vertex_path.c_str());
+            vertex_std.open("/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/common.vert");
             vertex_stream << vertex_std.rdbuf() << vertex_file.rdbuf();
             vertex_file.close();
             vertex_std.close();
             vertex_code = vertex_stream.str();
 
-            fragment_file.open(fragment_path);
-            fragment_std.open("./shaders/common.frag");
+            fragment_file.open(fragment_path.c_str());
+            fragment_std.open("/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/common.frag");
             fragment_stream << fragment_std.rdbuf() << fragment_file.rdbuf();
             fragment_file.close();
             fragment_std.close();
@@ -73,7 +76,7 @@ class Shader
         if (start_pos != std::string::npos)
         {
             end_pos = vertex_code.find("\n", start_pos);
-            vertex_code.erase(start_pos, end_pos-start_pos);
+            vertex_code.erase(start_pos, end_pos - start_pos);
         }
         // insertig correct version string
         start_pos = vertex_code.find("#version", 0);
@@ -86,7 +89,7 @@ class Shader
         if (start_pos != std::string::npos)
         {
             end_pos = fragment_code.find("\n", start_pos);
-            fragment_code.erase(start_pos, end_pos-start_pos);
+            fragment_code.erase(start_pos, end_pos - start_pos);
         }
         // insertig correct version string
         start_pos = fragment_code.find("#version", 0);
