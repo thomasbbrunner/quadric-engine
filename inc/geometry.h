@@ -13,6 +13,22 @@ class Geometry
     std::vector<glm::vec3> vertex_coordinates_dots;
     std::vector<unsigned int> vertex_indices_mesh;
     std::vector<unsigned int> vertex_indices_contour;
+
+    void apply_transformation(glm::mat4 transformation)
+    {
+        for (unsigned int i = 0; i < vertex_coordinates_mesh.size(); i++)
+        {
+            vertex_coordinates_mesh.at(i) = glm::vec3(transformation * glm::vec4(vertex_coordinates_mesh.at(i), 1.0));
+        }
+        for (unsigned int i = 0; i < vertex_coordinates_contour.size(); i++)
+        {
+            vertex_coordinates_contour.at(i) = glm::vec3(transformation * glm::vec4(vertex_coordinates_contour.at(i), 1.0));
+        }
+        for (unsigned int i = 0; i < vertex_coordinates_dots.size(); i++)
+        {
+            vertex_coordinates_dots.at(i) = glm::vec3(transformation * glm::vec4(vertex_coordinates_dots.at(i), 1.0));
+        }
+    }
 };
 
 class Vertex

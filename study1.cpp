@@ -38,7 +38,7 @@ void loop()
     // light2.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 10.0f)));
     // light2.draw_fill();
 
-    thing.draw(DW_CONTOUR);
+    thing.draw(DW_FILL);
 }
 
 int main()
@@ -51,18 +51,26 @@ int main()
     // GEOMETRIES
     printf("--Creating geometries--\n");
     // 1. Initialize used geometries
-    Cube cube(10.0f);
-    // Icosahedron ico(10.0f);
-    // Plane geometry(50, 50, 1);
-    // Circle circle(2.0);
-    // Cube light1(0.2f);
-    // Cube light2(0.2f);
-    // Plane geometry(1, 5, 5);
 
-    // 2. Add geometries to Thing object
-    thing.add_geometry(circle);
-    thing.add_geometry(cube);
+    float rand2 = (std::rand() % 1000) / 100.0f;
+    float rand3 = (std::rand() % 1000) / 100.0f;
+    float rand4 = (std::rand() % 1000) / 100.0f;
+    for (int i = 0; i < 50; i++)
+    {
+        Cube cube(5.0f);
 
+        float rand1 = (std::rand() % 1000) / 1000.0f;
+        rand2 += 5.0 - (std::rand() % 1000) / 50.0f;
+        rand3 += 5.0 - (std::rand() % 1000) / 50.0f;
+        rand4 += 5.0 - (std::rand() % 1000) / 50.0f;
+        // printf("%.5f ", rand1);
+        cube.apply_transformation(glm::translate(glm::mat4(1.0f), glm::vec3(rand2, rand3, rand4)));
+        cube.apply_transformation(glm::rotate(glm::mat4(1.0f), rand1, glm::vec3(1.0, 1.0, 0.0)));
+        // cube.apply_transformation(glm::scale(glm::mat4(1.0f), glm::vec3(2.0, 2.0, 1.0)));
+
+        // 2. Add geometries to Thing object
+        thing.add_geometry(cube);
+    }
     // (2.5 Generate buffers)
     thing.generate_buffers();
 
