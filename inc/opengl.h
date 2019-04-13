@@ -1,7 +1,12 @@
 #ifndef OPENGL_H
 #define OPENGL_H
 
-#include <common.h>
+#include "api.h"
+
+#include <GLFW/glfw3.h>
+#include <stdio.h>
+#include <signal.h>
+#include <iostream>
 
 // Toggle MSAA
 #define MSAA
@@ -110,8 +115,6 @@ class OpenGL
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        camera.update(this->window);
-        tiktok.update();
 #ifdef VIDEO_OUT
         video.record();
 #endif
@@ -148,7 +151,5 @@ class OpenGL
         return !glfwWindowShouldClose(window);
     }
 };
-
-OpenGL opengl;
 
 #endif

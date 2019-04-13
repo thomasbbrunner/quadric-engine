@@ -1,7 +1,10 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include <common.h>
+#include "api.h"
+
+#include <cstdlib>
+#include <stdio.h>
 
 class Video
 {

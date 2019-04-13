@@ -1,7 +1,10 @@
 #ifndef GEOMETRY3D_H
 #define GEOMETRY3D_H
 
-#include <common.h>
+#include "geometry.h"
+
+#include <vector>
+#include <glm/glm.hpp>
 
 /*** 3D GEOMETRY ***/
 

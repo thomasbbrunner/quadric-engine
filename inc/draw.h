@@ -1,7 +1,10 @@
 #ifndef DRAW_H
 #define DRAW_H
 
-#include <common.h>
+#include "api.h"
+#include "buffer.h"
+
+#include <stdio.h>
 
 #define DW_FILL 0
 #define DW_WIREFRAME 1

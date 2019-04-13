@@ -1,7 +1,11 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include <common.h>
+#include <algorithm>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <vector>
+#include "stdio.h"
 
 /*** PARENT CLASSES ***/
 

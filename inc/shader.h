@@ -1,7 +1,13 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <common.h>
+#include "api.h"
+
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader
 {

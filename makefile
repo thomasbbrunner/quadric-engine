@@ -1,11 +1,12 @@
 
-# Variables
-FILE_NUM = 1
-FILE_PATH = ./study$(FILE_NUM).cpp
+# Variables1
 INC_PATH = ./inc
-INCS = -I $(INC_PATH) -I $(LIB_PATH)
+LIB_PATH = ./lib
+CPP_PATH = ./study.cpp $(INC_PATH)/thing.cpp $(INC_PATH)/buffer.cpp $(LIB_PATH)/glad/glad.c
 LIB_PATH = ./lib
 BIN_PATH = ./bin
+INCS = -I $(INC_PATH) -I $(LIB_PATH)
+
 CC = g++
 WCC = em++
 
@@ -19,7 +20,7 @@ run: rb
 bin: main
 
 main:
-	$ $(CC) -Wall --std=c++11 -DOPENGL $(INCS) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
+	$ $(CC) -Wall --std=c++11 -DOPENGL $(INCS) $(CPP_PATH) -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
 
 rb:
 	$ $(BIN_PATH)/study$(FILE_NUM)

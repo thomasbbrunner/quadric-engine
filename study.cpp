@@ -7,24 +7,42 @@
 #undef OPENGL_ES
 #endif
 
-#include <common.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-// Lighting not working:
-// -disabled in geometry.h
-// Camera uses fix window sizes (otherwise opengl includes camera which includes opengl...)
-
-// Change tabs to spaces
+#include "opengl.h"
+#include "light.h"
+#include "thing.h"
+#include "camera.h"
+#include "time.h"
+#include "common.h"
 
 #ifdef VIDEO_OUT
 Video video(opengl.window_width(), opengl.window_height());
 #endif
 
+OpenGL opengl;
+Lighting lighting;
+
+Tiktok &tiktok = Tiktok::get_instance();
+Camera &camera = Camera::get_instance();
+
 Thing thing;
+Light light;
+// Light sun(LIGHT_DIRECTIONAL);
 
 void loop()
 {
     // Update state
     opengl.update();
+    camera.update(opengl);
+    tiktok.update();
+
+    // Update lights
+    float dir = 50.0f + 50.0f * sin(tiktok.get());
+    light.set_position(glm::vec3(-dir, -dir, -dir));
+    light.set_color(glm::vec4(-sin(tiktok.get() - 2.0) / 2.0 + 0.5, -sin(tiktok.get()) / 2.0 + 0.5, -sin(tiktok.get() + 2.0) / 2.0 + 0.5, 1.0));
+    lighting.update();
 
     // Drawing
     // shader_rainbow.set_vec4("color", glm::vec4(-sin(tetra_time.get() - 2.0) / 2.0 + 0.5, sin(tetra_time.get()) / 2.0 + 0.5, sin(tetra_time.get() + 2.0) / 2.0 + 0.5, 1.0));
@@ -38,6 +56,8 @@ void loop()
     // light2.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 4.0f, 10.0f)));
     // light2.draw_fill();
 
+    // Draw things
+    thing.update_shader(&lighting);
     thing.draw(DW_FILL);
 }
 
@@ -50,22 +70,22 @@ int main()
 
     // GEOMETRIES
     printf("--Creating geometries--\n");
-    // 1. Initialize used geometries
 
-    float rand2 = (std::rand() % 1000) / 100.0f;
-    float rand3 = (std::rand() % 1000) / 100.0f;
-    float rand4 = (std::rand() % 1000) / 100.0f;
+    // 1. Initialize used geometries
+    float rand2 = Math::random(0.0, 1.0);
+    float rand3 = Math::random(0.0, 1.0);
+    float rand4 = Math::random(0.0, 1.0);
     for (int i = 0; i < 50; i++)
     {
         Cube cube(5.0f);
 
-        float rand1 = (std::rand() % 1000) / 1000.0f;
-        rand2 += 5.0 - (std::rand() % 1000) / 50.0f;
-        rand3 += 5.0 - (std::rand() % 1000) / 50.0f;
-        rand4 += 5.0 - (std::rand() % 1000) / 50.0f;
-        // printf("%.5f ", rand1);
-        cube.apply_transformation(glm::translate(glm::mat4(1.0f), glm::vec3(rand2, rand3, rand4)));
-        cube.apply_transformation(glm::rotate(glm::mat4(1.0f), rand1, glm::vec3(1.0, 1.0, 0.0)));
+        float rand1 = Math::random(0.0, 1.0);
+        rand2 += 2.0 + Math::random(0.0, 1.0);
+        rand3 += 2.0 + Math::random(0.0, 1.0);
+        rand4 += 2.0 + Math::random(0.0, 1.0);
+
+        cube.apply_transformation(glm::translate(glm::mat4(1.0f), glm::vec3(-rand2, -rand3, -rand4)));
+        cube.apply_transformation(glm::rotate(glm::mat4(1.0f), rand1, glm::vec3(1.0, 0.8, 0.2)));
         // cube.apply_transformation(glm::scale(glm::mat4(1.0f), glm::vec3(2.0, 2.0, 1.0)));
 
         // 2. Add geometries to Thing object
@@ -75,16 +95,17 @@ int main()
     thing.generate_buffers();
 
     // 3. Set thing's properties
-    thing.set_shader(shader1);
+    thing.set_shader(shader2);
     thing.set_model(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
     thing.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-    // // Lights
-    // light1.set_light_source();
-    // light1.set_shader(shader1);
-
-    // light2.set_light_source();
-    // light2.set_shader(shader1);
+    // Lights
+    // 1. Add a light source
+    lighting.add_source(&light);
+    // 2. Set light type
+    light.set_type(LIGHT_POSITIONAL);
+    // (3. Add geometry to light)
+    light.add_geometry();
 
     // Camera
     camera.set_type(CAMERA_STATIC);

@@ -1,26 +1,38 @@
-#ifndef TIME_H
-#define TIME_H
+#ifndef TIKTOK_H
+#define TIKTOK_H
 
-#include <common.h>
-
+#include <stdio.h>
 #include <GLFW/glfw3.h>
 
-#define TIME_REAL 1
-#define TIME_TICK 2
+#define TIKTOK_REAL 1
+#define TIKTOK_TICK 2
 
-#define TIME_USE TIME_TICK
-
-class Time
+class Tiktok
 {
+    // Singleton initialization
   public:
-    double time_real = 0.0;
-    double time_tick = 0.0;
-    double time_tick_step = 1.0 / 60.0;
-    short type = 0;
-
-    Time(short type_in)
+    static Tiktok &get_instance()
     {
-        if (type_in == TIME_REAL || type_in == TIME_TICK)
+        static Tiktok instance;
+        return instance;
+    }
+
+    Tiktok(Tiktok const &) = delete;
+    void operator=(Tiktok const &) = delete;
+
+  private:
+    Tiktok() {}
+    // End of Singleton initialization
+
+  public:
+    double tiktok_wall = 0.0;
+    double tiktok_tick = 0.0;
+    double tiktok_tick_step = 1.0 / 60.0;
+    short type = TIKTOK_TICK;
+
+    void set_type(short type_in)
+    {
+        if (type_in == TIKTOK_REAL || type_in == TIKTOK_TICK)
             type = type_in;
         else
         {
@@ -31,21 +43,19 @@ class Time
 
     double get()
     {
-        if (type == TIME_REAL)
-            return time_real;
-        else if (type == TIME_TICK)
-            return time_tick;
+        if (type == TIKTOK_REAL)
+            return tiktok_wall;
+        else if (type == TIKTOK_TICK)
+            return tiktok_tick;
         else
             return -1.0;
     }
 
     void update()
     {
-        time_real = glfwGetTime();
-        time_tick += time_tick_step;
+        tiktok_wall = glfwGetTime();
+        tiktok_tick += tiktok_tick_step;
     }
 };
-
-Time tiktok(TIME_USE);
 
 #endif

@@ -1,15 +1,16 @@
 #ifndef RAW_H
 #define RAW_H
 
-#include <common.h>
+#include <vector>
+
+#include "geometry.h"
+
 
 class RawValues
 {
   public:
     Model model;
-    RawValues(Model model) : model(model)
-    {
-    }
+    RawValues(Model model) : model(model) {}
 
     std::vector<float> raw_vertex_coordinates;
     std::vector<float> raw_vertex_normals;

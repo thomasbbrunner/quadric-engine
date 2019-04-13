@@ -1,7 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <common.h>
+#include "opengl.h"
+#include "time.h"
+
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define CAMERA_STATIC 0x1
 #define CAMERA_ROTATE_AROUND 0x2
@@ -9,38 +14,44 @@
 
 class Camera
 {
+    // Singleton initialization
   public:
-    Camera(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f))
+    static Camera &get_instance()
     {
-        Position = pos;
-        Front = glm::vec3(0.0f, 0.0f, -1.0f);
-        Up = glm::vec3(0.0f, 1.0f, 0.0f);
-        lasttime = -1.0f;
+        static Camera instance;
+        return instance;
     }
 
-    void update(GLFWwindow *window)
+    Camera(Camera const &) = delete;
+    void operator=(Camera const &) = delete;
+
+  private:
+    Camera() {}
+    // End of Singleton initialization
+
+  public:
+    void update(OpenGL opengl)
     {
         float cameraSpeed = speed();
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        if (glfwGetKey(opengl.window, GLFW_KEY_W) == GLFW_PRESS)
             Position += cameraSpeed * Front;
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        if (glfwGetKey(opengl.window, GLFW_KEY_S) == GLFW_PRESS)
             Position -= cameraSpeed * Front;
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        if (glfwGetKey(opengl.window, GLFW_KEY_A) == GLFW_PRESS)
             Position -= glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        if (glfwGetKey(opengl.window, GLFW_KEY_D) == GLFW_PRESS)
             Position += glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
-        if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+        if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
             Position += cameraSpeed * Up;
-        if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+        if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
             Position -= cameraSpeed * Up;
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-            Front -= cameraSpeed * glm::normalize(glm::cross(Up, Front));
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-            Front += cameraSpeed * glm::normalize(glm::cross(Up, Front));
+        if (glfwGetKey(opengl.window, GLFW_KEY_E) == GLFW_PRESS)
+            Front -= 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+        if (glfwGetKey(opengl.window, GLFW_KEY_Q) == GLFW_PRESS)
+            Front += 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
 
-        // aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.window_height() / (float)opengl.window_width(), 1.0f, 1.0f));
-        aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)800 / (float)800, 1.0f, 1.0f));
+        aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.window_height() / (float)opengl.window_width(), 1.0f, 1.0f));
         proj = glm::perspective<float>(glm::radians(45.0f), 1.0f, 1.0f, 1000.0f);
         //proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
     }
@@ -78,14 +89,16 @@ class Camera
     }
 
   private:
-    glm::vec3 Position;
-    glm::vec3 Front;
-    glm::vec3 Up;
+    Tiktok &tiktok = Tiktok::get_instance();
+
+    glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
     glm::mat4 aspect = glm::mat4(1.0);
     glm::mat4 proj = glm::mat4(1.0);
 
-    float lasttime;
+    float lasttime = -1.0f;
 
     int type = 0;
 
@@ -122,14 +135,12 @@ class Camera
             lasttime = tiktok.get();
         }
 
-        float out = 5.0f * (tiktok.get() - lasttime);
+        float out = 10.0f * (tiktok.get() - lasttime);
 
         lasttime = tiktok.get();
 
         return out;
     }
 };
-
-Camera camera;
 
 #endif
