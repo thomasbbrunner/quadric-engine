@@ -26,11 +26,20 @@ class Camera
     void operator=(Camera const &) = delete;
 
   private:
-    Camera() {}
+    Camera()
+    {
+        // Mouse
+        glfwSetInputMode(opengl.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPosCallback(opengl.window, mouse_callback);
+        // glfwRawMouseMotionSupported() // Needs GLFW 3.3
+
+        mouse_last_x = (float)opengl.window_width();
+        mouse_last_y = (float)opengl.window_height();
+    }
     // End of Singleton initialization
 
   public:
-    void update(OpenGL opengl)
+    void update()
     {
         float cameraSpeed = speed();
 
@@ -47,12 +56,20 @@ class Camera
         if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
             Position -= cameraSpeed * Up;
         if (glfwGetKey(opengl.window, GLFW_KEY_E) == GLFW_PRESS)
-            Front -= 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+        {
+            // Front -= 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+            // fov++;
+            // printf("fov: %.5f\n", fov);
+        }
         if (glfwGetKey(opengl.window, GLFW_KEY_Q) == GLFW_PRESS)
-            Front += 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+        {
+            // fov--;
+            // printf("fov: %.5f\n", fov);
+            // Front += 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+        }
 
         aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.window_height() / (float)opengl.window_width(), 1.0f, 1.0f));
-        proj = glm::perspective<float>(glm::radians(45.0f), 1.0f, 1.0f, 1000.0f);
+        proj = glm::perspective<float>(glm::radians(fov), 1.0f, 1.0f, 1000.0f);
         //proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
     }
 
@@ -64,6 +81,16 @@ class Camera
     void set_type(int type_in)
     {
         type = type_in;
+    }
+
+    void set_fov(float fov)
+    {
+        if (fov <= 0.0f)
+            this->fov = 0.0f;
+        else if (fov >= 180.0f)
+            this->fov = 180.0f;
+        else
+            this->fov = fov;
     }
 
     glm::mat4 get_view()
@@ -90,13 +117,21 @@ class Camera
 
   private:
     Tiktok &tiktok = Tiktok::get_instance();
+    OpenGL &opengl = OpenGL::get_instance();
 
     glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+    float yaw = 0.0f;
+    float pitch = 0.0f;
+    bool firstMouse = true;
+    float fov = 45.0f;
 
     glm::mat4 aspect = glm::mat4(1.0);
     glm::mat4 proj = glm::mat4(1.0);
+
+    float mouse_last_x;
+    float mouse_last_y;
 
     float lasttime = -1.0f;
 
@@ -140,6 +175,41 @@ class Camera
         lasttime = tiktok.get();
 
         return out;
+    }
+
+    static void mouse_callback(GLFWwindow *window, double xpos, double ypos)
+    {
+        Camera &camera = Camera::get_instance();
+
+        if (camera.firstMouse)
+        {
+            camera.mouse_last_x = xpos;
+            camera.mouse_last_y = ypos;
+            camera.firstMouse = false;
+        }
+
+        float xoffset = xpos - camera.mouse_last_x;
+        float yoffset = camera.mouse_last_y - ypos;
+        camera.mouse_last_x = xpos;
+        camera.mouse_last_y = ypos;
+
+        float sensitivity = 0.1;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        camera.yaw += xoffset;
+        camera.pitch += yoffset;
+
+        if (camera.pitch > 89.0f)
+            camera.pitch = 89.0f;
+        if (camera.pitch < -89.0f)
+            camera.pitch = -89.0f;
+
+        glm::vec3 front;
+        front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+        front.y = sin(glm::radians(camera.pitch));
+        front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+        camera.Front = glm::normalize(front);
     }
 };
 
