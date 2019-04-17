@@ -21,11 +21,11 @@ class Thing
 
     void update_shader(Lighting *lighting = NULL);
 
-    void draw(unsigned int type)
+    void draw(unsigned int type, float line_thickness=1.0)
     {
         shader.use();
 
-        drawer.draw(&buffers, type);
+        drawer.draw(&buffers, type, line_thickness);
     }
 
     /*** VARIABLE ACCESS ***/
