@@ -11,15 +11,24 @@
 // Toggle MSAA
 #define MSAA
 
-#define MSAA_SAMPLES 2
-#define WINDOW_HEIGHT 800
-#define WINDOW_WIDTH 800
+#define MSAA_SAMPLES 4
+#define WINDOW_HEIGHT 1000
+#define WINDOW_WIDTH 1200
 
 class OpenGL
 {
+    // Singleton initialization
   public:
-    GLFWwindow *window;
+    static OpenGL &get_instance()
+    {
+        static OpenGL instance;
+        return instance;
+    }
 
+    OpenGL(OpenGL const &) = delete;
+    void operator=(OpenGL const &) = delete;
+
+  private:
     OpenGL()
     {
         int window_height = WINDOW_HEIGHT;
@@ -70,11 +79,8 @@ class OpenGL
         // Enable MSAA
 #ifdef MSAA
         glEnable(GL_MULTISAMPLE);
+        glEnable(GL_LINE_SMOOTH);
 #endif
-
-        // Mouse
-        // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        // glfwSetCursorPosCallback(window, mouse_callback);
 
         // Debuging messages
         // glEnable(GL_DEBUG_OUTPUT);
@@ -83,6 +89,10 @@ class OpenGL
         // Printing OpenGL version
         printf("%s\n", glGetString(GL_VERSION));
     }
+    // End of Singleton initialization
+
+  public:
+    GLFWwindow *window;
 
     static void framebuffer_resize_callback(GLFWwindow *window, int width, int height)
     {
