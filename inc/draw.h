@@ -14,7 +14,7 @@
 class Drawer
 {
   public:
-    void draw(Buffers *buffers, unsigned int type)
+    void draw(Buffers *buffers, unsigned int type, float line_thickness = 1.0)
     {
         switch (type)
         {
@@ -22,10 +22,10 @@ class Drawer
             draw_fill(buffers->mesh);
             break;
         case DW_WIREFRAME:
-            draw_wireframe(buffers->mesh);
+            draw_wireframe(buffers->mesh, line_thickness=line_thickness);
             break;
         case DW_CONTOUR:
-            draw_contour(buffers->contour);
+            draw_contour(buffers->contour, line_thickness=line_thickness);
             break;
         case DW_DOTS:
             draw_dots(buffers->dots);
@@ -38,8 +38,10 @@ class Drawer
     }
 
     // MESH
-    static void draw_wireframe(ModelBuffer buffer)
+    static void draw_wireframe(ModelBuffer buffer, float line_thickness=1.0)
     {
+        glLineWidth(line_thickness);
+
         glBindTexture(GL_TEXTURE_BUFFER, buffer.TBO);
 
         glBindVertexArray(buffer.VAO);
@@ -58,8 +60,10 @@ class Drawer
         glDrawElements(GL_TRIANGLES, buffer.numelements, GL_UNSIGNED_INT, 0);
     }
     // CONTOUR
-    static void draw_contour(ModelBuffer buffer)
+    static void draw_contour(ModelBuffer buffer, float line_thickness=1.0)
     {
+        glLineWidth(line_thickness);
+
         glBindVertexArray(buffer.VAO);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
