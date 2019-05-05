@@ -22,13 +22,13 @@ class Drawer
             draw_fill(buffers->mesh);
             break;
         case DW_WIREFRAME:
-            draw_wireframe(buffers->mesh, line_thickness=line_thickness);
+            draw_wireframe(buffers->mesh, line_thickness = line_thickness);
             break;
         case DW_CONTOUR:
-            draw_contour(buffers->contour, line_thickness=line_thickness);
+            draw_contour(buffers->contour, line_thickness = line_thickness);
             break;
         case DW_DOTS:
-            draw_dots(buffers->dots);
+            draw_dots(buffers->dots, line_thickness = line_thickness);
             break;
         default:
             printf("Error: draw type not recognized");
@@ -38,7 +38,7 @@ class Drawer
     }
 
     // MESH
-    static void draw_wireframe(ModelBuffer buffer, float line_thickness=1.0)
+    static void draw_wireframe(ModelBuffer buffer, float line_thickness = 1.0)
     {
         glLineWidth(line_thickness);
 
@@ -60,7 +60,7 @@ class Drawer
         glDrawElements(GL_TRIANGLES, buffer.numelements, GL_UNSIGNED_INT, 0);
     }
     // CONTOUR
-    static void draw_contour(ModelBuffer buffer, float line_thickness=1.0)
+    static void draw_contour(ModelBuffer buffer, float line_thickness = 1.0)
     {
         glLineWidth(line_thickness);
 
@@ -70,8 +70,10 @@ class Drawer
         glDrawElements(GL_LINES, buffer.numelements, GL_UNSIGNED_INT, 0);
     }
     // DOTS
-    static void draw_dots(ModelBuffer buffer)
+    static void draw_dots(ModelBuffer buffer, float line_thickness = 1.0)
     {
+        glPointSize(line_thickness);
+
         glBindVertexArray(buffer.VAO);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
