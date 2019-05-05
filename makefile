@@ -1,5 +1,5 @@
 
-# Variables1
+# Variables
 INC_PATH = ./inc
 LIB_PATH = ./lib
 CPP_PATH = ./study.cpp $(INC_PATH)/thing.cpp $(INC_PATH)/buffer.cpp $(LIB_PATH)/glad/glad.c
@@ -26,7 +26,7 @@ rb:
 	$ $(BIN_PATH)/study$(FILE_NUM)
 
 dbg:
-	$ $(CC) -Wall --std=c++11 -DOPENGL $(INCS) $(FILE_PATH) ./lib/glad/glad.c -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
+	$ $(CC) -g -Wall --std=c++11 -DOPENGL $(INCS) $(CPP_PATH) -lglfw -lrt -lm -ldl -o $(BIN_PATH)/study$(FILE_NUM)
 	$ gdb $(BIN_PATH)/study$(FILE_NUM)
 
 # # WebGL
