@@ -4,6 +4,8 @@
 #include <vector>
 #include <random>
 
+#include <glm/glm.hpp>
+
 class Math
 {
   public:
@@ -25,6 +27,33 @@ class Math
         // double in [1, 2). Each call to dis(gen) generates a new random double
 
         return dis(gen);
+    }
+
+    static void normalize(std::vector<glm::vec3> *vertices)
+    {
+        for (unsigned int i = 0; i < vertices->size(); i++)
+        {
+            vertices->at(i) = glm::normalize(vertices->at(i));
+        }
+    }
+
+    static void normalize2(std::vector<glm::vec3> *vertices)
+    {
+        for (unsigned int i = 0; i < vertices->size(); i++)
+        {
+            float d = vertices->at(i).x + vertices->at(i).y + vertices->at(i).z;
+            glm::mat3 trans(1.0 / d);
+            vertices->at(i) = d * vertices->at(i);
+        }
+    }
+
+    static void multiply_by_scalar(std::vector<glm::vec3> *vertices, float d)
+    {
+        glm::mat3 trans(d);
+        for (unsigned int i = 0; i < vertices->size(); i++)
+        {
+            vertices->at(i) = trans * vertices->at(i);
+        }
     }
 };
 

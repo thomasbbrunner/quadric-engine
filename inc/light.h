@@ -16,8 +16,10 @@
 class Light
 {
   public:
-    void add_geometry(Geometry geometry = Icosahedron(0.2f))
+    void add_geometry(Geometry geometry = Icosahedron(1.0f))
     {
+        has_geometry = true;
+
         thing.add_geometry(geometry);
         thing.generate_buffers();
         thing.set_shader(shader);
@@ -25,8 +27,12 @@ class Light
 
     void draw()
     {
-        thing.update_shader();
-        thing.draw(DW_FILL);
+        if (has_geometry)
+        {
+            thing.update_shader();
+            // thing.draw(DW_DOTS, 5.0);
+            thing.draw(DW_FILL);
+        }
     }
 
     void set_position(glm::vec3 pos)
@@ -69,6 +75,7 @@ class Light
     // Positional light has w = 1
     Shader shader;
     Thing thing;
+    bool has_geometry = false;
 };
 
 class Lighting

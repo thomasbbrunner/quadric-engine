@@ -170,7 +170,7 @@ class Camera
             lasttime = tiktok.get();
         }
 
-        float out = 10.0f * (tiktok.get() - lasttime);
+        float out = 50.0f * (tiktok.get() - lasttime);
 
         lasttime = tiktok.get();
 

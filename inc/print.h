@@ -169,6 +169,23 @@ class Print
         printf("\n");
     }
 
+    static void array(std::vector<unsigned int> arr, unsigned int force_column)
+    {
+        for (unsigned int i = 0; i < arr.size(); i += force_column)
+        {
+            for (unsigned int j = 0; j < force_column; j++)
+            {
+                if (i + j >= arr.size())
+                {
+                    continue;
+                }
+                printf("%u ", arr.at(i + j));
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
     static void array(std::vector<float> arr)
     {
         for (unsigned int i = 0; i < arr.size(); i++)

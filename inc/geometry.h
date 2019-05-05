@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include "stdio.h"
+#include <stdio.h>
 
 /*** PARENT CLASSES ***/
 
@@ -67,7 +67,10 @@ class Mesh : public Model
   public:
     Mesh(std::vector<glm::vec3> vertex_data, std::vector<unsigned int> index_data)
     {
-        Model model_create;
+        if (vertex_data.size() == 0 || index_data.size() == 0)
+        {
+            return;
+        }
 
         // Testing for input plausibility
         // Check if vertex_data is big enough for the maximun index value
@@ -196,8 +199,6 @@ class Contour : public Model
   public:
     Contour(std::vector<glm::vec3> vertex_data, std::vector<unsigned int> index_data)
     {
-        Model model_create;
-
         for (unsigned int i = 0; i < vertex_data.size(); i++)
         {
             vertices.push_back(Vertex());
@@ -222,8 +223,6 @@ class Dots : public Model
   public:
     Dots(std::vector<glm::vec3> vertex_data)
     {
-        Model model_create;
-
         for (unsigned int i = 0; i < vertex_data.size(); i++)
         {
             vertices.push_back(Vertex());
