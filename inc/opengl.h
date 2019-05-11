@@ -12,13 +12,15 @@
 #define MSAA
 
 #define MSAA_SAMPLES 4
-#define WINDOW_HEIGHT 1000
-#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 1350
+#define WINDOW_WIDTH 1080
+
+#define VIDEO_OUT
 
 class OpenGL
 {
     // Singleton initialization
-  public:
+public:
     static OpenGL &get_instance()
     {
         static OpenGL instance;
@@ -28,7 +30,7 @@ class OpenGL
     OpenGL(OpenGL const &) = delete;
     void operator=(OpenGL const &) = delete;
 
-  private:
+private:
     OpenGL()
     {
         int window_height = WINDOW_HEIGHT;
@@ -36,8 +38,8 @@ class OpenGL
 
         printf("--Initialising--\n");
 
-        // Adding SIGINT function
-        signal(SIGINT, terminate);
+        // Adding SIGINT handler
+        // signal(SIGINT, signal_handler);
 
         // Initialising GLFW
         glfwInit();
@@ -88,10 +90,14 @@ class OpenGL
 
         // Printing OpenGL version
         printf("%s\n", glGetString(GL_VERSION));
-    }
-    // End of Singleton initialization
 
-  public:
+        // Recorder
+#ifdef VIDEO_OUT
+        start_recorder();
+#endif
+    }
+
+public:
     GLFWwindow *window;
 
     static void framebuffer_resize_callback(GLFWwindow *window, int width, int height)
@@ -126,7 +132,7 @@ class OpenGL
         glfwPollEvents();
 
 #ifdef VIDEO_OUT
-        video.record();
+        record();
 #endif
 
         // Clearing screen
@@ -134,12 +140,12 @@ class OpenGL
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    static void terminate(int signal = 0)
+    void terminate()
     {
         std::cout << "--Terminating--" << std::endl;
         glfwTerminate();
 #ifdef VIDEO_OUT
-        video.terminate();
+        // pclose(ffmpeg);
 #endif
         exit(0);
     }
@@ -156,9 +162,53 @@ class OpenGL
         }
     }
 
-    int running()
+    // static void signal_handler(int signal = 0)
+    // {
+    //     glfwSetWindowShouldClose(gl_window, true);
+    // }
+
+    bool should_close()
     {
-        return !glfwWindowShouldClose(window);
+        return glfwWindowShouldClose(window);
+    }
+
+    // Recorder
+private:
+    FILE *ffmpeg;
+    int *buffer;
+    void start_recorder()
+    {
+        // Default from source
+        // const char *cmd = "ffmpeg -r 60 -f rawvideo -pix_fmt rgba -s 1280x720 -i - "
+        //                   "-threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 -vf vflip output.mp4";
+
+        char cmd[200] = "";
+
+        sprintf(cmd, "ffmpeg "
+                     "-r 30 -f rawvideo -pixel_format rgba -video_size %dx%d -i pipe:0 "              // input file configs
+                     "-preset slow -threads 4 -video_size %dx%d -vf vflip -y -crf 18 ./vid/output.mp4", // output file configs
+                window_width(), window_height(), window_width(), window_height());
+        // Source: http://blog.mmacklin.com/2013/06/11/real-time-video-capture-with-ffmpeg/
+
+        // open pipe to ffmpeg's stdin in binary write mode
+        if ((ffmpeg = popen(cmd, "w")) == NULL)
+        {
+            perror("popen error");
+            // opengl.terminate(0);
+        }
+
+        if ((buffer = new int[window_width() * window_height()]) == NULL)
+        {
+            printf("allocation error");
+            //opengl.terminate(0);
+        }
+    }
+
+    void record()
+    {
+        glReadPixels(0, 0, window_width(), window_height(), GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+        fwrite(buffer, sizeof(int) * window_width() * window_height(), 1, ffmpeg);
     }
 };
 
