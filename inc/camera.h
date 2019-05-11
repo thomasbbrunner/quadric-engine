@@ -7,15 +7,20 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <Eigen/Core>
+#include <Eigen/Splines>
 
-#define CAMERA_STATIC 0x1
-#define CAMERA_ROTATE_AROUND 0x2
-#define CAMERA_ROTATE 0x4
+// Camera types
+#define CAMERA_STATIC 0
+#define CAMERA_ROTATE_AROUND 1
+#define CAMERA_ROTATE 2
+#define CAMERA_MOVE_BACKWARDS 3
+#define CAMERA_SPLINE 4
 
 class Camera
 {
     // Singleton initialization
-  public:
+public:
     static Camera &get_instance()
     {
         static Camera instance;
@@ -25,7 +30,7 @@ class Camera
     Camera(Camera const &) = delete;
     void operator=(Camera const &) = delete;
 
-  private:
+private:
     Camera()
     {
         // Mouse
@@ -38,39 +43,42 @@ class Camera
     }
     // End of Singleton initialization
 
-  public:
+public:
     void update()
     {
-        float cameraSpeed = speed();
+        if (type == CAMERA_STATIC)
+        {
+            float cameraSpeed = speed();
 
-        if (glfwGetKey(opengl.window, GLFW_KEY_W) == GLFW_PRESS)
-            Position += cameraSpeed * Front;
-        if (glfwGetKey(opengl.window, GLFW_KEY_S) == GLFW_PRESS)
-            Position -= cameraSpeed * Front;
-        if (glfwGetKey(opengl.window, GLFW_KEY_A) == GLFW_PRESS)
-            Position -= glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
-        if (glfwGetKey(opengl.window, GLFW_KEY_D) == GLFW_PRESS)
-            Position += glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
-        if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
-            Position += cameraSpeed * Up;
-        if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
-            Position -= cameraSpeed * Up;
-        if (glfwGetKey(opengl.window, GLFW_KEY_E) == GLFW_PRESS)
-        {
-            // Front -= 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
-            // fov++;
-            // printf("fov: %.5f\n", fov);
-        }
-        if (glfwGetKey(opengl.window, GLFW_KEY_Q) == GLFW_PRESS)
-        {
-            // fov--;
-            // printf("fov: %.5f\n", fov);
-            // Front += 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+            if (glfwGetKey(opengl.window, GLFW_KEY_W) == GLFW_PRESS)
+                Position += cameraSpeed * Front;
+            if (glfwGetKey(opengl.window, GLFW_KEY_S) == GLFW_PRESS)
+                Position -= cameraSpeed * Front;
+            if (glfwGetKey(opengl.window, GLFW_KEY_A) == GLFW_PRESS)
+                Position -= glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
+            if (glfwGetKey(opengl.window, GLFW_KEY_D) == GLFW_PRESS)
+                Position += glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
+            if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+                Position += cameraSpeed * Up;
+            if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+                Position -= cameraSpeed * Up;
+            if (glfwGetKey(opengl.window, GLFW_KEY_E) == GLFW_PRESS)
+            {
+                // Front -= 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+                // fov++;
+                // printf("fov: %.5f\n", fov);
+            }
+            if (glfwGetKey(opengl.window, GLFW_KEY_Q) == GLFW_PRESS)
+            {
+                // fov--;
+                // printf("fov: %.5f\n", fov);
+                // Front += 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+            }
         }
 
         aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.window_height() / (float)opengl.window_width(), 1.0f, 1.0f));
         proj = glm::perspective<float>(glm::radians(fov), 1.0f, 1.0f, 1000.0f);
-        //proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
+        // proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
     }
 
     void set_position(glm::vec3 pos)
@@ -78,9 +86,9 @@ class Camera
         Position = pos;
     }
 
-    void set_type(int type_in)
+    void set_type(int type)
     {
-        type = type_in;
+        this->type = type;
     }
 
     void set_fov(float fov)
@@ -97,10 +105,14 @@ class Camera
     {
         if (type == CAMERA_STATIC)
             return view_static();
-        if (type == CAMERA_ROTATE)
+        else if (type == CAMERA_ROTATE)
             return view_rotate();
-        if (type == CAMERA_ROTATE_AROUND)
+        else if (type == CAMERA_ROTATE_AROUND)
             return view_rotate_around();
+        else if (type == CAMERA_MOVE_BACKWARDS)
+            return view_backwards();
+        else if (type == CAMERA_SPLINE)
+            return view_spline();
         else
             return view_static();
     }
@@ -115,7 +127,9 @@ class Camera
         return proj;
     }
 
-  private:
+    int type = 0;
+
+private:
     Tiktok &tiktok = Tiktok::get_instance();
     OpenGL &opengl = OpenGL::get_instance();
 
@@ -135,18 +149,18 @@ class Camera
 
     float lasttime = -1.0f;
 
-    int type = 0;
+    double spline_walker = 0.0;
 
     glm::mat4 view_static()
     {
         return glm::lookAt(Position, Position + Front, Up);
     }
 
-    glm::mat4 view_rotate_around(glm::vec3 point = glm::vec3(0.0, 0.0, 0.0), float vel = 0.5, float radius = 28.0, float height = 5.0)
+    glm::mat4 view_rotate_around(float vel = 0.5, float radius = 30.0, float height = 5.0)
     {
         float camX = sin(vel * tiktok.get()) * radius;
         float camZ = cos(vel * tiktok.get()) * radius;
-        return glm::lookAt(glm::vec3(camX, height, camZ), -glm::vec3(camX, height, camZ) + point, glm::vec3(0.0, 1.0, 0.0));
+        return glm::lookAt(glm::vec3(camX, height, camZ), -glm::vec3(camX, height, camZ) + Position, glm::vec3(0.0, 1.0, 0.0));
     }
 
     glm::mat4 view_rotate()
@@ -156,9 +170,36 @@ class Camera
 
     glm::mat4 view_backwards()
     {
-        float cameraSpeed = speed();
+        Position -= speed() * Front;
 
-        Position -= cameraSpeed * Front;
+        return glm::lookAt(Position, Position + Front, Up);
+    }
+
+    glm::mat4 view_spline()
+    {
+        Eigen::VectorXd x_pts(9);
+        Eigen::VectorXd y_pts(9);
+        Eigen::VectorXd z_pts(9);
+
+        x_pts << -10.0, -10.0, -10.0, -10.0,  10.0,  10.0,  10.0, 10.0, 10.0;
+        y_pts << 0.0, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0, 0.0, 0.0;
+        z_pts << 0.0, -60.0, -120.0, -180.0, -240.0, -300.0, -360.0, -420.0, -480.0;
+
+        Eigen::MatrixXd pts(3, 9);
+
+        pts.row(0) = x_pts;
+        pts.row(1) = y_pts;
+        pts.row(2) = z_pts;
+
+        Eigen::Spline<double, 3> spline;
+        spline = Eigen::SplineFitting<Eigen::Spline<double, 3>>::Interpolate(pts, 3);
+        Eigen::VectorXd pos = spline(spline_walker);
+
+        spline_walker += 0.0005;
+        Position = glm::vec3(pos[0], pos[1], pos[2]);
+
+        // std::cout << pos << std::endl;
+        // std::cout << pts << std::endl;
 
         return glm::lookAt(Position, Position + Front, Up);
     }
@@ -181,35 +222,38 @@ class Camera
     {
         Camera &camera = Camera::get_instance();
 
-        if (camera.firstMouse)
+        if (camera.type == CAMERA_STATIC)
         {
+            if (camera.firstMouse)
+            {
+                camera.mouse_last_x = xpos;
+                camera.mouse_last_y = ypos;
+                camera.firstMouse = false;
+            }
+
+            float xoffset = xpos - camera.mouse_last_x;
+            float yoffset = camera.mouse_last_y - ypos;
             camera.mouse_last_x = xpos;
             camera.mouse_last_y = ypos;
-            camera.firstMouse = false;
+
+            float sensitivity = 0.1;
+            xoffset *= sensitivity;
+            yoffset *= sensitivity;
+
+            camera.yaw += xoffset;
+            camera.pitch += yoffset;
+
+            if (camera.pitch > 89.0f)
+                camera.pitch = 89.0f;
+            if (camera.pitch < -89.0f)
+                camera.pitch = -89.0f;
+
+            glm::vec3 front;
+            front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+            front.y = sin(glm::radians(camera.pitch));
+            front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+            camera.Front = glm::normalize(front);
         }
-
-        float xoffset = xpos - camera.mouse_last_x;
-        float yoffset = camera.mouse_last_y - ypos;
-        camera.mouse_last_x = xpos;
-        camera.mouse_last_y = ypos;
-
-        float sensitivity = 0.1;
-        xoffset *= sensitivity;
-        yoffset *= sensitivity;
-
-        camera.yaw += xoffset;
-        camera.pitch += yoffset;
-
-        if (camera.pitch > 89.0f)
-            camera.pitch = 89.0f;
-        if (camera.pitch < -89.0f)
-            camera.pitch = -89.0f;
-
-        glm::vec3 front;
-        front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-        front.y = sin(glm::radians(camera.pitch));
-        front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-        camera.Front = glm::normalize(front);
     }
 };
 
