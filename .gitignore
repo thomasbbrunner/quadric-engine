@@ -5,4 +5,5 @@ emsdk.zip
 *.pyc
 .vscode
 __pycache__
-*/a.out
+a.out
+./*/a.out
