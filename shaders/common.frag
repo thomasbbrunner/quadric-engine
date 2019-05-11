@@ -13,31 +13,36 @@ float modulo(float x, float y)
     return x - y * floor(x/y);
 }
 
-/*** INPUTS ***/
-
-float ambient_strength = 0.5;
-float specular_strength = 0.5;
-int specular_shininess = 256; // powers of two (2,4,8,16...256)
-float attenuation_constant = 1.0;
-float attenuation_linear = 0.02;
-float attenuation_quadratic = 0.002;
-
 #define M_PI 3.1415926535897932384626433832795
 
 /*** VARIABLES ***/
-flat in ivec3 DEBUG0;
-flat in int DEBUG1;
-out vec4 frag_color;
-uniform vec4 color;
-uniform float time;
-
+// Definitions
 struct Vertex_Data
 {
     vec3 vert_normal_view;
     vec3 vert_pos_view;
 };
 
+// Debug
+flat in ivec3 DEBUG0;
+flat in int DEBUG1;
+
+// Uniforms
+uniform vec4 color;
+uniform float time;
+uniform float ambient_strength = 0.5;
+uniform float diffuse_strength = 0.5;
+uniform float specular_strength = 0.5;
+uniform int specular_shininess = 256; // powers of two (2,4,8,16...256)
+uniform float attenuation_constant = 1.0;
+uniform float attenuation_linear = 0.02;
+uniform float attenuation_quadratic = 0.002;
+
+// Inputs
 in Vertex_Data frag_data;
+
+// Output
+out vec4 frag_color;
 
 /*** RAINBOW ***/
 
@@ -98,12 +103,12 @@ vec4 lighting(vec4 newcolor)
         if (light[i].type == 0) // direction vector -> directional light
         {
             frag_light_dir = normalize(vec3(-light_pos_view));  
-            diffuse_amount = max(dot(normalize(N), frag_light_dir), 0.0);
+            diffuse_amount = diffuse_strength*max(dot(normalize(N), frag_light_dir), 0.0);
         }
         else if(light[i].type == 1) // position vector -> positional light
         {
             frag_light_dir = normalize(vec3(light_pos_view) - frag_data.vert_pos_view);  
-            diffuse_amount = max(dot(normalize(N), frag_light_dir), 0.0);
+            diffuse_amount = diffuse_strength*max(dot(normalize(N), frag_light_dir), 0.0);
             // diffuse_amount = abs(dot(normalize(frag_data.vert_normal_view), frag_light_dir)); // for light source inside geometry
         }
         else
