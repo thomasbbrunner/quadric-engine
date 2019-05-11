@@ -10,7 +10,7 @@
 class Tiktok
 {
     // Singleton initialization
-  public:
+public:
     static Tiktok &get_instance()
     {
         static Tiktok instance;
@@ -20,11 +20,11 @@ class Tiktok
     Tiktok(Tiktok const &) = delete;
     void operator=(Tiktok const &) = delete;
 
-  private:
+private:
     Tiktok() {}
     // End of Singleton initialization
 
-  public:
+public:
     double tiktok_wall = 0.0;
     double tiktok_tick = 0.0;
     double tiktok_tick_step = 1.0 / 60.0;
