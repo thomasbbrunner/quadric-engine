@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <random>
+#include <iostream>
 
 #include <glm/glm.hpp>
 
@@ -17,7 +18,7 @@ class Math
         }
     }
 
-    static float random(float max, float min)
+    static float random(float min, float max)
     {
         std::random_device rd;  //Will be used to obtain a seed for the random number engine
         std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
@@ -54,6 +55,30 @@ class Math
         {
             vertices->at(i) = trans * vertices->at(i);
         }
+    }
+
+    static float linear_interpolation(float value, std::vector<float> range, std::vector<float> data)
+    {
+        // range is expected to be sorted
+        // range and data are expected to have same length
+        if (range.size() != data.size())
+            exit(0);
+        // value is expected to be within range
+        if (range.at(std::max_element(range.begin(), range.end()) - range.begin()) <= value)
+        {
+            printf("linear_interpolation: input value is greater than range (%.5f)\n", value);
+            exit(0);
+        }
+        auto value_range = std::upper_bound(range.begin(), range.end(), value) - 1;
+
+        float fx0 = data.at(value_range - range.begin());
+        float fx1 = data.at(value_range - range.begin() + 1);
+        float x0 = range.at(value_range - range.begin());
+        float x1 = range.at(value_range - range.begin() + 1);
+
+        float res = fx0 + (fx1 - fx0) / (x1 - x0) * (value - x0);
+
+        return res;
     }
 };
 
