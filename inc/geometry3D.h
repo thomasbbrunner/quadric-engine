@@ -119,7 +119,7 @@ class Polyhedron : public Geometry
         // Last vertex
         vertex_coordinates_mesh.push_back(glm::vec3(0.0, -1.0f, 0.0));
 
-        Math::multiply_by_scalar(&vertex_coordinates_mesh, 10.0f);
+        Math::multiply_by_scalar(&vertex_coordinates_mesh, d);
 
         // Indices top layer
         for (unsigned int i = 1; i <= horizontal_poly; i++)
