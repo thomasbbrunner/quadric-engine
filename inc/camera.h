@@ -34,8 +34,8 @@ private:
     Camera()
     {
         // Mouse
-        glfwSetInputMode(opengl.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPosCallback(opengl.window, mouse_callback);
+        // glfwSetInputMode(opengl.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        // glfwSetCursorPosCallback(opengl.window, mouse_callback);
         // glfwRawMouseMotionSupported() // Needs GLFW 3.3
 
         mouse_last_x = (float)opengl.window_width();
@@ -89,6 +89,9 @@ public:
     void set_type(int type)
     {
         this->type = type;
+
+        if (type == CAMERA_SPLINE)
+            initialize_spline();
     }
 
     void set_fov(float fov)
@@ -128,14 +131,14 @@ public:
     }
 
     int type = 0;
+    glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
 private:
     Tiktok &tiktok = Tiktok::get_instance();
     OpenGL &opengl = OpenGL::get_instance();
 
-    glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
     float yaw = 0.0f;
     float pitch = 0.0f;
     bool firstMouse = true;
@@ -149,7 +152,7 @@ private:
 
     float lasttime = -1.0f;
 
-    double spline_walker = 0.0;
+    Eigen::Spline<double, 3> spline;
 
     glm::mat4 view_static()
     {
@@ -175,33 +178,39 @@ private:
         return glm::lookAt(Position, Position + Front, Up);
     }
 
-    glm::mat4 view_spline()
+    void initialize_spline()
     {
-        Eigen::VectorXd x_pts(9);
-        Eigen::VectorXd y_pts(9);
-        Eigen::VectorXd z_pts(9);
+        Eigen::VectorXd x_pts(12);
+        Eigen::VectorXd y_pts(12);
+        Eigen::VectorXd z_pts(12);
 
-        x_pts << -10.0, -10.0, -10.0, -10.0,  10.0,  10.0,  10.0, 10.0, 10.0;
-        y_pts << 0.0, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0, 0.0, 0.0;
-        z_pts << 0.0, -60.0, -120.0, -180.0, -240.0, -300.0, -360.0, -420.0, -480.0;
+        x_pts << -10.0, -10.0, -10.0, -10.0, 25.0, 25.0, 25.0, 10.0, 150.0, 200.0, 225.0, 250.0;
+        y_pts << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 40.0, 40.0, 40.0, 40.0;
+        z_pts << 0.0, -60.0, -120.0, -180.0, -240.0, -300.0, -360.0, -420.0, -480.0, -420.0, -400.0, -400.0;
 
-        Eigen::MatrixXd pts(3, 9);
+        Eigen::MatrixXd pts = Eigen::MatrixXd(3, x_pts.size());
 
         pts.row(0) = x_pts;
         pts.row(1) = y_pts;
         pts.row(2) = z_pts;
 
-        Eigen::Spline<double, 3> spline;
         spline = Eigen::SplineFitting<Eigen::Spline<double, 3>>::Interpolate(pts, 3);
+    }
+
+    glm::mat4 view_spline()
+    {
+        float spline_walker = tiktok.get() / 15.0;
+
+        if (spline_walker >= 0.95)
+        {
+            spline_walker = 0.95;
+        }
+
         Eigen::VectorXd pos = spline(spline_walker);
 
-        spline_walker += 0.0005;
         Position = glm::vec3(pos[0], pos[1], pos[2]);
 
-        // std::cout << pos << std::endl;
-        // std::cout << pts << std::endl;
-
-        return glm::lookAt(Position, Position + Front, Up);
+        return glm::lookAt(Position, Front, Up);
     }
 
     float speed()

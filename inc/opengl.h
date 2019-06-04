@@ -12,10 +12,10 @@
 #define MSAA
 
 #define MSAA_SAMPLES 4
-#define WINDOW_HEIGHT 1350
+#define WINDOW_HEIGHT 1080
 #define WINDOW_WIDTH 1080
 
-#define VIDEO_OUT
+// #define VIDEO_OUT
 
 class OpenGL
 {
@@ -186,8 +186,11 @@ private:
 
         sprintf(cmd, "ffmpeg "
                      "-r 30 -f rawvideo -pixel_format rgba -video_size %dx%d -i pipe:0 "              // input file configs
-                     "-preset slow -threads 4 -video_size %dx%d -vf vflip -y -crf 18 ./vid/output.mp4", // output file configs
+                     "-preset slow -threads 8 -video_size %dx%d -vf vflip -y -crf 18 ./vid/output.mp4", // output file configs
                 window_width(), window_height(), window_width(), window_height());
+                
+                // Add "-c:v libx264 -profile:v main -vf format=yuv420p" for mobile compatibility?
+
         // Source: http://blog.mmacklin.com/2013/06/11/real-time-video-capture-with-ffmpeg/
 
         // open pipe to ffmpeg's stdin in binary write mode

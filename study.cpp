@@ -28,6 +28,7 @@ Light light;
 
 Shader shader1;
 Shader shader2("/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/study41.vert", "/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/study41.frag");
+Shader shader3("/home/thomas/Nextcloud/Projects/Art/quadric-engine/shaders/study41.vert");
 
 void loop()
 {
@@ -39,6 +40,7 @@ void loop()
     // Update lights
     float dir = 200.0f * (-1.6 + sin(0.8 * tiktok.get() - 0.1));
     light.set_position(glm::vec3(0.0, 0.0, dir));
+    camera.Front = light.get_position();
     light.set_color(glm::vec4(-sin(tiktok.get() - 2.0) / 2.0 + 0.5, -sin(tiktok.get()) / 2.0 + 0.5, -sin(tiktok.get() + 2.0) / 2.0 + 0.5, 1.0));
     light.set_brightness(BRIGHTNESS_FLARE);
     light.set_attenuation(0.6);
@@ -50,7 +52,7 @@ void loop()
     thing.update_shader(&lighting);
     thing.draw(DW_FILL);
 
-    thing.set_shader(shader2);
+    thing.set_shader(shader3);
     thing.set_color(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     thing.update_shader();
     thing.draw(DW_CONTOUR, 1.0);
@@ -69,9 +71,9 @@ int main()
     // Short tunnel (vertically)
     for (int k = -1; k <= 1; k += 2)
     {
-        for (int i = -10; i < 10; i++)
+        for (int i = -25; i < 25; i++)
         {
-            for (int j = 0; j < 150; j++)
+            for (int j = -20; j < 170; j++)
             {
                 Cube cube(5.0f);
 

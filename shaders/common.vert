@@ -139,7 +139,7 @@ float perlin(vec2 x)
 
 vec3 noise(vec3 newcoords)
 {
-    newcoords.y += perlin(vec2(newcoords.x, newcoords.z - bring_vel * bring_timecoeff * time) / 4.0);
+    newcoords.y += perlin(vec2(newcoords.x, newcoords.z - bring_vel * bring_timecoeff * time) / 2.0);
 
     return newcoords;
 }
