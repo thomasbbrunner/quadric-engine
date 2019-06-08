@@ -1,6 +1,0 @@
-[submodule "lib/eigen"]
-	path = lib/eigen
-	url = https://github.com/eigenteam/eigen-git-mirror.git
-[submodule "lib/glm"]
-	path = lib/glm
-	url = https://github.com/g-truc/glm.git
