@@ -1,5 +1,4 @@
-#ifndef GEOMETRY3D_H
-#define GEOMETRY3D_H
+#pragma once
 
 #include "geometry.h"
 #include "common.h"
@@ -690,5 +689,3 @@ class Plane : public Geometry
         return coords;
     }
 };
-
-#endif

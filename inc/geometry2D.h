@@ -1,5 +1,4 @@
-// #ifndef GEOMETRY2D_H
-// #define GEOMETRY2D_H
+#pragma once
 
 // #include <geometry.h>
 // #include <print.h>
@@ -112,5 +111,3 @@
 //         generate_buffers(dots);
 //     }
 // };
-
-// #endif

@@ -1,5 +1,4 @@
-#ifndef OPENGL_H
-#define OPENGL_H
+#pragma once
 
 #include "api.h"
 
@@ -214,5 +213,3 @@ private:
         fwrite(buffer, sizeof(int) * window_width() * window_height(), 1, ffmpeg);
     }
 };
-
-#endif

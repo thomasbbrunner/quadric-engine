@@ -1,5 +1,4 @@
-#ifndef PRINT_H
-#define PRINT_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <iostream>
@@ -239,5 +238,3 @@ class Print
     //     }
     // }
 };
-
-#endif

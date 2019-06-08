@@ -1,5 +1,4 @@
-#ifndef BUFFER_H
-#define BUFFER_H
+#pragma once
 
 #include "geometry.h"
 
@@ -31,5 +30,3 @@ class BufferGeneration
 
     static ModelBuffer generate_from_dots(Model);
 };
-
-#endif

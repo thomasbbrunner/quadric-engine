@@ -1,5 +1,4 @@
-#ifndef RAW_H
-#define RAW_H
+#pragma once
 
 #include <vector>
 
@@ -198,5 +197,3 @@ class RawValues
         raw_vertex_indices = vec;
     }
 };
-
-#endif

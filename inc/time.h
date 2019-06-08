@@ -1,5 +1,4 @@
-#ifndef TIKTOK_H
-#define TIKTOK_H
+#pragma once
 
 #include <stdio.h>
 #include <GLFW/glfw3.h>
@@ -57,5 +56,3 @@ public:
         tiktok_tick += tiktok_tick_step;
     }
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef THING_H
-#define THING_H
+#pragma once
 
 #include "geometry.h"
 #include "buffer.h"
@@ -60,5 +59,3 @@ class Thing
 
     Shader shader;
 };
-
-#endif

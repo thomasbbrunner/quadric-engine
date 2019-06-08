@@ -1,5 +1,4 @@
-#ifndef DRAW_H
-#define DRAW_H
+#pragma once
 
 #include "api.h"
 #include "buffer.h"
@@ -105,5 +104,3 @@ class Drawer
 //         glDrawElements(GL_TRIANGLE_FAN, numelements_contour, GL_UNSIGNED_INT, 0);
 //     }
 // };
-
-#endif

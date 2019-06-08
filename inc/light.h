@@ -1,5 +1,4 @@
-#ifndef LIGHT_H
-#define LIGHT_H
+#pragma once
 
 #include "geometry.h"
 #include "geometry3D.h"
@@ -213,5 +212,3 @@ public:
 private:
     std::vector<Light *> lights;
 };
-
-#endif

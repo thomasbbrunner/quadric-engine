@@ -1,5 +1,4 @@
-#ifndef COMMON_H
-#define COMMON_H
+#pragma once
 
 #include <vector>
 #include <random>
@@ -81,5 +80,3 @@ class Math
         return res;
     }
 };
-
-#endif
