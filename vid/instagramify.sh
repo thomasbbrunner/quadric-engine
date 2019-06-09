@@ -33,13 +33,17 @@ filename=$1
 # Removing extension
 filename="${filename%.*}"
 
+# Remove black starting frames 
+ffmpeg -i "$filename.mp4" -ss 00:00:00.13 -async 1 "${filename}_instant.mp4"
+filename="${filename}_instant"
+
 # Crop (duration)
-ffmpeg -i "$filename.mp4" -ss 00:00:00 -t 00:00:30 -async 1 "${filename}_short.mp4"
+ffmpeg -i "$filename.mp4" -t 00:00:30 -async 1 "${filename}_short.mp4"
 filename="${filename}_short"
 
 # Crop (frame)
-ffmpeg -i "$filename.mp4" -vf crop=1080:in_h "${filename}_cropped.mp4"
-filename="${filename}_cropped"
+# ffmpeg -i "$filename.mp4" -vf crop=1080:in_h "${filename}_cropped.mp4"
+# filename="${filename}_cropped"
 
 # Scaling
 ffmpeg -i "$filename.mp4" -vf scale=1080:-2 "${filename}_scaled.mp4"
