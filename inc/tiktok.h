@@ -2,7 +2,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <GLFW/glfw3.h>
+
+#include "api.h"
 
 #define TIKTOK_REAL 1
 #define TIKTOK_TICK 2
