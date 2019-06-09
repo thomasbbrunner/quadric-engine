@@ -1,13 +1,13 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "geometry.h"
 #include "buffer.h"
 #include "draw.h"
 #include "shader.h"
 #include "camera.h"
 #include "common.h"
-
-#include <glm/glm.hpp>
 
 class Lighting;
 

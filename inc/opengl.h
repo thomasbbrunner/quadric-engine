@@ -1,11 +1,10 @@
 #pragma once
 
-#include "api.h"
-
-#include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <signal.h>
 #include <iostream>
+
+#include "api.h"
 
 // Toggle MSAA
 #define MSAA

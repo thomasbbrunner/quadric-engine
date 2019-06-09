@@ -1,13 +1,13 @@
 #pragma once
 
-#include "opengl.h"
-#include "time.h"
-
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <Eigen/Core>
 #include <unsupported/Eigen/Splines>
+
+#include "opengl.h"
+#include "tiktok.h"
+#include "api.h"
 
 // Camera types
 #define CAMERA_STATIC 0
