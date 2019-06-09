@@ -7,8 +7,8 @@
 
 class Print
 {
-  public:
-    static void mat4(glm::mat4 mat)
+public:
+    static void mat(glm::mat4 mat)
     {
         for (int i = 0; i < 4; i++)
         {
@@ -22,7 +22,7 @@ class Print
         printf("\n");
     }
 
-    static void vec4(glm::vec4 vec)
+    static void vec(glm::vec4 vec)
     {
         std::cout << "\t" << vec.x << "\n"
                   << "\t" << vec.y << "\n"
@@ -30,12 +30,14 @@ class Print
                   << "\t" << vec.w << std::endl;
     }
 
-    static void vec3(glm::vec3 vec)
+    static void vec(glm::vec3 vec)
     {
         std::cout << "\t" << vec.x << "\n"
                   << "\t" << vec.y << "\n"
                   << "\t" << vec.z << std::endl;
     }
+
+    // C Arrays
 
     static void array(float *arr, int dim1, int dim2 = 1)
     {
@@ -103,48 +105,7 @@ class Print
         }
     }
 
-    static void array(std::vector<std::vector<glm::vec3>> arr)
-    {
-        for (unsigned int i = 0; i < arr.size(); i++)
-        {
-            for (unsigned int j = 0; j < arr.at(i).size(); j++)
-            {
-                printf("%.4f ", arr.at(i).at(j).x);
-                printf("%.4f ", arr.at(i).at(j).y);
-                printf("%.4f ", arr.at(i).at(j).z);
-                printf("\n");
-            }
-            printf("\n");
-        }
-    }
-
-    static void array(std::vector<std::vector<int>> arr)
-    {
-        for (unsigned int i = 0; i < arr.size(); i++)
-        {
-            for (unsigned int j = 0; j < arr.at(i).size(); j++)
-            {
-                printf("%i ", arr.at(i).at(j));
-                printf("\n");
-            }
-            printf("\n");
-        }
-        printf("\n");
-    }
-
-    static void array(std::vector<std::vector<char>> arr)
-    {
-        for (unsigned int i = 0; i < arr.size(); i++)
-        {
-            for (unsigned int j = 0; j < arr.at(i).size(); j++)
-            {
-                printf("%u ", arr.at(i).at(j));
-                printf("\n");
-            }
-            printf("\n");
-        }
-        printf("\n");
-    }
+    // Vectors 1D
 
     static void array(std::vector<glm::vec3> arr)
     {
@@ -194,6 +155,53 @@ class Print
         }
         printf("\n");
     }
+
+    // Vectors 2D
+
+    static void array(std::vector<std::vector<glm::vec3>> arr)
+    {
+        for (unsigned int i = 0; i < arr.size(); i++)
+        {
+            for (unsigned int j = 0; j < arr.at(i).size(); j++)
+            {
+                printf("%.4f ", arr.at(i).at(j).x);
+                printf("%.4f ", arr.at(i).at(j).y);
+                printf("%.4f ", arr.at(i).at(j).z);
+                printf("\n");
+            }
+            printf("\n");
+        }
+    }
+
+    static void array(std::vector<std::vector<int>> arr)
+    {
+        for (unsigned int i = 0; i < arr.size(); i++)
+        {
+            for (unsigned int j = 0; j < arr.at(i).size(); j++)
+            {
+                printf("%i ", arr.at(i).at(j));
+                printf("\n");
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    static void array(std::vector<std::vector<char>> arr)
+    {
+        for (unsigned int i = 0; i < arr.size(); i++)
+        {
+            for (unsigned int j = 0; j < arr.at(i).size(); j++)
+            {
+                printf("%u ", arr.at(i).at(j));
+                printf("\n");
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+
+    // Vectors 3D
 
     // static void print_vertices(std::vector<Vertex> vertices)
     // {

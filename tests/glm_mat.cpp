@@ -5,7 +5,7 @@ int main()
 {
     glm::mat4 trans(0.5f);
 
-    Print::mat4(trans);
+    Print::mat(trans);
 
     return 0;
 }
