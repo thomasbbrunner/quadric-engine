@@ -13,14 +13,14 @@ class Lighting;
 
 class Thing
 {
-  public:
+public:
     void add_geometry(Geometry geometry);
 
     void generate_buffers();
 
     void update_shader(Lighting *lighting = NULL);
 
-    void draw(unsigned int type, float line_thickness=1.0)
+    void draw(unsigned int type, float line_thickness = 1.0)
     {
         shader.use();
 
@@ -44,11 +44,11 @@ class Thing
         color = color_temp;
     }
 
-  private:
+    Geometry geometry;
+
+private:
     Tiktok &tiktok = Tiktok::get_instance();
     Camera &camera = Camera::get_instance();
-
-    Geometry geometry;
 
     Buffers buffers;
 

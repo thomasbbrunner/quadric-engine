@@ -86,7 +86,7 @@ void Thing::update_shader(Lighting *lighting)
     shader.set_mat4("aspect", camera.get_aspect());
     shader.set_mat4("proj", camera.get_proj());
 
-    shader.update_time(tiktok.get());
+    shader.set_time(tiktok.get());
 
     if (lighting != NULL)
     {
