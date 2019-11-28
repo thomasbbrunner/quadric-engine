@@ -9,7 +9,7 @@
 
 class Cube : public Geometry
 {
-  public:
+public:
     Cube(float size = 1.0f)
     {
         /*** MESH ***/
@@ -89,7 +89,7 @@ class Cube : public Geometry
 class Polyhedron : public Geometry
 // TODO: without normalization of icosahedron you get a cylinder!
 {
-  public:
+public:
     Polyhedron(float d = 1.0f, unsigned int res = 5)
     {
         // First vertex
@@ -157,7 +157,7 @@ class Polyhedron : public Geometry
 
 class Icosahedron : public Geometry
 {
-  public:
+public:
     Icosahedron(float d = 1.0f)
     {
         float t = (1.0f + std::sqrt(5.0f)) / 2.0f;
@@ -203,7 +203,7 @@ class Icosahedron : public Geometry
 
 class Sphere : public Polyhedron
 {
-  public:
+public:
     Sphere(float d = 1.0f, unsigned int res = 10) : Polyhedron(d, res)
     {
     }
@@ -211,7 +211,7 @@ class Sphere : public Polyhedron
 
 class Sphere_half_brute_force : public Geometry
 {
-  public:
+public:
     Sphere_half_brute_force(float d = 1.0f)
     {
         unsigned int res = 1;
@@ -402,7 +402,7 @@ class Sphere_half_brute_force : public Geometry
 
 class Sphere_brute_force : public Geometry
 {
-  public:
+public:
     Sphere_brute_force(float d = 1.0f)
     {
         float t = (1.0f + std::sqrt(5.0f)) / 2.0f;
@@ -630,37 +630,74 @@ class Sphere_brute_force : public Geometry
     }
 };
 
+inline std::vector<std::vector<std::vector<glm::vec3>>> generate_vertices(int dotres, int dx, int dy, int dz)
+{
+    int numdotsx = (int)(dotres * dx + 1.0);
+    int numdotsy = (int)(dotres * dy + 1.0);
+    int numdotsz = (int)(dotres * dz + 1.0);
+
+    std::vector<std::vector<std::vector<glm::vec3>>> coords;
+    coords.resize(numdotsx, std::vector<std::vector<glm::vec3>>(numdotsy, std::vector<glm::vec3>(numdotsz, glm::vec3(0.0f))));
+
+    for (int i = 0; i < numdotsx; i++)
+    {
+        for (int j = 0; j < numdotsy; j++)
+        {
+            for (int k = 0; k < numdotsz; k++)
+            {
+                coords.at(i).at(j).at(k) = glm::vec3(dx ? -dx / 2.0f + i * dx / (float)(numdotsx - 1) : 0.0f,
+                                                     dy ? -dy / 2.0f + j * dy / (float)(numdotsy - 1) : 0.0f,
+                                                     dx ? -dz / 2.0f + k * dz / (float)(numdotsz - 1) : 0.0f);
+            }
+        }
+    }
+
+    return coords;
+}
+
+// Transforming vertex coordinates to 1D format
+inline std::vector<glm::vec3> transform_to_1D(std::vector<std::vector<std::vector<glm::vec3>>> coords)
+{
+    std::vector<glm::vec3> coords1D;
+
+    for (unsigned int i = 0; i < coords.size(); i++)
+    {
+        for (unsigned int j = 0; j < coords.at(0).size(); j++)
+        {
+            for (unsigned int k = 0; k < coords.at(0).at(0).size(); k++)
+            {
+                // Vertex coordinates
+                coords1D.push_back(coords.at(i).at(j).at(k));
+            }
+        }
+    }
+
+    return coords1D;
+}
+
 class Plane : public Geometry
 {
-  public:
+public:
     Plane(int dx, int dz, int dotres = 1)
     {
         /*** MESH ***/
 
         // Generating vertex coordinates arranged in 2D format
-        std::vector<std::vector<glm::vec3>> coords = generate_vertices(dotres, dx, dz);
+        auto coords = generate_vertices(dotres, dx, 0, dz);
 
-        // Transforming vertex coordinates to 1D format
-        for (unsigned int i = 0; i < coords.size(); i++)
-        {
-            for (unsigned int j = 0; j < coords.at(0).size(); j++)
-            {
-                // Vertex coordinates
-                vertex_coordinates_mesh.push_back(coords.at(i).at(j));
-            }
-        }
+        vertex_coordinates_mesh = transform_to_1D(coords);
 
         // Generating indices for mesh
         for (unsigned int i = 0; i < coords.size() - 1; i++)
         {
-            for (unsigned int j = 0; j < coords.at(0).size() - 1; j++)
+            for (unsigned int j = 0; j < coords.at(0).at(0).size() - 1; j++)
             {
-                vertex_indices_mesh.push_back(j + i * coords.at(0).size());
-                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).size() + 1);
-                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).size());
-                vertex_indices_mesh.push_back(j + i * coords.at(0).size());
-                vertex_indices_mesh.push_back(j + i * coords.at(0).size() + 1);
-                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).size() + 1);
+                vertex_indices_mesh.push_back(j + i * coords.at(0).at(0).size());
+                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).at(0).size() + 1);
+                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).at(0).size());
+                vertex_indices_mesh.push_back(j + i * coords.at(0).at(0).size());
+                vertex_indices_mesh.push_back(j + i * coords.at(0).at(0).size() + 1);
+                vertex_indices_mesh.push_back(j + (i + 1) * coords.at(0).at(0).size() + 1);
             }
         }
 
@@ -668,24 +705,15 @@ class Plane : public Geometry
 
         vertex_coordinates_dots = vertex_coordinates_mesh;
     }
+};
 
-  private:
-    static std::vector<std::vector<glm::vec3>> generate_vertices(int dotres, int dx, int dz)
+class DotCube : public Geometry
+{
+public:
+    DotCube(unsigned int dx, unsigned int dy, unsigned int dz, unsigned int resolution)
     {
-        int numdotsx = (int)(dotres * dx + 1.0);
-        int numdotsz = (int)(dotres * dz + 1.0);
+        auto coords = generate_vertices(resolution, dx, dy, dz);
 
-        std::vector<std::vector<glm::vec3>> coords;
-        coords.resize(numdotsx, std::vector<glm::vec3>(numdotsz, glm::vec3(0.0)));
-
-        for (int i = 0; i < numdotsx; i++)
-        {
-            for (int j = 0; j < numdotsz; j++)
-            {
-                coords.at(i).at(j) = glm::vec3(-dx / 2.0f + i * dx / (float)(numdotsx - 1), 0.0f, -dz / 2.0f + j * dz / (float)(numdotsz - 1));
-            }
-        }
-
-        return coords;
+        vertex_coordinates_dots = transform_to_1D(coords);
     }
 };
