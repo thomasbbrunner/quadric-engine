@@ -1,22 +1,36 @@
 #pragma once
 
 #include <algorithm>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <stdio.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/noise.hpp>
+
+#include "print.h"
 
 /*** PARENT CLASSES ***/
 
 class Geometry
 {
-  public:
+public:
     std::vector<glm::vec3> vertex_coordinates_mesh;
     std::vector<glm::vec3> vertex_coordinates_contour;
     std::vector<glm::vec3> vertex_coordinates_dots;
     std::vector<unsigned int> vertex_indices_mesh;
     std::vector<unsigned int> vertex_indices_contour;
 
+    void apply_noise(double tiktok = 0.0)
+    {
+        for (unsigned int i = 0; i < vertex_coordinates_dots.size(); i++)
+        {
+            float noise = glm::perlin(glm::vec4(vertex_coordinates_dots.at(i) / 10.0f, (float)tiktok));
+            vertex_coordinates_dots.at(i)[1] += 10.0 * noise;
+        }
+    }
+
+    // Apply transformation matrix for each vertex
     void apply_transformation(glm::mat4 transformation)
     {
         for (unsigned int i = 0; i < vertex_coordinates_mesh.size(); i++)
@@ -36,7 +50,7 @@ class Geometry
 
 class Vertex
 {
-  public:
+public:
     unsigned int vertex_id;                       // ID of vertex
     glm::vec3 coordinates;                        // Positional vector of this vertex
     std::vector<unsigned int> polygon_id;         // ID of polygons that contain this vertex
@@ -47,14 +61,14 @@ class Vertex
 
 class Polygon
 {
-  public:
+public:
     unsigned int polygon_id;             // ID of polygon element
     std::vector<unsigned int> vertex_id; // ID of vertices inside this polygon
 };
 
 class Model
 {
-  public:
+public:
     // Structured data
     std::vector<Polygon> polygons;               // Vector with all polygon data from mesh
     std::vector<Vertex> vertices;                // Vector with all vertex data from mesh
@@ -63,7 +77,7 @@ class Model
 
 class Mesh : public Model
 {
-  public:
+public:
     Mesh(std::vector<glm::vec3> vertex_data, std::vector<unsigned int> index_data)
     {
         if (vertex_data.size() == 0 || index_data.size() == 0)
@@ -195,7 +209,7 @@ class Mesh : public Model
 
 class Contour : public Model
 {
-  public:
+public:
     Contour(std::vector<glm::vec3> vertex_data, std::vector<unsigned int> index_data)
     {
         for (unsigned int i = 0; i < vertex_data.size(); i++)
@@ -219,7 +233,7 @@ class Contour : public Model
 
 class Dots : public Model
 {
-  public:
+public:
     Dots(std::vector<glm::vec3> vertex_data)
     {
         for (unsigned int i = 0; i < vertex_data.size(); i++)

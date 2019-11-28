@@ -1,7 +1,8 @@
 #version 330 core
 // #define OPENGL_ES
 
-/*** COMPATIBILITY FUNCTIONS ***/
+// COMPATIBILITY ---------------------------------------------------------------
+
 #ifdef OPENGL_ES
 precision mediump float;
 #else
@@ -13,7 +14,7 @@ float modulo(float x, float y)
     return x - y * floor(x/y);
 }
 
-/*** INPUTS ***/
+// INPUTS ----------------------------------------------------------------------
 
 float bring_vel = 5.0;
 
@@ -25,7 +26,8 @@ float tube_timed = 1.0; // Time delay until start of animation
 
 #define M_PI 3.1415926535897932384626433832795
 
-// Globals
+// GLOBALS ---------------------------------------------------------------------
+
 float tube_r;
 
 void globals()
@@ -33,7 +35,7 @@ void globals()
     tube_r = tube_dx/(4.0*M_PI); 
 }   
 
-/*** VARIABLES ***/
+// VARIABLES -------------------------------------------------------------------
 
 layout (location = 0) in vec3 coords;
 layout (location = 1) in vec3 normal;
@@ -60,7 +62,7 @@ flat out int DEBUG1;
 
 uniform samplerBuffer tex_ver_data;
 
-/*** LIGHTING ***/
+// LIGHTING --------------------------------------------------------------------
 
 void lighting(vec4 newcoords)
 {
@@ -69,7 +71,7 @@ void lighting(vec4 newcoords)
     frag_data.vert_pos_view = vec3(view * model * newcoords);
 }
 
-/*** BRING ***/
+// BRING -----------------------------------------------------------------------
 
 vec3 bring(vec3 newcoords) 
 {
@@ -79,7 +81,7 @@ vec3 bring(vec3 newcoords)
     return newcoords1;
 }
 
-/*** TUBE ***/
+// TUBE ------------------------------------------------------------------------
 
 vec3 tube_transform(vec3 newcoords)
 {
@@ -113,7 +115,9 @@ vec3 tube(vec3 newcoords)
     return vec3(tube_r*cos(newcoords.x*(q/tube_dx) - M_PI/2.0), tube_r*sin(newcoords.x*(q/tube_dx) - M_PI/2.0) + tube_r, newcoords.z);
 }
 
-/*** NOISE ***/
+// NOISE -----------------------------------------------------------------------
+
+#include "noise.vert"
 
 float hash(vec2 p) 
 { 

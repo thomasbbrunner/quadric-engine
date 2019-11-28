@@ -1,5 +1,7 @@
 /*** MAIN ***/
 
+#include "common.vert"
+
 vec3 effects(vec3 newcoords)
 {
     return (((noise(newcoords))));
