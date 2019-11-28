@@ -1,13 +1,36 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include <iostream>
 #include <stdio.h>
 #include <vector>
 
+#include <glm/glm.hpp>
+
 class Print
 {
 public:
+    // Errors ------------------------------------------------------------------
+
+    static void error(std::string message,
+                      std::string function_name = "",
+                      std::string details = "")
+    {
+        std::cout << "Error: " << message << std::endl;
+
+        if (function_name != "")
+        {
+            std::cout << "  in \"" << function_name << "\" ";
+            std::cout << std::endl;
+        }
+        if (details != "")
+        {
+            std::cout << "Details:" << std::endl;
+            std::cout << details << std::endl;
+        }
+    }
+
+    // Arrays ------------------------------------------------------------------
+
     static void mat(glm::mat4 mat)
     {
         for (int i = 0; i < 4; i++)
