@@ -1,10 +1,12 @@
+
 #pragma once
 
-#include <stdio.h>
-#include <signal.h>
-#include <iostream>
-
 #include "api.h"
+#include "error.hpp"
+
+#include <cstdio>
+#include <iostream>
+#include <signal.h>
 
 // Toggle MSAA
 #define MSAA
@@ -52,8 +54,7 @@ private:
         window = glfwCreateWindow(window_width, window_height, "OpenGL", NULL, NULL); // Fullscreen: glfwGetPrimaryMonitor()
         if (window == NULL)
         {
-            std::cout << "Failed to create GLFW window" << std::endl;
-            exit(0);
+            throw quad::fatal_error("Failed to create GLFW window");
         }
 
         glfwMakeContextCurrent(window);
@@ -62,8 +63,7 @@ private:
 #ifndef OPENGL_ES
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            std::cout << "Failed to initialize GLAD" << std::endl;
-            exit(0);
+            throw quad::fatal_error("Failed to initialize GLAD");
         }
 #endif
 
@@ -156,7 +156,7 @@ public:
     {
         if (GLenum error = glGetError() != GL_NO_ERROR)
         {
-            printf("Error occured: %d", error);
+            quad::print::error("OpenGL error " + std::to_string(error));
         }
     }
 
@@ -183,11 +183,11 @@ private:
         char cmd[200] = "";
 
         sprintf(cmd, "ffmpeg "
-                     "-r 30 -f rawvideo -pixel_format rgba -video_size %dx%d -i pipe:0 "              // input file configs
+                     "-r 30 -f rawvideo -pixel_format rgba -video_size %dx%d -i pipe:0 "                // input file configs
                      "-preset slow -threads 8 -video_size %dx%d -vf vflip -y -crf 18 ./vid/output.mp4", // output file configs
                 window_width(), window_height(), window_width(), window_height());
-                
-                // Add "-c:v libx264 -profile:v main -vf format=yuv420p" for mobile compatibility?
+
+        // Add "-c:v libx264 -profile:v main -vf format=yuv420p" for mobile compatibility?
 
         // Source: http://blog.mmacklin.com/2013/06/11/real-time-video-capture-with-ffmpeg/
 

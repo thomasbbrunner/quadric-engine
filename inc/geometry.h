@@ -1,14 +1,15 @@
+
 #pragma once
 
-#include <algorithm>
-#include <vector>
-#include <stdio.h>
+#include "print.h"
+#include "error.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/noise.hpp>
 
-#include "print.h"
+#include <algorithm>
+#include <vector>
 
 /*** PARENT CLASSES ***/
 
@@ -89,8 +90,8 @@ public:
         // Check if vertex_data is big enough for the maximun index value
         if ((unsigned int)*std::max_element(index_data.begin(), index_data.end()) != vertex_data.size() - 1)
         {
-            printf("ERROR at class Mesh constructor: check input array consistency\n");
-            exit(0);
+            throw quad::fatal_error("check input array consistency",
+                                    "Mesh()");
         }
 
         // Creating vertices array

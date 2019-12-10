@@ -1,9 +1,11 @@
+
 #pragma once
 
 #include "api.h"
 #include "buffer.h"
+#include "error.hpp"
 
-#include <stdio.h>
+#include <cstdio>
 
 #define DW_FILL 0
 #define DW_WIREFRAME 1
@@ -12,7 +14,7 @@
 
 class Drawer
 {
-  public:
+public:
     void draw(Buffers *buffers, unsigned int type, float line_thickness = 1.0)
     {
         switch (type)
@@ -30,9 +32,7 @@ class Drawer
             draw_dots(buffers->dots, line_thickness = line_thickness);
             break;
         default:
-            printf("Error: draw type not recognized");
-            exit(0);
-            break;
+            throw quad::fatal_error("draw type not recognized");
         }
     }
 

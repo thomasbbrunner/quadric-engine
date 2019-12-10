@@ -1,11 +1,14 @@
+
 #pragma once
 
-#include "geometry.h"
 #include "common.h"
+#include "error.hpp"
+#include "geometry.h"
 #include "print.h"
 
-#include <vector>
 #include <glm/glm.hpp>
+
+#include <vector>
 
 class Cube : public Geometry
 {
@@ -244,8 +247,7 @@ public:
             // debug
             if ((stage_1 ? 1 : 0) + (stage_2 ? 1 : 0) + (stage_3 ? 1 : 0) > 1)
             {
-                printf("Error in the logic\n");
-                exit(0);
+                throw quad::fatal_error("Logic error");
             }
 
             if (stage_1)
@@ -256,8 +258,7 @@ public:
                 horizontal_poly = (vertical_poly / 2 - i) * 5;
             else
             {
-                printf("Error stage unrecognized\n");
-                exit(0);
+                throw quad::fatal_error("Unexpected behaviour");
             }
 
             horizontal_poly_vec.push_back(horizontal_poly);
@@ -391,7 +392,7 @@ public:
 
         // Math::normalize(&vertex_coordinates_mesh);
         printf("%lu\n", vertex_indices_mesh.size());
-        Print::array(vertex_indices_mesh, 3);
+        quad::print::array(vertex_indices_mesh, 3);
 
         Math::multiply_by_scalar(&vertex_coordinates_mesh, 10.0f);
 
@@ -569,7 +570,7 @@ public:
             }
 
             printf("Size: %lu\n", vertex_indices_mesh.size());
-            Print::array(vertex_indices_mesh, 3);
+            quad::print::array(vertex_indices_mesh, 3);
 
             // Remove repeated
             // for (unsigned int n = 0; n < 2; n++)
@@ -608,7 +609,7 @@ public:
             // }
 
             printf("Size: %lu\n", vertex_indices_mesh.size());
-            Print::array(vertex_indices_mesh, 3);
+            quad::print::array(vertex_indices_mesh, 3);
         }
 
         // vertex_coordinates_mesh = vertex_coordinates_mesh_backup;

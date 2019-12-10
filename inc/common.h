@@ -1,14 +1,17 @@
+
 #pragma once
+
+#include "error.hpp"
+
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <random>
 #include <iostream>
 
-#include <glm/glm.hpp>
-
 class Math
 {
-  public:
+public:
     static void add_to_each(std::vector<unsigned int> *vec, unsigned int value)
     {
         for (unsigned int i = 0; i < vec->size(); i++)
@@ -61,12 +64,15 @@ class Math
         // range is expected to be sorted
         // range and data are expected to have same length
         if (range.size() != data.size())
-            exit(0);
+        {
+            throw quad::fatal_error("range and data don't have the same length",
+                                    "linear_interpolation()");
+        }
         // value is expected to be within range
         if (range.at(std::max_element(range.begin(), range.end()) - range.begin()) <= value)
         {
-            printf("linear_interpolation: input value is greater than range (%.5f)\n", value);
-            exit(0);
+            throw quad::fatal_error("input value is greater than range " + std::to_string(value),
+                                    "linear_interpolation");
         }
         auto value_range = std::upper_bound(range.begin(), range.end(), value) - 1;
 

@@ -1,15 +1,17 @@
+
 #pragma once
 
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <regex>
+#include "api.h"
+#include "error.hpp"
+#include "print.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "api.h"
-#include "print.h"
+#include <fstream>
+#include <iostream>
+#include <regex>
+#include <sstream>
+#include <string>
 
 // Path to shader directory
 // const std::string shader_folder_path = "~/Nextcloud/Projects/Art/quadric-engine/shaders/";
@@ -103,9 +105,8 @@ private:
 
         if (!std::regex_search(shader_code, re_match_for_file, re_pattern_for_file))
         {
-            Print::error("Failed to parse name of included file in shader",
-                         "find_and_replace_include_statement()");
-            exit(-1);
+            throw quad::fatal_error("Failed to parse name of included file in shader",
+                                    "find_and_replace_include_statement()");
         }
 
         // Load included file
@@ -133,10 +134,9 @@ private:
 
         if (!file_stream.is_open())
         {
-            Print::error("Could not open or read shader file",
-                         "process_shader_files()",
-                         "Filename: " + shader_folder_path + filename);
-            exit(0);
+            throw quad::fatal_error("Could not open or read shader file",
+                                    "process_shader_files()",
+                                    "Filename: " + shader_folder_path + filename);
         }
 
         // Reading to string
@@ -199,7 +199,7 @@ private:
         int status;
         int shader_type;
         int info_log_length;
-        char info_log[4096];
+        std::string info_log;
 
         if (glIsShader(shader_id))
         {
@@ -208,14 +208,7 @@ private:
             {
                 glGetShaderiv(shader_id, GL_SHADER_TYPE, &shader_type);
                 glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
-                if (info_log_length > 4096)
-                {
-                    Print::error("InfoLog length is greater than allocated space of 4096 bytes",
-                                 "check_compilation_error",
-                                 "Real size: " + std::to_string(info_log_length));
-                }
-
-                glGetShaderInfoLog(shader_id, 4096, NULL, info_log);
+                glGetShaderInfoLog(shader_id, info_log_length, NULL, info_log.data());
 
                 std::string error_msg = "Failed to compile ";
                 if (shader_type == GL_VERTEX_SHADER)
@@ -225,9 +218,9 @@ private:
                 else
                     error_msg += "shader of unknown type";
 
-                Print::error(error_msg, "check_compilation_error", info_log);
-
-                exit(0);
+                throw quad::fatal_error(error_msg,
+                                        "check_compilation_error()",
+                                        info_log);
             }
         }
         else if (glIsProgram(shader_id))
@@ -236,25 +229,17 @@ private:
             if (status == GL_FALSE)
             {
                 glGetProgramiv(shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
-                if (info_log_length > 4096)
-                {
-                    Print::error("InfoLog length is greater than allocated space of 4096 bytes",
-                                 "check_compilation_error",
-                                 "Real size: " + std::to_string(info_log_length));
-                }
+                glGetProgramInfoLog(shader_id, info_log_length, NULL, info_log.data());
 
-                glGetProgramInfoLog(shader_id, 4096, NULL, info_log);
-
-                Print::error("Failed to link program", "check_compilation_error", info_log);
-
-                exit(0);
+                throw quad::fatal_error("Failed to link program",
+                                        "check_compilation_error",
+                                        info_log);
             }
         }
         else
         {
-            Print::error("Specified shader_id is not a shader nor a program",
-                         "check_compilation_error");
-            exit(0);
+            throw quad::fatal_error("Specified shader_id is not a shader nor a program",
+                                    "check_compilation_error");
         }
     }
 
@@ -263,49 +248,49 @@ public:
 
     void set_bool(const std::string &name, bool value) const
     {
-        use();
+        this->use();
         glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
     }
 
     void set_int(const std::string &name, int value) const
     {
-        use();
+        this->use();
         glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
     }
 
     void set_float(const std::string &name, float value) const
     {
-        use();
+        this->use();
         glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
     }
 
     void set_vec2(const std::string &name, glm::vec2 vec) const
     {
-        use();
+        this->use();
         glUniform2f(glGetUniformLocation(ID, name.c_str()), vec[0], vec[1]);
     }
 
     void set_vec3(const std::string &name, glm::vec3 vec) const
     {
-        use();
+        this->use();
         glUniform3f(glGetUniformLocation(ID, name.c_str()), vec[0], vec[1], vec[2]);
     }
 
     void set_vec4(const std::string &name, glm::vec4 vec) const
     {
-        use();
+        this->use();
         glUniform4f(glGetUniformLocation(ID, name.c_str()), vec[0], vec[1], vec[2], vec[3]);
     }
 
     void set_mat4(const std::string &name, glm::mat4 mat) const
     {
-        use();
+        this->use();
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
     }
 
     void set_time(double time) const
     {
-        use();
+        this->use();
         set_float("time", (float)time);
     }
 };
