@@ -1,13 +1,13 @@
+
 #pragma once
+
+#include "geometry.hpp"
 
 #include <vector>
 
-#include "geometry.h"
-
-
 class RawValues
 {
-  public:
+public:
     Model model;
     RawValues(Model model) : model(model) {}
 

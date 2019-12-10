@@ -10,11 +10,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/noise.hpp>
 
-#include "camera.h"
-#include "common.h"
-#include "light.h"
-#include "opengl.h"
-#include "thing.h"
+#include "camera.hpp"
+#include "common.hpp"
+#include "light.hpp"
+#include "opengl.hpp"
+#include "thing.hpp"
 #include "tiktok.hpp"
 
 Lighting lighting;

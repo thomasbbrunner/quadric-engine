@@ -1,13 +1,14 @@
+
 #pragma once
 
+#include "opengl.hpp"
+#include "tiktok.hpp"
+#include "api.hpp"
+
+#include <Eigen/Core>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <Eigen/Core>
 #include <unsupported/Eigen/Splines>
-
-#include "opengl.h"
-#include "tiktok.hpp"
-#include "api.h"
 
 // Camera types
 #define CAMERA_STATIC 0

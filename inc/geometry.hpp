@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "print.h"
+#include "print.hpp"
 #include "error.hpp"
 
 #include <glm/glm.hpp>

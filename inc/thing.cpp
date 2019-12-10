@@ -1,14 +1,14 @@
 
-#include "thing.h"
+#include "thing.hpp"
 
 #include <algorithm>
 #include <glm/glm.hpp>
 
-#include "geometry.h"
-#include "api.h"
-#include "camera.h"
-#include "light.h"
-#include "shader.h"
+#include "geometry.hpp"
+#include "api.hpp"
+#include "camera.hpp"
+#include "light.hpp"
+#include "shader.hpp"
 
 void Thing::add_geometry(Geometry geometry)
 {

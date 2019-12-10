@@ -1,13 +1,15 @@
+
 #pragma once
 
-#include "geometry.h"
-#include "geometry3D.h"
-#include "draw.h"
-#include "thing.h"
+#include "geometry.hpp"
+#include "geometry3D.hpp"
+#include "draw.hpp"
+#include "thing.hpp"
 
-#include <sstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <sstream>
 
 // Light types
 #define LIGHT_DIRECTIONAL 0

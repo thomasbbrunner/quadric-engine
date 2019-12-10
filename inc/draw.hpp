@@ -1,11 +1,9 @@
 
 #pragma once
 
-#include "api.h"
-#include "buffer.h"
+#include "api.hpp"
+#include "buffer.hpp"
 #include "error.hpp"
-
-#include <cstdio>
 
 #define DW_FILL 0
 #define DW_WIREFRAME 1

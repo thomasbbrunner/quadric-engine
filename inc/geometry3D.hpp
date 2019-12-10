@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "common.h"
+#include "common.hpp"
 #include "error.hpp"
-#include "geometry.h"
-#include "print.h"
+#include "geometry.hpp"
+#include "print.hpp"
 
 #include <glm/glm.hpp>
 

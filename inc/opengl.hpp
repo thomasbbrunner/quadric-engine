@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "api.h"
+#include "api.hpp"
 #include "error.hpp"
 
 #include <cstdio>

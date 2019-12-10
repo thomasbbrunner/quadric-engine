@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "api.h"
+#include "api.hpp"
 #include "error.hpp"
-#include "print.h"
+#include "print.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 

@@ -1,4 +1,5 @@
-#include "camera.h"
+
+#include "camera.hpp"
 
 #include <Eigen/Core>
 #include <unsupported/Eigen/Splines>

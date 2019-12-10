@@ -1,10 +1,10 @@
 
 
-#include "buffer.h"
+#include "buffer.hpp"
 
-#include "raw.h"
-#include "geometry.h"
-#include "api.h"
+#include "raw.hpp"
+#include "geometry.hpp"
+#include "api.hpp"
 
 ModelBuffer BufferGeneration::generate_from_mesh(Model model)
 {

@@ -1,3 +1,4 @@
+
 #pragma once
 
 #ifdef OPENGL_ES // Including files for OpenGL ES
