@@ -15,7 +15,7 @@
 #include "light.h"
 #include "opengl.h"
 #include "thing.h"
-#include "tiktok.h"
+#include "tiktok.hpp"
 
 Lighting lighting;
 

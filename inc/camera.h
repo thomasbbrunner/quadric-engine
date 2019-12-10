@@ -6,7 +6,7 @@
 #include <unsupported/Eigen/Splines>
 
 #include "opengl.h"
-#include "tiktok.h"
+#include "tiktok.hpp"
 #include "api.h"
 
 // Camera types
