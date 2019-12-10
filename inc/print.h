@@ -1,16 +1,18 @@
-#pragma once
 
-#include <iostream>
-#include <stdio.h>
-#include <vector>
+#pragma once
 
 #include <glm/glm.hpp>
 
-class Print
+#include <cstdio>
+#include <iostream>
+#include <vector>
+
+namespace quad
+{
+class print
 {
 public:
     // Errors ------------------------------------------------------------------
-
     static void error(std::string message,
                       std::string function_name = "",
                       std::string details = "")
@@ -269,3 +271,4 @@ public:
     //     }
     // }
 };
+} // namespace quad
