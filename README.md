@@ -9,3 +9,7 @@ OpenGL based engine for creative programming
 * GLFW3 (libglfw3-dev)
 * GLM (libglm-dev)
 * eigen3 (libeigen3-dev)
+
+## TODOs
+* Substitute #defines for enums or constexpr
+* Remove singletons and global variables
