@@ -44,16 +44,17 @@ void loop()
     // Update lights
     float dir = 0.0;
     light.set_position(glm::vec3(0.0, 10.0, dir));
-    light.set_color(glm::vec4(0.0f, 0.2f, 1.0f, 1.0f));
+    light.set_color(glm::vec4(0.5f, 1.0f, 1.0f, 1.0f));
     light.set_brightness(BRIGHTNESS_FLARE);
     // light.set_attenuation(0.6);
+    light.draw();
     lighting.update();
 
     // Draw things
-    thing.set_shader(shader1);
+    thing.set_shader(shader2);
     thing.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     thing.update_shader(&lighting);
-    thing.draw(DW_DOTS, 2);
+    thing.draw(DW_FILL, 2);
 }
 
 int main()
@@ -66,7 +67,7 @@ int main()
 
     // 1. Initialize used geometries
     // DotCube dotcube(25, 25, 25, 3);
-    Plane plane(50, 50, 2);
+    Plane plane(100, 100, 1);
 
     // 2. Add geometries to Thing object
     thing.add_geometry(plane);
@@ -80,7 +81,7 @@ int main()
 
     // Lights
     // 1. Add a light source
-    // lighting.add_source(&light);
+    lighting.add_source(&light);
     // 2. Set light type
     light.set_type(LIGHT_POSITIONAL);
     // (3. Add geometry to light)

@@ -4,7 +4,8 @@
 
 vec3 effects(vec3 newcoords)
 {
-    return (((noise(newcoords))));
+
+    return vec3(coords[0], coords[1]+3.0*snoise(vec4(coords/10.0, time/2.0)),coords[2]);
 }
 
 void main() 
