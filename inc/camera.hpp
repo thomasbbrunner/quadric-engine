@@ -10,13 +10,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <unsupported/Eigen/Splines>
 
-// Camera types
-#define CAMERA_STATIC 0
-#define CAMERA_ROTATE_AROUND 1
-#define CAMERA_ROTATE 2
-#define CAMERA_MOVE_BACKWARDS 3
-#define CAMERA_SPLINE 4
-
 class Camera
 {
     // Singleton initialization
@@ -44,6 +37,15 @@ private:
     // End of Singleton initialization
 
 public:
+    enum class Type
+    {
+        STATIC,
+        ROTATE,
+        ROTATE_AROUND,
+        MOVE_BACKWARDS,
+        SPLINE,
+    };
+
     void update();
 
     void set_position(glm::vec3 pos)
@@ -51,11 +53,11 @@ public:
         Position = pos;
     }
 
-    void set_type(int type)
+    void set_type(enum Type type)
     {
         this->type = type;
 
-        if (type == CAMERA_SPLINE)
+        if (type == Type::SPLINE)
             initialize_spline();
     }
 
@@ -71,15 +73,15 @@ public:
 
     glm::mat4 get_view()
     {
-        if (type == CAMERA_STATIC)
+        if (type == Type::STATIC)
             return view_static();
-        else if (type == CAMERA_ROTATE)
+        else if (type == Type::ROTATE)
             return view_rotate();
-        else if (type == CAMERA_ROTATE_AROUND)
+        else if (type == Type::ROTATE_AROUND)
             return view_rotate_around();
-        else if (type == CAMERA_MOVE_BACKWARDS)
+        else if (type == Type::MOVE_BACKWARDS)
             return view_backwards();
-        else if (type == CAMERA_SPLINE)
+        else if (type == Type::SPLINE)
             return view_spline();
         else
             return view_static();
@@ -95,7 +97,7 @@ public:
         return proj;
     }
 
-    int type = 0;
+    enum Type type = Type::STATIC;
     glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -165,7 +167,7 @@ private:
     {
         Camera &camera = Camera::get_instance();
 
-        if (camera.type == CAMERA_STATIC)
+        if (camera.type == Type::STATIC)
         {
             if (camera.firstMouse)
             {

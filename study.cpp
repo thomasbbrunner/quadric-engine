@@ -87,7 +87,7 @@ int main()
     light.add_geometry(Sphere(0.2f));
 
     // Camera
-    camera.set_type(CAMERA_STATIC);
+    camera.set_type(camera.Type::STATIC);
     // camera.set_type(CAMERA_ROTATE_AROUND);
     // camera.set_type(CAMERA_SPLINE);
     camera.set_position(glm::vec3(0.0f, 2.0f, -15.0f));

@@ -6,7 +6,7 @@
 
 void Camera::update()
 {
-    if (type == CAMERA_STATIC)
+    if (type == Type::STATIC)
     {
         float cameraSpeed = speed();
 
