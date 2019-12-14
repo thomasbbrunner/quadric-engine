@@ -197,17 +197,20 @@ private:
     void check_compilation_error(unsigned int shader_id)
     {
         int status;
-        int shader_type;
-        int info_log_length;
-        std::string info_log;
 
         if (glIsShader(shader_id))
         {
             glGetShaderiv(shader_id, GL_COMPILE_STATUS, &status);
             if (status == GL_FALSE)
             {
+                int shader_type;
+                int info_log_length;
+                std::string info_log;
+
                 glGetShaderiv(shader_id, GL_SHADER_TYPE, &shader_type);
                 glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
+
+                info_log.resize(info_log_length);
                 glGetShaderInfoLog(shader_id, info_log_length, NULL, info_log.data());
 
                 std::string error_msg = "Failed to compile ";
@@ -228,7 +231,12 @@ private:
             glGetProgramiv(shader_id, GL_LINK_STATUS, &status);
             if (status == GL_FALSE)
             {
+                int info_log_length;
+                std::string info_log;
+
                 glGetProgramiv(shader_id, GL_INFO_LOG_LENGTH, &info_log_length);
+
+                info_log.resize(info_log_length);
                 glGetProgramInfoLog(shader_id, info_log_length, NULL, info_log.data());
 
                 throw quad::fatal_error("Failed to link program",
