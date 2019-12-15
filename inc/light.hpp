@@ -11,20 +11,25 @@
 
 #include <sstream>
 
-// Light types
-#define LIGHT_DIRECTIONAL 0
-#define LIGHT_POSITIONAL 1
-
-// Brightness effects
-#define BRIGHTNESS_NORMAL 0
-#define BRIGHTNESS_MANUAL 1
-#define BRIGHTNESS_FLICKER_FAST 2
-#define BRIGHTNESS_FLICKER_SPORADIC 3
-#define BRIGHTNESS_FLARE 4
 
 class Light
 {
 public:
+    enum class Type : int
+    {
+        DIRECTIONAL,
+        POSITIONAL,
+    };
+
+    enum class Effect : int
+    {
+        NORMAL,
+        MANUAL,
+        FLICKER_FAST,
+        FLICKER_SPORADIC,
+        FLARE,
+    };
+
     void add_geometry(Geometry geometry = Sphere())
     {
         has_geometry = true;
@@ -55,9 +60,9 @@ public:
         thing.set_color(brightness * color);
     }
 
-    void set_type(unsigned int type_in)
+    void set_type(enum Type type)
     {
-        type = type_in;
+        type_ = type;
     }
 
     glm::vec3 get_position()
@@ -70,14 +75,14 @@ public:
         return color;
     }
 
-    int get_type()
+    enum Type get_type()
     {
-        return type;
+        return type_;
     }
 
-    void set_brightness(unsigned int effect, float brightness = 0.8)
+    void set_brightness(enum Effect effect, float brightness = 0.8)
     {
-        if (effect == BRIGHTNESS_MANUAL)
+        if (effect == Effect::MANUAL)
         {
             if (glfwGetKey(opengl.window, GLFW_KEY_P) == GLFW_PRESS)
                 ambient_strength += 0.1;
@@ -101,19 +106,19 @@ public:
             return;
         }
 
-        if (effect == BRIGHTNESS_NORMAL)
+        if (effect == Effect::NORMAL)
         {
             this->brightness = glm::clamp(brightness, 0.0f, 0.8f);
         }
-        else if (effect == BRIGHTNESS_FLICKER_FAST)
+        else if (effect == Effect::FLICKER_FAST)
         {
             this->brightness = glm::clamp(Math::random(0.0, 0.8), 0.0f, 0.8f);
         }
-        else if (effect == BRIGHTNESS_FLICKER_SPORADIC)
+        else if (effect == Effect::FLICKER_SPORADIC)
         {
             this->brightness = glm::clamp(Math::random(0.0, 20.0), 0.0f, 0.8f);
         }
-        else if (effect == BRIGHTNESS_FLARE)
+        else if (effect == Effect::FLARE)
         {
             this->brightness = 1.0 + Math::random(-1.0, 1.0) / 10.0;
             this->brightness = glm::clamp(this->brightness, 0.2f, 2.0f);
@@ -162,7 +167,7 @@ private:
     // Light attributes
     glm::vec3 position = glm::vec3(0.0);
     glm::vec4 color = glm::vec4(1.0);
-    int type = LIGHT_POSITIONAL;
+    enum Type type_ = Type::POSITIONAL;
     // Directional light has w = 0
     // Positional light has w = 1
 
@@ -187,10 +192,11 @@ public:
         {
             std::stringstream temp;
             temp << "light[" << i << "]";
-
+            // TODO: implement this in a dedicated class
+            // (class for interfacing with shaders -> maybe Shader or another class)
             shader.set_vec4(temp.str() + ".color", lights.at(i)->get_color());
             shader.set_vec3(temp.str() + ".pos", lights.at(i)->get_position());
-            shader.set_int(temp.str() + ".type", lights.at(i)->get_type());
+            shader.set_int(temp.str() + ".type", static_cast<int>(lights.at(i)->get_type()));
 
             shader.set_float("attenuation_constant", 1.0);
             shader.set_float("attenuation_linear", lights.at(i)->attenuation_linear);

@@ -44,7 +44,7 @@ void loop()
     float dir = 0.0;
     light.set_position(glm::vec3(0.0, 10.0, dir));
     light.set_color(glm::vec4(0.5f, 1.0f, 1.0f, 1.0f));
-    light.set_brightness(BRIGHTNESS_FLARE);
+    light.set_brightness(Light::Effect::FLARE);
     // light.set_attenuation(0.6);
     light.draw();
     lighting.update();
@@ -82,7 +82,7 @@ int main()
     // 1. Add a light source
     lighting.add_source(&light);
     // 2. Set light type
-    light.set_type(LIGHT_POSITIONAL);
+    light.set_type(Light::Type::POSITIONAL);
     // (3. Add geometry to light)
     light.add_geometry(Sphere(0.2f));
 
