@@ -31,8 +31,8 @@ private:
         glfwSetCursorPosCallback(opengl.window, mouse_callback);
         // glfwRawMouseMotionSupported() // Needs GLFW 3.3
 
-        mouse_last_x = (float)opengl.window_width();
-        mouse_last_y = (float)opengl.window_height();
+        mouse_last_x = (float)opengl.get_window_width();
+        mouse_last_y = (float)opengl.get_window_height();
     }
     // End of Singleton initialization
 

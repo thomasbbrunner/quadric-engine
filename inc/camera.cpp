@@ -36,7 +36,7 @@ void Camera::update()
         }
     }
 
-    aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.window_height() / (float)opengl.window_width(), 1.0f, 1.0f));
+    aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.get_window_height() / (float)opengl.get_window_width(), 1.0f, 1.0f));
     proj = glm::perspective<float>(glm::radians(fov), 1.0f, 1.0f, 1000.0f);
     // proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
 }

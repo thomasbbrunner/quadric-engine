@@ -7,14 +7,12 @@
 
 #include <signal.h>
 
-// Toggle MSAA
-#define MSAA
+// Toggle MSAA TODO: add as argument to constructor
+constexpr bool MSAA = true;
+constexpr int MSAA_SAMPLES = 4;
 
-#define MSAA_SAMPLES 4
-#define WINDOW_HEIGHT 1080
-#define WINDOW_WIDTH 1080
-
-// #define VIDEO_OUT
+// Toggle video capture
+constexpr bool VIDEO_OUT = false;
 
 class OpenGL
 {
@@ -32,8 +30,8 @@ public:
 private:
     OpenGL()
     {
-        int window_height = WINDOW_HEIGHT;
-        int window_width = WINDOW_WIDTH;
+        int window_height = 1080;
+        int window_width = 1080;
 
         quad::print::info("Initialising quadric-engine");
 
@@ -45,9 +43,10 @@ private:
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#ifdef MSAA
-        glfwWindowHint(GLFW_SAMPLES, MSAA_SAMPLES);
-#endif
+        if (MSAA)
+        {
+            glfwWindowHint(GLFW_SAMPLES, MSAA_SAMPLES);
+        }
 
         // Creating window
         window = glfwCreateWindow(window_width, window_height, "OpenGL", NULL, NULL); // Fullscreen: glfwGetPrimaryMonitor()
@@ -69,17 +68,18 @@ private:
         // For window resizing
         glfwSetFramebufferSizeCallback(window, this->framebuffer_resize_callback);
 
-        // Setting window size and locationu
-        glViewport(0, 0, window_width, window_height);
+        // Setting window size and location
+        set_window_dimensions(window_width, window_height);
 
         // Enabling depth test
         glEnable(GL_DEPTH_TEST);
 
         // Enable MSAA
-#ifdef MSAA
-        glEnable(GL_MULTISAMPLE);
-        glEnable(GL_LINE_SMOOTH);
-#endif
+        if (MSAA)
+        {
+            glEnable(GL_MULTISAMPLE);
+            glEnable(GL_LINE_SMOOTH);
+        }
 
         // Debuging messages
         // glEnable(GL_DEBUG_OUTPUT);
@@ -95,9 +95,10 @@ private:
         quad::print::info(info_msg);
 
         // Recorder
-#ifdef VIDEO_OUT
-        start_recorder();
-#endif
+        if constexpr (VIDEO_OUT)
+        {
+            start_recorder();
+        }
     }
 
 public:
@@ -108,14 +109,19 @@ public:
         glViewport(0, 0, width, height);
     }
 
-    int window_height()
+    void set_window_dimensions(int width, int height)
+    {
+        glViewport(0, 0, width, height);
+    }
+
+    int get_window_height()
     {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         return height;
     }
 
-    int window_width()
+    int get_window_width()
     {
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -134,9 +140,10 @@ public:
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-#ifdef VIDEO_OUT
-        record();
-#endif
+        if constexpr (VIDEO_OUT)
+        {
+            record();
+        }
 
         // Clearing screen
         glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -147,9 +154,11 @@ public:
     {
         quad::print::info("Terminating");
         glfwTerminate();
-#ifdef VIDEO_OUT
-        // pclose(ffmpeg);
-#endif
+        if constexpr (VIDEO_OUT)
+        {
+            // pclose(ffmpeg);
+        }
+
         exit(0);
     }
 
@@ -190,7 +199,7 @@ private:
         sprintf(cmd, "ffmpeg "
                      "-r 30 -f rawvideo -pixel_format rgba -video_size %dx%d -i pipe:0 "                // input file configs
                      "-preset slow -threads 8 -video_size %dx%d -vf vflip -y -crf 18 ./vid/output.mp4", // output file configs
-                window_width(), window_height(), window_width(), window_height());
+                get_window_width(), get_window_height(), get_window_width(), get_window_height());
 
         // Add "-c:v libx264 -profile:v main -vf format=yuv420p" for mobile compatibility?
 
@@ -203,7 +212,7 @@ private:
             // opengl.terminate(0);
         }
 
-        if ((buffer = new int[window_width() * window_height()]) == NULL)
+        if ((buffer = new int[get_window_width() * get_window_height()]) == NULL)
         {
             quad::fatal_error("allocation error");
         }
@@ -211,8 +220,8 @@ private:
 
     void record()
     {
-        glReadPixels(0, 0, window_width(), window_height(), GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        glReadPixels(0, 0, get_window_width(), get_window_height(), GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
-        fwrite(buffer, sizeof(int) * window_width() * window_height(), 1, ffmpeg);
+        fwrite(buffer, sizeof(int) * get_window_width() * get_window_height(), 1, ffmpeg);
     }
 };
