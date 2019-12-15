@@ -1,3 +1,4 @@
+
 # Project
 cmake_minimum_required(VERSION 2.8)
 project(quadricworks)
@@ -19,6 +20,7 @@ add_executable(quadricworks
     ${PROJECT_SOURCE_DIR}/inc/buffer.cpp
     ${PROJECT_SOURCE_DIR}/inc/thing.cpp
     ${PROJECT_SOURCE_DIR}/inc/camera.cpp
+    ${PROJECT_SOURCE_DIR}/inc/print.cpp
     ${PROJECT_SOURCE_DIR}/lib/glad/glad.c)
 
 # Headers

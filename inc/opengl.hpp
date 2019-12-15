@@ -3,9 +3,8 @@
 
 #include "api.hpp"
 #include "error.hpp"
+#include "print.hpp"
 
-#include <cstdio>
-#include <iostream>
 #include <signal.h>
 
 // Toggle MSAA
@@ -36,7 +35,7 @@ private:
         int window_height = WINDOW_HEIGHT;
         int window_width = WINDOW_WIDTH;
 
-        printf("--Initialising--\n");
+        quad::print::info("Initialising quadric-engine");
 
         // Adding SIGINT handler
         // signal(SIGINT, signal_handler);
@@ -86,8 +85,14 @@ private:
         // glEnable(GL_DEBUG_OUTPUT);
         // glDebugMessageCallback();
 
-        // Printing OpenGL version
-        printf("%s\n", glGetString(GL_VERSION));
+        // Printing OpenGL information
+        std::string info_msg{
+            std::string("Device information:") +
+            "\n  OpenGL version: " + reinterpret_cast<const char *>(glGetString(GL_VERSION)) +
+            "\n  GLSL version:   " + reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)) +
+            "\n  Vendor:         " + reinterpret_cast<const char *>(glGetString(GL_VENDOR)) +
+            "\n  Renderer:       " + reinterpret_cast<const char *>(glGetString(GL_RENDERER))};
+        quad::print::info(info_msg);
 
         // Recorder
 #ifdef VIDEO_OUT
@@ -140,7 +145,7 @@ public:
 
     void terminate()
     {
-        std::cout << "--Terminating--" << std::endl;
+        quad::print::info("Terminating");
         glfwTerminate();
 #ifdef VIDEO_OUT
         // pclose(ffmpeg);
@@ -200,8 +205,7 @@ private:
 
         if ((buffer = new int[window_width() * window_height()]) == NULL)
         {
-            printf("allocation error");
-            //opengl.terminate(0);
+            quad::fatal_error("allocation error");
         }
     }
 
