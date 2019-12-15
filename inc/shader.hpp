@@ -21,23 +21,14 @@ const std::string shader_folder_path = "../shaders/";
 const std::string vert_common_filename = "common.vert";
 const std::string frag_common_filename = "common.frag";
 
-// Standard shader
-const std::string vert_std_filename = "std.vert";
-const std::string frag_std_filename = "std.frag";
-
 class Shader
 {
 public:
     unsigned int ID;
 
-    Shader(std::string vert_filename = "std",
-           std::string frag_filename = "std")
+    Shader(std::string vert_filename,
+           std::string frag_filename)
     {
-        if (vert_filename == "std")
-            vert_filename = vert_std_filename;
-        if (frag_filename == "std")
-            frag_filename = frag_std_filename;
-
         // Open files
         std::string vert_code = load_shader_file(vert_filename);
         std::string frag_code = load_shader_file(frag_filename);

@@ -27,9 +27,8 @@ Thing thing;
 Light light;
 // Light sun(LIGHT_DIRECTIONAL);
 
-Shader shader1;
 Shader shader2("study41.vert", "study41.frag");
-Shader shader3("study41.vert");
+Shader shader3("study41.vert", "std.frag");
 
 void loop()
 {

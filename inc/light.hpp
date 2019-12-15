@@ -166,7 +166,7 @@ private:
     // Directional light has w = 0
     // Positional light has w = 1
 
-    Shader shader;
+    Shader shader{"lighting.vert", "lighting.frag"};
     Thing thing;
     bool has_geometry = false;
     OpenGL &opengl = OpenGL::get_instance();
