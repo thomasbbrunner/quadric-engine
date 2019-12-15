@@ -3,7 +3,7 @@
 
 #include "print.hpp"
 
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 namespace quad
