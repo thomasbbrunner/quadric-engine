@@ -1,12 +1,12 @@
 
 #pragma once
 
-#include "geometry.hpp"
 #include "buffer.hpp"
-#include "draw.hpp"
-#include "shader.hpp"
 #include "camera.hpp"
-#include "common.hpp"
+#include "draw.hpp"
+#include "geometry.hpp"
+#include "math.hpp"
+#include "shader.hpp"
 
 #include <glm/glm.hpp>
 

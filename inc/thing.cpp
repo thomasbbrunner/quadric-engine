@@ -40,7 +40,7 @@ void Thing::add_geometry(Geometry geometry)
         max_index = 0;
     }
 
-    Math::add_to_each(&geometry.vertex_indices_mesh, max_index);
+    quad::math::add_to_each(&geometry.vertex_indices_mesh, max_index);
 
     this->geometry.vertex_indices_mesh.insert(
         this->geometry.vertex_indices_mesh.end(),
@@ -57,7 +57,7 @@ void Thing::add_geometry(Geometry geometry)
         max_index = 0;
     }
 
-    Math::add_to_each(&geometry.vertex_indices_contour, max_index);
+    quad::math::add_to_each(&geometry.vertex_indices_contour, max_index);
 
     this->geometry.vertex_indices_contour.insert(
         this->geometry.vertex_indices_contour.end(),

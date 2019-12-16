@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "common.hpp"
+#include "math.hpp"
 #include "error.hpp"
 #include "geometry.hpp"
 #include "print.hpp"
@@ -121,7 +121,7 @@ public:
         // Last vertex
         vertex_coordinates_mesh.push_back(glm::vec3(0.0, -1.0f, 0.0));
 
-        Math::multiply_by_scalar(&vertex_coordinates_mesh, d);
+        quad::math::multiply_by_scalar(&vertex_coordinates_mesh, d);
 
         // Indices top layer
         for (unsigned int i = 1; i <= horizontal_poly; i++)
@@ -390,11 +390,11 @@ public:
             }
         }
 
-        // Math::normalize(&vertex_coordinates_mesh);
+        // quad::math::normalize(&vertex_coordinates_mesh);
         printf("%lu\n", vertex_indices_mesh.size());
         quad::print::array(vertex_indices_mesh, 3);
 
-        Math::multiply_by_scalar(&vertex_coordinates_mesh, 10.0f);
+        quad::math::multiply_by_scalar(&vertex_coordinates_mesh, 10.0f);
 
         vertex_coordinates_dots = vertex_coordinates_mesh;
         vertex_coordinates_mesh.clear();
@@ -451,7 +451,7 @@ public:
         for (unsigned int reps = 0; reps < 1; reps++)
         {
             // Normalizing vertices
-            Math::normalize(&vertex_coordinates_mesh);
+            quad::math::normalize(&vertex_coordinates_mesh);
 
             // Creating new vertices
             std::vector<glm::vec3> vertices_new;
@@ -490,7 +490,7 @@ public:
             vertex_coordinates_mesh.insert(vertex_coordinates_mesh.end(), vertices_new.begin(), vertices_new.end());
 
             // Normalizing vertices
-            Math::normalize(&vertex_coordinates_mesh);
+            quad::math::normalize(&vertex_coordinates_mesh);
 
             vertex_coordinates_dots = vertex_coordinates_mesh;
 
@@ -616,7 +616,7 @@ public:
         // vertex_indices_mesh = vertex_indices_mesh_backup;
 
         // Normalizing vertices
-        Math::normalize(&vertex_coordinates_mesh);
+        quad::math::normalize(&vertex_coordinates_mesh);
 
         // Multiplying by size
         glm::mat3 trans(d);

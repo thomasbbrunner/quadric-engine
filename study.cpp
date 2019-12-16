@@ -11,7 +11,6 @@
 #include <glm/gtc/noise.hpp>
 
 #include "camera.hpp"
-#include "common.hpp"
 #include "light.hpp"
 #include "opengl.hpp"
 #include "thing.hpp"

@@ -11,7 +11,6 @@
 
 #include <sstream>
 
-
 class Light
 {
 public:
@@ -112,15 +111,15 @@ public:
         }
         else if (effect == Effect::FLICKER_FAST)
         {
-            this->brightness = glm::clamp(Math::random(0.0, 0.8), 0.0f, 0.8f);
+            this->brightness = glm::clamp(quad::math::random(0.0, 0.8), 0.0f, 0.8f);
         }
         else if (effect == Effect::FLICKER_SPORADIC)
         {
-            this->brightness = glm::clamp(Math::random(0.0, 20.0), 0.0f, 0.8f);
+            this->brightness = glm::clamp(quad::math::random(0.0, 20.0), 0.0f, 0.8f);
         }
         else if (effect == Effect::FLARE)
         {
-            this->brightness = 1.0 + Math::random(-1.0, 1.0) / 10.0;
+            this->brightness = 1.0 + quad::math::random(-1.0, 1.0) / 10.0;
             this->brightness = glm::clamp(this->brightness, 0.2f, 2.0f);
         }
 
@@ -139,11 +138,11 @@ public:
 
         float cutoff_distance = 500.0 - attenuation * 500.0;
 
-        this->attenuation_linear = Math::linear_interpolation(
-            cutoff_distance, attenuation_distance_data, attenuation_linear_data);
+        this->attenuation_linear = quad::math::linear_interpolation(
+            cutoff_distance, &attenuation_distance_data, &attenuation_linear_data);
 
-        this->attenuation_quadratic = Math::linear_interpolation(
-            cutoff_distance, attenuation_distance_data, attenuation_quadratic_data);
+        this->attenuation_quadratic = quad::math::linear_interpolation(
+            cutoff_distance, &attenuation_distance_data, &attenuation_quadratic_data);
     }
 
     // Attenuation
