@@ -58,17 +58,19 @@ void loop()
 int main()
 {
     // SHADERS
-    printf("--Building and compiling shaders--\n");
+    quad::print::info("Building and compiling shaders");
 
     // GEOMETRIES
-    printf("--Creating geometries--\n");
+    quad::print::info("Creating geometries");
 
     // 1. Initialize used geometries
     // DotCube dotcube(25, 25, 25, 3);
     Plane plane(100, 100, 1);
+    Sphere sphere(10.0f);
 
     // 2. Add geometries to Thing object
     thing.add_geometry(plane);
+    thing.add_geometry(sphere);
 
     // (2.5 Generate buffers)
     thing.generate_buffers();
@@ -92,7 +94,7 @@ int main()
     camera.set_position(glm::vec3(0.0f, 2.0f, -15.0f));
 
     // Render loop
-    printf("--Starting rendering--\n");
+    quad::print::info("Starting rendering");
 #ifdef OPENGL_ES
     emscripten_set_main_loop(loop, 0, opengl.running());
 #else
