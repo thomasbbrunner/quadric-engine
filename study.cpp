@@ -52,7 +52,7 @@ void loop()
     thing.set_shader(shader2);
     thing.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     thing.update_shader(&lighting);
-    thing.draw(DW_FILL, 2);
+    thing.draw(Drawer::Type::FILL, 2);
 }
 
 int main()

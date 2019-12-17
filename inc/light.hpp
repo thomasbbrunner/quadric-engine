@@ -43,7 +43,7 @@ public:
         if (has_geometry)
         {
             thing.update_shader();
-            thing.draw(DW_FILL);
+            thing.draw(Drawer::Type::FILL);
         }
     }
 

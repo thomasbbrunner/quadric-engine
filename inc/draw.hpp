@@ -5,28 +5,31 @@
 #include "buffer.hpp"
 #include "error.hpp"
 
-#define DW_FILL 0
-#define DW_WIREFRAME 1
-#define DW_CONTOUR 2
-#define DW_DOTS 4
-
 class Drawer
 {
 public:
-    void draw(Buffers *buffers, unsigned int type, float line_thickness = 1.0)
+    enum class Type
+    {
+        FILL,
+        WIREFRAME,
+        CONTOUR,
+        DOTS
+    };
+
+    void draw(Buffers *buffers, enum Type type, float line_thickness = 1.0)
     {
         switch (type)
         {
-        case DW_FILL:
+        case Type::FILL:
             draw_fill(buffers->mesh);
             break;
-        case DW_WIREFRAME:
+        case Type::WIREFRAME:
             draw_wireframe(buffers->mesh, line_thickness = line_thickness);
             break;
-        case DW_CONTOUR:
+        case Type::CONTOUR:
             draw_contour(buffers->contour, line_thickness = line_thickness);
             break;
-        case DW_DOTS:
+        case Type::DOTS:
             draw_dots(buffers->dots, line_thickness = line_thickness);
             break;
         default:
