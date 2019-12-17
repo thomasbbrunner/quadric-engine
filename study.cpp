@@ -23,11 +23,11 @@ Camera &camera = Camera::get_instance();
 OpenGL &opengl = OpenGL::get_instance();
 
 Thing thing;
-Light light;
+Light light1;
+Light light2;
 // Light sun(LIGHT_DIRECTIONAL);
 
 Shader shader2("study41.vert", "study41.frag");
-Shader shader3("study41.vert", "std.frag");
 
 void loop()
 {
@@ -41,11 +41,15 @@ void loop()
 
     // Update lights
     float dir = 0.0;
-    light.set_position(glm::vec3(0.0, 10.0, dir));
-    light.set_color(glm::vec4(0.5f, 1.0f, 1.0f, 1.0f));
-    light.set_brightness(Light::Effect::FLARE);
+    light1.set_position(glm::vec3(0.0, 10.0, dir));
+    light1.set_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    light1.set_brightness(Light::Effect::FLARE);
+    light2.set_position(glm::vec3(0.0, 10.0, -20.0f));
+    light2.set_color(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+    light2.set_brightness(Light::Effect::NORMAL);
     // light.set_attenuation(0.6);
-    light.draw();
+    light1.draw();
+    light2.draw();
     lighting.update();
 
     // Draw things
@@ -65,12 +69,16 @@ int main()
 
     // 1. Initialize used geometries
     // DotCube dotcube(25, 25, 25, 3);
-    Plane plane(100, 100, 1);
-    Sphere sphere(10.0f);
+    // Plane plane(100, 100, 1);
+    // Sphere sphere(2.0f);
+    // glm::mat4 sphere_translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 10.0, -50.0));
+    // sphere.apply_transformation(sphere_translate);
+    Cube cube (15.0f);
 
     // 2. Add geometries to Thing object
-    thing.add_geometry(plane);
-    thing.add_geometry(sphere);
+    // thing.add_geometry(plane);
+    // thing.add_geometry(sphere);
+    thing.add_geometry(cube);
 
     // (2.5 Generate buffers)
     thing.generate_buffers();
@@ -81,17 +89,20 @@ int main()
 
     // Lights
     // 1. Add a light source
-    lighting.add_source(&light);
+    lighting.add_source(&light1);
+    lighting.add_source(&light2);
     // 2. Set light type
-    light.set_type(Light::Type::POSITIONAL);
+    light1.set_type(Light::Type::POSITIONAL);
+    light2.set_type(Light::Type::POSITIONAL);
     // (3. Add geometry to light)
-    light.add_geometry(Sphere(0.2f));
+    light1.add_geometry(Sphere(0.2f));
+    light2.add_geometry(Sphere(0.2f));
 
     // Camera
     camera.set_type(camera.Type::STATIC);
-    // camera.set_type(CAMERA_ROTATE_AROUND);
+    // camera.set_type(Camera::Type::ROTATE_AROUND);
     // camera.set_type(CAMERA_SPLINE);
-    camera.set_position(glm::vec3(0.0f, 2.0f, -15.0f));
+    // camera.set_position(glm::vec3(0.0f, 20.0f, 10.0f));
 
     // Render loop
     quad::print::info("Starting rendering");
