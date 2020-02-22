@@ -40,15 +40,15 @@ void loop()
     // 0.75)));
 
     // Update lights
-    float dir = 0.0;
-    light1.set_position(glm::vec3(0.0, 10.0, dir));
+    light1.set_position(glm::vec3(0.0, 10.0, 20.0f));
     light1.set_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     light1.set_brightness(Light::Effect::FLARE);
+    light1.draw();
+
     light2.set_position(glm::vec3(0.0, 10.0, -20.0f));
     light2.set_color(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
     light2.set_brightness(Light::Effect::NORMAL);
     // light.set_attenuation(0.6);
-    light1.draw();
     light2.draw();
     lighting.update();
 
