@@ -43,15 +43,18 @@ public:
         time_type_ = type;
     }
 
-    double get()
+    // templated to allow use of normal and double precision time values
+    // most of use-cases only accept floats (glm), so it is the standard type
+    template <typename T = float>
+    T get()
     {
         if (time_type_ == Type::TICKS)
         {
-            return tiktok_tick_;
+            return (T)tiktok_tick_;
         }
         else if (time_type_ == Type::TICKS)
         {
-            return tiktok_wall_;
+            return (T)tiktok_wall_;
         }
         else
         {
