@@ -4,8 +4,9 @@
 
 vec3 effects(vec3 newcoords)
 {
-
-    return vec3(coords[0], coords[1]+3.0*snoise(vec4(coords/10.0, time/2.0)),coords[2]);
+    // return vec3(coords[0], coords[1]+3.0*snoise(vec4(coords/10.0, time/2.0)),coords[2]);
+    // TODO this effect has affects the scene lighting!!! (fucks up with the normals fix this)
+    return newcoords;
 }
 
 void main() 
