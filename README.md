@@ -1,4 +1,4 @@
-# quadric engine
+# quadric works
 
 OpenGL based engine for creative programming
 
