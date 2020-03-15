@@ -27,7 +27,6 @@ add_executable(quadricworks
 # Headers
 include_directories(${PROJECT_SOURCE_DIR}/inc)
 include_directories(${PROJECT_SOURCE_DIR}/lib)
-include_directories(${PROJECT_SOURCE_DIR}/lib/glad)
 
 # OpenGL
 set(OpenGL_GL_PREFERENCE GLVND) # forcing use of GLVND libs instead of legacy
@@ -38,7 +37,7 @@ target_link_libraries(quadricworks ${OPENGL_gl_LIBRARY})
 # GLM
 find_package(glm REQUIRED)
 message(STATUS "Found glm in ${glm_DIR}")
-target_link_libraries(quadricworks ${GLM_INCLUDE_DIRS})
+target_link_libraries(quadricworks glm)
 
 # GLFW
 find_package(glfw3 REQUIRED)
@@ -46,16 +45,14 @@ message(STATUS "Found glfw3 in ${glfw3_DIR}")
 target_link_libraries(quadricworks glfw) 
 
 # Glad
+target_link_libraries(quadricworks ${CMAKE_DL_LIBS}) # glad required libdl
 set(GLAD_DIR ${PROJECT_SOURCE_DIR}/lib/glad)
-add_library(glad ${GLAD_DIR}/glad.c)
-target_link_libraries(glad ${CMAKE_DL_LIBS})
-target_include_directories(glad PUBLIC ${GLAD_DIR})
-target_include_directories(quadricworks PUBLIC ${GLAD_DIR})
-target_link_libraries(quadricworks glad)# "${CMAKE_DL_LIBS}")
-
-# add_library(glad ${PROJECT_SOURCE_DIR}/lib/glad/glad.h ${PROJECT_SOURCE_DIR}/lib/glad/glad.c)
-#target_include_directories(glad PUBLIC ${PROJECT_SOURCE_DIR}/lib/glad/)
-# target_link_libraries(quadricworks glad)
+add_custom_command(
+    OUTPUT
+        ${GLAD_DIR}/glad.c
+    COMMAND
+        glad --profile=core --generator=c-debug --spec=gl --out-path=${GLAD_DIR} --extensions= --local-files)
+include_directories(${PROJECT_SOURCE_DIR}/lib/glad)
 
 # Eigen
 find_package(Eigen3 REQUIRED)

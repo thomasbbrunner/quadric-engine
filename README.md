@@ -10,6 +10,7 @@ OpenGL based engine for creative programming
 * GLM (libglm-dev)
 * eigen3 (libeigen3-dev)
 * glslang-tools (for GLSL code linting, requires VS Code extension)
+* glad (python3-glad)
 
 ## TODOs
 * Substitute #defines for enums or constexpr
