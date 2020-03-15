@@ -1,9 +1,4 @@
-bin
-.~lock.*
-emsdk.zip
-*.pyc
 .vscode
-__pycache__
-a.out
-./*/a.out
+bin
 build
+lib/glad/
