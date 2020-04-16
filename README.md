@@ -1,17 +1,31 @@
 # quadric works
 
-OpenGL based engine for creative programming
-
-## Requirements
-* C++17
+OpenGL based engine for creative programming in C++17
 
 ## Dependencies
+Following packages need to be installed:
 * GLFW3 (libglfw3-dev)
 * GLM (libglm-dev)
 * eigen3 (libeigen3-dev)
-* glslang-tools (for GLSL code linting, requires VS Code extension)
 * glad (python3-glad)
+* gcc 7 (or greater)
+
+Optional:
+* glslang-tools (for GLSL code linting, requires VS Code extension)
+
+## Building and running
+```bash
+git clone https://github.com/thomasbbrunner/quadricworks.git
+cd quadricworks
+mkdir build
+cd build
+cmake ..
+make
+cd ../
+./bin/quadricworks
+```
 
 ## TODOs
 * Substitute #defines for enums or constexpr
 * Remove singletons and global variables
+* Add right version to glad loader
