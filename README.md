@@ -4,6 +4,7 @@ OpenGL-based engine for creative programming in C++17
 
 ## Dependencies
 Following packages need to be installed:
+* libglvnd-dev
 * GLFW3 (libglfw3-dev)
 * GLM (libglm-dev)
 * eigen3 (libeigen3-dev)
