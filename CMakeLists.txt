@@ -1,7 +1,7 @@
 
 # Project
 cmake_minimum_required(VERSION 2.8)
-project(quadricworks)
+project(quadric-engine)
 
 # CMake settings
 set(CMAKE_CXX_STANDARD 17)
