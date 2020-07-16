@@ -2,6 +2,10 @@
 
 OpenGL-based engine for creative programming in C++17
 
+<p align="center">
+  <img width="400" height="300" src="demos/demo_cubeworld.gif" alt="Demo quadric engine">
+</p>
+
 ## Dependencies
 Following packages need to be installed:
 * libglvnd-dev
@@ -12,7 +16,12 @@ Following packages need to be installed:
 * gcc 7 (or greater)
 
 Optional:
-* glslang-tools (for GLSL code linting, requires VS Code extension)
+* glslang-tools (for GLSL code linting)
+
+<video width="320" height="240" controls>
+  <source src="vid/demo_cubeworld.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
 
 ## Building and running
 ```bash
