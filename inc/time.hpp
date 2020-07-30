@@ -55,10 +55,10 @@ namespace qe
 
         // steps can be negative or positive (fast forward time or revert time)
         // (only works when using ticks)
-        inline void update(int steps = 1)
+        inline void update(int num_steps = 1)
         {
             wall_ = glfwGetTime();
-            tick_ += steps * tick_step_;
+            tick_ += num_steps * tick_step_;
         }
     };
 } // namespace qe
