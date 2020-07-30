@@ -22,11 +22,11 @@ public:
     std::vector<unsigned int> vertex_indices_mesh;
     std::vector<unsigned int> vertex_indices_contour;
 
-    void apply_noise(double tiktok = 0.0)
+    void apply_noise(float time = 0.0)
     {
         for (unsigned int i = 0; i < vertex_coordinates_dots.size(); i++)
         {
-            float noise = glm::perlin(glm::vec4(vertex_coordinates_dots.at(i) / 10.0f, (float)tiktok));
+            float noise = glm::perlin(glm::vec4(vertex_coordinates_dots.at(i) / 10.0f, time));
             vertex_coordinates_dots.at(i)[1] += 10.0 * noise;
         }
     }

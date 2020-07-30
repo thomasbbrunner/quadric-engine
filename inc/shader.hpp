@@ -286,9 +286,9 @@ public:
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
     }
 
-    void set_time(double time) const
+    void set_time(float time) const
     {
         this->use();
-        set_float("time", (float)time);
+        set_float("time", time);
     }
 };

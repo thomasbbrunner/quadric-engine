@@ -4,27 +4,28 @@
 #include <Eigen/Core>
 #include <unsupported/Eigen/Splines>
 
-void Camera::update()
+void Camera::update(float time)
 {
-    if (type == Type::STATIC)
-    {
-        float cameraSpeed = speed();
 
+    float camera_speed = speed(time);
+
+    if (type_ == Type::STATIC)
+    {
         if (glfwGetKey(opengl.window, GLFW_KEY_W) == GLFW_PRESS)
-            Position += cameraSpeed * Front;
+            position_ += camera_speed * front_;
         if (glfwGetKey(opengl.window, GLFW_KEY_S) == GLFW_PRESS)
-            Position -= cameraSpeed * Front;
+            position_ -= camera_speed * front_;
         if (glfwGetKey(opengl.window, GLFW_KEY_A) == GLFW_PRESS)
-            Position -= glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
+            position_ -= glm::normalize(glm::cross(front_, up_)) * camera_speed;
         if (glfwGetKey(opengl.window, GLFW_KEY_D) == GLFW_PRESS)
-            Position += glm::normalize(glm::cross(Front, Up)) * cameraSpeed;
+            position_ += glm::normalize(glm::cross(front_, up_)) * camera_speed;
         if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
-            Position += cameraSpeed * Up;
+            position_ += camera_speed * up_;
         if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
-            Position -= cameraSpeed * Up;
+            position_ -= camera_speed * up_;
         if (glfwGetKey(opengl.window, GLFW_KEY_E) == GLFW_PRESS)
         {
-            // Front -= 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+            // front_ -= 0.2f * camera_speed * glm::normalize(glm::cross(up_, front_));
             // fov++;
             // printf("fov: %.5f\n", fov);
         }
@@ -32,8 +33,34 @@ void Camera::update()
         {
             // fov--;
             // printf("fov: %.5f\n", fov);
-            // Front += 0.2f * cameraSpeed * glm::normalize(glm::cross(Up, Front));
+            // front_ += 0.2f * camera_speed * glm::normalize(glm::cross(up_, front_));
         }
+
+        view_ = glm::lookAt(position_, position_ + front_, up_);
+    }
+    else if (type_ == Type::ROTATE)
+    {
+        view_ = glm::rotate(glm::lookAt(position_, position_ + front_, glm::vec3(0.0, 1.0, 0.0)), 0.5f * time, front_);
+    }
+    else if (type_ == Type::ROTATE_AROUND)
+    {
+        float vel = 0.5;
+        float radius = 30.0;
+        float height = 5.0;
+        float camX = glm::sin(vel * time * radius);
+        float camZ = glm::cos(vel * time * radius);
+        view_ = glm::lookAt(glm::vec3(camX, height, camZ), -glm::vec3(camX, height, camZ) + position_, glm::vec3(0.0, 1.0, 0.0));
+    }
+    else if (type_ == Type::MOVE_BACKWARDS)
+    {
+        position_ -= camera_speed * front_;
+        view_ = glm::lookAt(position_, position_ + front_, up_);
+    }
+    // else if (type_ == Type::SPLINE)
+    // {}
+    else
+    {
+        quad::fatal_error("Camera type not recognized.", "Camera::update()");
     }
 
     aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.get_window_height() / (float)opengl.get_window_width(), 1.0f, 1.0f));
@@ -41,6 +68,7 @@ void Camera::update()
     // proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
 }
 
+/* this should not be here, this is not a job for the Camera class
 void Camera::initialize_spline()
 {
     Eigen::VectorXd x_pts(12);
@@ -62,7 +90,7 @@ void Camera::initialize_spline()
 
 glm::mat4 Camera::view_spline()
 {
-    float spline_walker = tiktok.get() / 15.0;
+    float spline_walker = time.get() / 15.0;
 
     if (spline_walker >= 0.95)
     {
@@ -71,7 +99,8 @@ glm::mat4 Camera::view_spline()
 
     Eigen::VectorXd pos = spline(spline_walker);
 
-    Position = glm::vec3(pos[0], pos[1], pos[2]);
+    position_ = glm::vec3(pos[0], pos[1], pos[2]);
 
-    return glm::lookAt(Position, Front, Up);
+    return glm::lookAt(position_, front_, up_);
 }
+*/

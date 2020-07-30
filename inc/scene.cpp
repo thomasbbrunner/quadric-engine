@@ -78,7 +78,7 @@ void Scene::generate_buffers()
     buffers.dots = BufferGeneration::generate_from_dots(dots);
 }
 
-void Scene::update_shader(Lighting *lighting)
+void Scene::update_shader(Lighting *lighting, float time)
 {
     shader.set_mat4("model", model);
     shader.set_vec4("color", color);
@@ -86,7 +86,7 @@ void Scene::update_shader(Lighting *lighting)
     shader.set_mat4("aspect", camera.get_aspect());
     shader.set_mat4("proj", camera.get_proj());
 
-    shader.set_time(tiktok.get());
+    shader.set_time(time);
 
     if (lighting != NULL)
     {

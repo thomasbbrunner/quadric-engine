@@ -7,11 +7,10 @@
 #include "light.hpp"
 #include "opengl.hpp"
 #include "scene.hpp"
-#include "tiktok.hpp"
+#include "time.hpp"
 
 Lighting lighting;
 
-Tiktok &tiktok = Tiktok::get_instance();
 Camera &camera = Camera::get_instance();
 OpenGL &opengl = OpenGL::get_instance();
 
@@ -21,36 +20,6 @@ Light light2;
 // Light sun(LIGHT_DIRECTIONAL);
 
 Shader shader2("study41.vert", "study41.frag");
-
-void loop()
-{
-    // Update state
-    opengl.update();
-    camera.update();
-    tiktok.update();
-
-    // camera.set_position(glm::vec3(0.0f, 0.0f, 80 * (cos(tiktok.get()) +
-    // 0.75)));
-
-    // Update lights
-    light1.set_position(glm::vec3(0.0, 10.0, 20.0f));
-    light1.set_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    light1.set_brightness(Light::Effect::FLARE);
-    light1.draw();
-
-    light2.set_position(glm::vec3(0.0, 10.0, -20.0f));
-    light2.set_color(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-    light2.set_brightness(Light::Effect::NORMAL);
-    // light.set_attenuation(0.6);
-    light2.draw();
-    lighting.update();
-
-    // Draw scene
-    scene.set_shader(shader2);
-    scene.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    scene.update_shader(&lighting);
-    scene.draw(Drawer::Type::FILL, 2);
-}
 
 int main()
 {
@@ -66,7 +35,7 @@ int main()
     // Sphere sphere(2.0f);
     // glm::mat4 sphere_translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 10.0, -50.0));
     // sphere.apply_transformation(sphere_translate);
-    Cube cube (15.0f);
+    Cube cube(15.0f);
 
     // 2. Add geometries to scene object
     // scene.add_geometry(plane);
@@ -97,12 +66,39 @@ int main()
     // camera.set_type(CAMERA_SPLINE);
     // camera.set_position(glm::vec3(0.0f, 20.0f, 10.0f));
 
+    // Time
+    qe::Time time{qe::Time::Type::TICKS};
+
     // Render loop
     quad::print::info("Starting rendering");
 
     while (!opengl.should_close())
     {
-        loop();
+        // Update state
+        opengl.update();
+        time.update();
+        camera.update(time.get());
+
+        // camera.set_position(glm::vec3(0.0f, 0.0f, 80 * (cos(time.get()) + 0.75)));
+
+        // Update lights
+        light1.set_position(glm::vec3(0.0, 10.0, 20.0f));
+        light1.set_color(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        light1.set_brightness(Light::Effect::FLARE);
+        light1.draw();
+
+        light2.set_position(glm::vec3(0.0, 10.0, -20.0f));
+        light2.set_color(glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+        light2.set_brightness(Light::Effect::NORMAL);
+        // light.set_attenuation(0.6);
+        light2.draw();
+        lighting.update();
+
+        // Draw scene
+        scene.set_shader(shader2);
+        scene.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        scene.update_shader(&lighting, time.get());
+        scene.draw(Drawer::Type::FILL, 2);
     }
 
     // Clean up

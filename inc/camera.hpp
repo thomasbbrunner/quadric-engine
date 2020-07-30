@@ -2,7 +2,6 @@
 #pragma once
 
 #include "opengl.hpp"
-#include "tiktok.hpp"
 #include "api.hpp"
 
 #include <Eigen/Core>
@@ -46,18 +45,18 @@ public:
         SPLINE,
     };
 
-    void update();
+    void update(float time);
 
     void set_position(glm::vec3 pos)
     {
-        Position = pos;
+        position_ = pos;
     }
 
     void set_type(enum Type type)
     {
-        this->type = type;
+        type_ = type;
 
-        if (type == Type::SPLINE)
+        if (type_ == Type::SPLINE)
             initialize_spline();
     }
 
@@ -73,18 +72,7 @@ public:
 
     glm::mat4 get_view()
     {
-        if (type == Type::STATIC)
-            return view_static();
-        else if (type == Type::ROTATE)
-            return view_rotate();
-        else if (type == Type::ROTATE_AROUND)
-            return view_rotate_around();
-        else if (type == Type::MOVE_BACKWARDS)
-            return view_backwards();
-        else if (type == Type::SPLINE)
-            return view_spline();
-        else
-            return view_static();
+        return view_;
     }
 
     glm::mat4 get_aspect()
@@ -97,13 +85,13 @@ public:
         return proj;
     }
 
-    enum Type type = Type::STATIC;
-    glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
-    glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+    enum Type type_ = Type::STATIC;
+    glm::vec3 position_ = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 front_ = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 up_ = glm::vec3(0.0f, 1.0f, 0.0f);
+    glm::mat4 view_;
 
 private:
-    Tiktok &tiktok = Tiktok::get_instance();
     OpenGL &opengl = OpenGL::get_instance();
 
     float yaw = 0.0f;
@@ -121,44 +109,20 @@ private:
 
     Eigen::Spline<double, 3> spline;
 
-    glm::mat4 view_static()
-    {
-        return glm::lookAt(Position, Position + Front, Up);
-    }
-
-    glm::mat4 view_rotate_around(float vel = 0.5, float radius = 30.0, float height = 5.0)
-    {
-        float camX = sin(vel * tiktok.get()) * radius;
-        float camZ = cos(vel * tiktok.get()) * radius;
-        return glm::lookAt(glm::vec3(camX, height, camZ), -glm::vec3(camX, height, camZ) + Position, glm::vec3(0.0, 1.0, 0.0));
-    }
-
-    glm::mat4 view_rotate()
-    {
-        return glm::rotate(glm::lookAt(Position, Position + Front, glm::vec3(0.0, 1.0, 0.0)), 0.5f * (float)tiktok.get(), Front);
-    }
-
-    glm::mat4 view_backwards()
-    {
-        Position -= speed() * Front;
-
-        return glm::lookAt(Position, Position + Front, Up);
-    }
-
     void initialize_spline();
 
     glm::mat4 view_spline();
 
-    float speed()
+    float speed(float time)
     {
         if (lasttime == -1.0f)
         {
-            lasttime = tiktok.get();
+            lasttime = time;
         }
 
-        float out = 50.0f * (tiktok.get() - lasttime);
+        float out = 50.0f * (time - lasttime);
 
-        lasttime = tiktok.get();
+        lasttime = time;
 
         return out;
     }
@@ -167,7 +131,7 @@ private:
     {
         Camera &camera = Camera::get_instance();
 
-        if (camera.type == Type::STATIC)
+        if (camera.type_ == Type::STATIC)
         {
             if (camera.firstMouse)
             {
@@ -197,7 +161,7 @@ private:
             front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
             front.y = sin(glm::radians(camera.pitch));
             front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-            camera.Front = glm::normalize(front);
+            camera.front_ = glm::normalize(front);
         }
     }
 };
