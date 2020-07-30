@@ -1,5 +1,5 @@
 
-#include "thing.hpp"
+#include "scene.hpp"
 
 #include <algorithm>
 #include <glm/glm.hpp>
@@ -10,7 +10,7 @@
 #include "light.hpp"
 #include "shader.hpp"
 
-void Thing::add_geometry(Geometry geometry)
+void Scene::add_geometry(Geometry geometry)
 {
     this->geometry.vertex_coordinates_mesh.insert(
         this->geometry.vertex_coordinates_mesh.end(),
@@ -65,7 +65,7 @@ void Thing::add_geometry(Geometry geometry)
         geometry.vertex_indices_contour.end());
 }
 
-void Thing::generate_buffers()
+void Scene::generate_buffers()
 {
     // Generate models
     Mesh mesh(this->geometry.vertex_coordinates_mesh, this->geometry.vertex_indices_mesh);
@@ -78,7 +78,7 @@ void Thing::generate_buffers()
     buffers.dots = BufferGeneration::generate_from_dots(dots);
 }
 
-void Thing::update_shader(Lighting *lighting)
+void Scene::update_shader(Lighting *lighting)
 {
     shader.set_mat4("model", model);
     shader.set_vec4("color", color);
@@ -90,7 +90,7 @@ void Thing::update_shader(Lighting *lighting)
 
     if (lighting != NULL)
     {
-        // Send lighting info to thing's shader
+        // Send lighting info to scene's shader
         lighting->update_shader(shader);
     }
 }

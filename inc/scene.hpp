@@ -12,7 +12,7 @@
 
 class Lighting;
 
-class Thing // TODO: rename to Scene
+class Scene
 {
 public:
     void add_geometry(Geometry geometry);

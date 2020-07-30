@@ -21,7 +21,7 @@ add_executable(quadricworks
     ${PROJECT_SOURCE_DIR}/inc/camera.cpp
     ${PROJECT_SOURCE_DIR}/inc/math.cpp
     ${PROJECT_SOURCE_DIR}/inc/print.cpp
-    ${PROJECT_SOURCE_DIR}/inc/thing.cpp
+    ${PROJECT_SOURCE_DIR}/inc/scene.cpp
     ${PROJECT_SOURCE_DIR}/lib/glad/glad.c)
 
 # Headers

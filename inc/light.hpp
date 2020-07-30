@@ -4,7 +4,7 @@
 #include "geometry.hpp"
 #include "geometry3D.hpp"
 #include "draw.hpp"
-#include "thing.hpp"
+#include "scene.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -33,30 +33,30 @@ public:
     {
         has_geometry = true;
 
-        thing.add_geometry(geometry);
-        thing.generate_buffers();
-        thing.set_shader(shader);
+        scene.add_geometry(geometry);
+        scene.generate_buffers();
+        scene.set_shader(shader);
     }
 
     void draw()
     {
         if (has_geometry)
         {
-            thing.update_shader();
-            thing.draw(Drawer::Type::FILL);
+            scene.update_shader();
+            scene.draw(Drawer::Type::FILL);
         }
     }
 
     void set_position(glm::vec3 pos)
     {
         position = pos;
-        thing.set_model(glm::translate(glm::mat4(1.0f), position));
+        scene.set_model(glm::translate(glm::mat4(1.0f), position));
     }
 
     void set_color(glm::vec4 col)
     {
         color = col;
-        thing.set_color(brightness * color);
+        scene.set_color(brightness * color);
     }
 
     void set_type(enum Type type)
@@ -171,7 +171,7 @@ private:
     // Positional light has w = 1
 
     Shader shader{"lighting.vert", "lighting.frag"};
-    Thing thing;
+    Scene scene;
     bool has_geometry = false;
     OpenGL &opengl = OpenGL::get_instance();
 };

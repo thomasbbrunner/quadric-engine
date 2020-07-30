@@ -13,7 +13,7 @@
 #include "camera.hpp"
 #include "light.hpp"
 #include "opengl.hpp"
-#include "thing.hpp"
+#include "scene.hpp"
 #include "tiktok.hpp"
 
 Lighting lighting;
@@ -22,7 +22,7 @@ Tiktok &tiktok = Tiktok::get_instance();
 Camera &camera = Camera::get_instance();
 OpenGL &opengl = OpenGL::get_instance();
 
-Thing thing;
+Scene scene;
 Light light1;
 Light light2;
 // Light sun(LIGHT_DIRECTIONAL);
@@ -52,11 +52,11 @@ void loop()
     light2.draw();
     lighting.update();
 
-    // Draw things
-    thing.set_shader(shader2);
-    thing.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    thing.update_shader(&lighting);
-    thing.draw(Drawer::Type::FILL, 2);
+    // Draw scene
+    scene.set_shader(shader2);
+    scene.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    scene.update_shader(&lighting);
+    scene.draw(Drawer::Type::FILL, 2);
 }
 
 int main()
@@ -75,17 +75,17 @@ int main()
     // sphere.apply_transformation(sphere_translate);
     Cube cube (15.0f);
 
-    // 2. Add geometries to Thing object
-    // thing.add_geometry(plane);
-    // thing.add_geometry(sphere);
-    thing.add_geometry(cube);
+    // 2. Add geometries to scene object
+    // scene.add_geometry(plane);
+    // scene.add_geometry(sphere);
+    scene.add_geometry(cube);
 
     // (2.5 Generate buffers)
-    thing.generate_buffers();
+    scene.generate_buffers();
 
-    // 3. Set thing's properties
-    thing.set_shader(shader2);
-    thing.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    // 3. Set scene's properties
+    scene.set_shader(shader2);
+    scene.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     // Lights
     // 1. Add a light source
