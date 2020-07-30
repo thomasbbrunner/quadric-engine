@@ -48,5 +48,8 @@ cd ../
     - add debugging shader (fall back option, only geometry)
     - add support for shader hot reloading (automatic reload on file save, see C++17 std::filesystem)
 * Clean up git history (tags)
+* Improve Scene object:
+    - Remove automatic merging of geometries, and save each geometry in a vector/array.
+    - Instead, allow the creation of a new geometry from merged geometries, which could then be used in a scene.
 * Re-add OpenGL ES support
 * Do proper C++ casting
