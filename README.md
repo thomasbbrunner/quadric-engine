@@ -41,7 +41,7 @@ cd ../
 * Formatting according to a standard (google style guide)
 * Port geometries to templated classes and make generation of vertices run at compile time
 * Make entire interface more like a library and less like a framework
-    - compile as a static library (no main function, wrap in namespace qe/quad/quadric)
+    - compile as a static library (no main function, wrap in namespace quadricengine/qe/quad/quadric)
     - more control and flexibility to the developer
     - less time for implementation of new features
 * Improve shader support
@@ -49,3 +49,4 @@ cd ../
     - add support for shader hot reloading (automatic reload on file save, see C++17 std::filesystem)
 * Clean up git history (tags)
 * Re-add OpenGL ES support
+* Do proper C++ casting
