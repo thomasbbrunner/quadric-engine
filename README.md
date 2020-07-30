@@ -45,7 +45,6 @@ cd ../
     - compile as a static library (no main function, wrap in namespace qe/quad/quadric)
     - more control and flexibility to the developer
     - less time for implementation of new features
-* Remove deprecated makefile
 * Improve shader support
     - add debugging shader (fall back option, only geometry)
     - add support for shader hot reloading (automatic reload on file save, see C++17 std::filesystem)

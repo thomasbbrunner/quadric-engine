@@ -59,3 +59,8 @@ find_package(Eigen3 REQUIRED)
 message(STATUS "Found Eigen in ${Eigen3_DIR}")
 target_link_libraries(quadricworks Eigen3::Eigen)
 include_directories(${EIGEN3_INCLUDE_DIR}/unsupported)
+
+# Old makefile recipe for cross-compiling with Emscripten for WebGL
+# WCC = em++
+# web:
+# 	$ $(WCC) -Wall --std=c++11 -s USE_WEBGL2=1 -s FULL_ES3=1 -DOPENGL_ES -s USE_GLFW=3 --preload-file shaders -I $(INCLUDE_PATH) $(FILE_PATH) ./include/glad.c -lglfw -lrt -lm -ldl -o ./web/study$(FILE_NUM).html
