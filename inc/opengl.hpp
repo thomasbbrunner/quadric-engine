@@ -58,12 +58,10 @@ private:
         glfwMakeContextCurrent(window);
 
         // Initialising GLAD
-#ifndef OPENGL_ES
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             throw quad::fatal_error("Failed to initialize GLAD");
         }
-#endif
 
         // For window resizing
         glfwSetFramebufferSizeCallback(window, this->framebuffer_resize_callback);

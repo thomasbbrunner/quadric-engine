@@ -1,11 +1,4 @@
 
-// #define OPENGL_ES
-
-// Avoid define conflicts
-#ifdef OPENGL
-#undef OPENGL_ES
-#endif
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/noise.hpp>
@@ -106,14 +99,11 @@ int main()
 
     // Render loop
     quad::print::info("Starting rendering");
-#ifdef OPENGL_ES
-    emscripten_set_main_loop(loop, 0, opengl.running());
-#else
+
     while (!opengl.should_close())
     {
         loop();
     }
-#endif
 
     // Clean up
     opengl.terminate();

@@ -36,7 +36,6 @@ cd ../
 ```
 
 ## TODOs
-* Substitute #defines for enums or constexpr
 * Remove singletons and global variables
 * Add right version to glad loader
 * Formatting according to a standard (google style guide)
@@ -49,3 +48,4 @@ cd ../
     - add debugging shader (fall back option, only geometry)
     - add support for shader hot reloading (automatic reload on file save, see C++17 std::filesystem)
 * Clean up git history (tags)
+* Re-add OpenGL ES support
