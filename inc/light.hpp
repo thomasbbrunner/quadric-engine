@@ -23,7 +23,7 @@ public:
     enum class Effect : int
     {
         NORMAL,
-        MANUAL,
+        // MANUAL, TODO has to be reactivated
         FLICKER_FAST,
         FLICKER_SPORADIC,
         FLARE,
@@ -31,32 +31,32 @@ public:
 
     void add_geometry(Geometry geometry = Sphere())
     {
-        has_geometry = true;
+        // has_geometry = true;
 
-        scene.add_geometry(geometry);
-        scene.generate_buffers();
-        scene.set_shader(shader);
+        // scene.add_geometry(geometry);
+        // scene.generate_buffers();
+        // scene.set_shader(shader);
     }
 
     void draw()
     {
-        if (has_geometry)
-        {
-            scene.update_shader();
-            scene.draw(Drawer::Type::FILL);
-        }
+        // if (has_geometry)
+        // {
+        //     scene.update_shader();
+        //     scene.draw(Drawer::Type::FILL);
+        // }
     }
 
     void set_position(glm::vec3 pos)
     {
         position = pos;
-        scene.set_model(glm::translate(glm::mat4(1.0f), position));
+        // scene.set_model(glm::translate(glm::mat4(1.0f), position));
     }
 
     void set_color(glm::vec4 col)
     {
         color = col;
-        scene.set_color(brightness * color);
+        // scene.set_color(brightness * color);
     }
 
     void set_type(enum Type type)
@@ -81,29 +81,29 @@ public:
 
     void set_brightness(enum Effect effect, float brightness = 0.8)
     {
-        if (effect == Effect::MANUAL)
-        {
-            if (glfwGetKey(opengl.window, GLFW_KEY_P) == GLFW_PRESS)
-                ambient_strength += 0.1;
-            if (glfwGetKey(opengl.window, GLFW_KEY_L) == GLFW_PRESS)
-                ambient_strength -= 0.1;
-            if (glfwGetKey(opengl.window, GLFW_KEY_O) == GLFW_PRESS)
-                specular_strength += 0.1;
-            if (glfwGetKey(opengl.window, GLFW_KEY_K) == GLFW_PRESS)
-                specular_strength -= 0.1;
-            if (glfwGetKey(opengl.window, GLFW_KEY_I) == GLFW_PRESS)
-                diffuse_strength += 0.1;
-            if (glfwGetKey(opengl.window, GLFW_KEY_J) == GLFW_PRESS)
-                diffuse_strength -= 0.1;
+        // if (effect == Effect::MANUAL)
+        // {
+        //     if (glfwGetKey(opengl.window, GLFW_KEY_P) == GLFW_PRESS)
+        //         ambient_strength += 0.1;
+        //     if (glfwGetKey(opengl.window, GLFW_KEY_L) == GLFW_PRESS)
+        //         ambient_strength -= 0.1;
+        //     if (glfwGetKey(opengl.window, GLFW_KEY_O) == GLFW_PRESS)
+        //         specular_strength += 0.1;
+        //     if (glfwGetKey(opengl.window, GLFW_KEY_K) == GLFW_PRESS)
+        //         specular_strength -= 0.1;
+        //     if (glfwGetKey(opengl.window, GLFW_KEY_I) == GLFW_PRESS)
+        //         diffuse_strength += 0.1;
+        //     if (glfwGetKey(opengl.window, GLFW_KEY_J) == GLFW_PRESS)
+        //         diffuse_strength -= 0.1;
 
-            ambient_strength = glm::clamp(ambient_strength, 0.0f, 0.8f);
-            diffuse_strength = glm::clamp(diffuse_strength, 0.0f, 0.8f);
-            specular_strength = glm::clamp(specular_strength, 0.0f, 0.8f);
+        //     ambient_strength = glm::clamp(ambient_strength, 0.0f, 0.8f);
+        //     diffuse_strength = glm::clamp(diffuse_strength, 0.0f, 0.8f);
+        //     specular_strength = glm::clamp(specular_strength, 0.0f, 0.8f);
 
-            printf("ambient: %.2f specular: %.2f diffuse: %.2f\n", ambient_strength, specular_strength, diffuse_strength);
+        //     printf("ambient: %.2f specular: %.2f diffuse: %.2f\n", ambient_strength, specular_strength, diffuse_strength);
 
-            return;
-        }
+        //     return;
+        // }
 
         if (effect == Effect::NORMAL)
         {
@@ -171,9 +171,8 @@ private:
     // Positional light has w = 1
 
     Shader shader{"lighting.vert", "lighting.frag"};
-    Scene scene;
+    // Scene scene;
     bool has_geometry = false;
-    OpenGL &opengl = OpenGL::get_instance();
 };
 
 class Lighting

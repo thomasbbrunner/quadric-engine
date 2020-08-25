@@ -16,6 +16,7 @@ include_directories("${PROJECT_SOURCE_DIR}")
 # Executables
 message(STATUS "Looking for main file in ${PROJECT_SOURCE_DIR}")
 add_executable(quadric-engine
+    ${PROJECT_SOURCE_DIR}/inc/api.cpp
     ${PROJECT_SOURCE_DIR}/src/study.cpp
     ${PROJECT_SOURCE_DIR}/inc/buffer.cpp
     ${PROJECT_SOURCE_DIR}/inc/camera.cpp
@@ -61,6 +62,7 @@ target_link_libraries(quadric-engine Eigen3::Eigen)
 include_directories(${EIGEN3_INCLUDE_DIR}/unsupported)
 
 # Old makefile recipe for cross-compiling with Emscripten for WebGL
+# (for documentation)
 # WCC = em++
 # web:
 # 	$ $(WCC) -Wall --std=c++11 -s USE_WEBGL2=1 -s FULL_ES3=1 -DOPENGL_ES -s USE_GLFW=3 --preload-file shaders -I $(INCLUDE_PATH) $(FILE_PATH) ./include/glad.c -lglfw -lrt -lm -ldl -o ./web/study$(FILE_NUM).html

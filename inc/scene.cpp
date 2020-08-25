@@ -12,6 +12,9 @@
 
 void Scene::add_geometry(Geometry geometry)
 {
+    // TODO don't append all geometries together.
+    // scene should be composed of different geometries.
+    // appending geometries should be done by creating another geometry
     this->geometry.vertex_coordinates_mesh.insert(
         this->geometry.vertex_coordinates_mesh.end(),
         geometry.vertex_coordinates_mesh.begin(),
@@ -82,9 +85,9 @@ void Scene::update_shader(Lighting *lighting, float time)
 {
     shader.set_mat4("model", model);
     shader.set_vec4("color", color);
-    shader.set_mat4("view", camera.get_view());
-    shader.set_mat4("aspect", camera.get_aspect());
-    shader.set_mat4("proj", camera.get_proj());
+    shader.set_mat4("view", this->camera_.get_view());
+    shader.set_mat4("aspect", this->camera_.get_aspect());
+    shader.set_mat4("proj", this->camera_.get_proj());
 
     shader.set_time(time);
 

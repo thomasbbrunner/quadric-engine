@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include "opengl.hpp"
 #include "api.hpp"
 
 #include <Eigen/Core>
@@ -11,31 +10,11 @@
 
 class Camera
 {
-    // Singleton initialization
 public:
-    static Camera &get_instance()
-    {
-        static Camera instance;
-        return instance;
-    }
-
-    Camera(Camera const &) = delete;
-    void operator=(Camera const &) = delete;
-
-private:
     Camera()
     {
-        // Mouse
-        glfwSetInputMode(opengl.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPosCallback(opengl.window, mouse_callback);
-        // glfwRawMouseMotionSupported() // Needs GLFW 3.3
-
-        mouse_last_x = (float)opengl.get_window_width();
-        mouse_last_y = (float)opengl.get_window_height();
     }
-    // End of Singleton initialization
 
-public:
     enum class Type
     {
         STATIC,
@@ -45,7 +24,7 @@ public:
         SPLINE,
     };
 
-    void update(float time);
+    void update(float time, GLFWwindow *window, double mouse_x_coo = 0.0, double mouse_y_coo = 0.0);
 
     void set_position(glm::vec3 pos)
     {
@@ -92,18 +71,15 @@ public:
     glm::mat4 view_;
 
 private:
-    OpenGL &opengl = OpenGL::get_instance();
-
     float yaw = 0.0f;
     float pitch = 0.0f;
-    bool firstMouse = true;
     float fov = 45.0f;
 
     glm::mat4 aspect = glm::mat4(1.0);
     glm::mat4 proj = glm::mat4(1.0);
 
-    float mouse_last_x;
-    float mouse_last_y;
+    double mouse_last_x = 0.0;
+    double mouse_last_y = 0.0;
 
     float lasttime = -1.0f;
 
@@ -125,43 +101,5 @@ private:
         lasttime = time;
 
         return out;
-    }
-
-    static void mouse_callback(GLFWwindow *window, double xpos, double ypos)
-    {
-        Camera &camera = Camera::get_instance();
-
-        if (camera.type_ == Type::STATIC)
-        {
-            if (camera.firstMouse)
-            {
-                camera.mouse_last_x = xpos;
-                camera.mouse_last_y = ypos;
-                camera.firstMouse = false;
-            }
-
-            float xoffset = xpos - camera.mouse_last_x;
-            float yoffset = camera.mouse_last_y - ypos;
-            camera.mouse_last_x = xpos;
-            camera.mouse_last_y = ypos;
-
-            float sensitivity = 0.1;
-            xoffset *= sensitivity;
-            yoffset *= sensitivity;
-
-            camera.yaw += xoffset;
-            camera.pitch += yoffset;
-
-            if (camera.pitch > 89.0f)
-                camera.pitch = 89.0f;
-            if (camera.pitch < -89.0f)
-                camera.pitch = -89.0f;
-
-            glm::vec3 front;
-            front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-            front.y = sin(glm::radians(camera.pitch));
-            front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
-            camera.front_ = glm::normalize(front);
-        }
     }
 };

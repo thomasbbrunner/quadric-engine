@@ -1,35 +1,60 @@
 
 #include "camera.hpp"
 
+#include "api.hpp"
+#include "error.hpp"
+
 #include <Eigen/Core>
 #include <unsupported/Eigen/Splines>
 
-void Camera::update(float time)
+void Camera::update(float time, GLFWwindow *window, double mouse_x_coo, double mouse_y_coo)
 {
-
     float camera_speed = speed(time);
 
     if (type_ == Type::STATIC)
     {
-        if (glfwGetKey(opengl.window, GLFW_KEY_W) == GLFW_PRESS)
+        float xoffset = mouse_x_coo - this->mouse_last_x;
+        float yoffset = this->mouse_last_y - mouse_y_coo;
+        this->mouse_last_x = mouse_x_coo;
+        this->mouse_last_y = mouse_y_coo;
+
+        float sensitivity = 0.1;
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        this->yaw += xoffset;
+        this->pitch += yoffset;
+
+        if (this->pitch > 89.0f)
+            this->pitch = 89.0f;
+        if (this->pitch < -89.0f)
+            this->pitch = -89.0f;
+
+        glm::vec3 front;
+        front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+        front.y = sin(glm::radians(this->pitch));
+        front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+        this->front_ = glm::normalize(front);
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             position_ += camera_speed * front_;
-        if (glfwGetKey(opengl.window, GLFW_KEY_S) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
             position_ -= camera_speed * front_;
-        if (glfwGetKey(opengl.window, GLFW_KEY_A) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
             position_ -= glm::normalize(glm::cross(front_, up_)) * camera_speed;
-        if (glfwGetKey(opengl.window, GLFW_KEY_D) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
             position_ += glm::normalize(glm::cross(front_, up_)) * camera_speed;
-        if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_PAGE_UP) == GLFW_PRESS)
             position_ += camera_speed * up_;
-        if (glfwGetKey(opengl.window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == GLFW_PRESS)
             position_ -= camera_speed * up_;
-        if (glfwGetKey(opengl.window, GLFW_KEY_E) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         {
             // front_ -= 0.2f * camera_speed * glm::normalize(glm::cross(up_, front_));
             // fov++;
             // printf("fov: %.5f\n", fov);
         }
-        if (glfwGetKey(opengl.window, GLFW_KEY_Q) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         {
             // fov--;
             // printf("fov: %.5f\n", fov);
@@ -63,7 +88,7 @@ void Camera::update(float time)
         quad::fatal_error("Camera type not recognized.", "Camera::update()");
     }
 
-    aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)opengl.get_window_height() / (float)opengl.get_window_width(), 1.0f, 1.0f));
+    aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)qe::api::get_window_height(window) / (float)qe::api::get_window_width(window), 1.0f, 1.0f));
     proj = glm::perspective<float>(glm::radians(fov), 1.0f, 1.0f, 1000.0f);
     // proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
 }

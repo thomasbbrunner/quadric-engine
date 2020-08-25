@@ -5,51 +5,54 @@
 
 #include "camera.hpp"
 #include "light.hpp"
-#include "opengl.hpp"
+#include "api.hpp"
 #include "scene.hpp"
 #include "time.hpp"
 
 Lighting lighting;
 
-Camera &camera = Camera::get_instance();
-OpenGL &opengl = OpenGL::get_instance();
-
-Scene scene;
-Light light1;
-Light light2;
-// Light sun(LIGHT_DIRECTIONAL);
-
-Shader shader2("study41.vert", "study41.frag");
-
 int main()
 {
-    // SHADERS
-    quad::print::info("Building and compiling shaders");
+    // Window
+    GLFWwindow *window = qe::api::init_window(1080, 1080, 4);
 
-    // GEOMETRIES
+    // Shaders
+    quad::print::info("Building and compiling shaders");
+    Shader shader("study41.vert", "study41.frag");
+
+    // Camera
+    Camera camera{};
+    camera.set_type(camera.Type::STATIC);
+    // camera.set_type(Camera::Type::ROTATE_AROUND);
+    // camera.set_type(CAMERA_SPLINE);
+    // camera.set_position(glm::vec3(0.0f, 20.0f, 10.0f));
+
+    // Time
+    qe::Time time{qe::Time::Type::TICKS};
+
+    // Scene
+    Scene scene{camera};
+
+    // Geometries
     quad::print::info("Creating geometries");
 
-    // 1. Initialize used geometries
-    // DotCube dotcube(25, 25, 25, 3);
-    // Plane plane(100, 100, 1);
-    // Sphere sphere(2.0f);
-    // glm::mat4 sphere_translate = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 10.0, -50.0));
-    // sphere.apply_transformation(sphere_translate);
+    // initialize geometry
     Cube cube(15.0f);
 
-    // 2. Add geometries to scene object
-    // scene.add_geometry(plane);
-    // scene.add_geometry(sphere);
+    // add geometries to scene object
     scene.add_geometry(cube);
 
     // (2.5 Generate buffers)
     scene.generate_buffers();
 
     // 3. Set scene's properties
-    scene.set_shader(shader2);
+    scene.set_shader(shader);
     scene.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     // Lights
+    Light light1;
+    Light light2;
+    // Light sun(LIGHT_DIRECTIONAL);
     // 1. Add a light source
     lighting.add_source(&light1);
     lighting.add_source(&light2);
@@ -60,24 +63,15 @@ int main()
     light1.add_geometry(Sphere(0.2f));
     light2.add_geometry(Sphere(0.2f));
 
-    // Camera
-    camera.set_type(camera.Type::STATIC);
-    // camera.set_type(Camera::Type::ROTATE_AROUND);
-    // camera.set_type(CAMERA_SPLINE);
-    // camera.set_position(glm::vec3(0.0f, 20.0f, 10.0f));
-
-    // Time
-    qe::Time time{qe::Time::Type::TICKS};
-
     // Render loop
     quad::print::info("Starting rendering");
 
-    while (!opengl.should_close())
+    while (!qe::api::window_should_close(window))
     {
         // Update state
-        opengl.update();
+        qe::api::update_window(window);
         time.update();
-        camera.update(time.get());
+        camera.update(time.get(), window, qe::api::get_mouse_x_coo(), qe::api::get_mouse_y_coo());
 
         // camera.set_position(glm::vec3(0.0f, 0.0f, 80 * (cos(time.get()) + 0.75)));
 
@@ -95,14 +89,14 @@ int main()
         lighting.update();
 
         // Draw scene
-        scene.set_shader(shader2);
+        scene.set_shader(shader);
         scene.set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         scene.update_shader(&lighting, time.get());
         scene.draw(Drawer::Type::FILL, 2);
     }
 
     // Clean up
-    opengl.terminate();
+    qe::api::terminate();
 
     return 0;
 }

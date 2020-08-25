@@ -1,22 +1,36 @@
 
 #pragma once
 
-#ifdef OPENGL_ES // Including files for OpenGL ES
-
-#include <GLES3/gl3.h>
-#include <emscripten/emscripten.h>
-#include <GLFW/glfw3.h>
-/* main loop for OpenGL ES
-#ifdef OPENGL_ES
-    emscripten_set_main_loop(loop, 0, opengl.running());
-#else
-*/
-
-#else // Including files for OpenGL
-
 #include <glad/glad.h>
 // GLFW has to be included after glad
 // Including it only here solves compiling conflicts
 #include <GLFW/glfw3.h>
 
-#endif
+namespace qe
+{
+    namespace api
+    {
+        GLFWwindow *init_window(unsigned int window_width, unsigned int window_height, unsigned int msaa_samples);
+
+        void resize_window(GLFWwindow *window, int width, int height);
+
+        int get_window_height(GLFWwindow *window);
+
+        int get_window_width(GLFWwindow *window);
+
+        void update_window(GLFWwindow *window);
+
+        void terminate();
+
+        bool window_should_close(GLFWwindow *window);
+
+        void check_for_errors();
+
+        void mouse_callback(GLFWwindow *window, double x_coo, double y_coo);
+
+        double get_mouse_x_coo();
+
+        double get_mouse_y_coo();
+
+    } // namespace api
+} // namespace qe
