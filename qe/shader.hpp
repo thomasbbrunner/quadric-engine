@@ -14,7 +14,7 @@
 #include <string>
 
 // Path to shader directory
-const std::string shader_folder_path = "./shaders/";
+const std::string shader_folder_path = "../shaders/";
 
 // Common shader file
 const std::string vert_common_filename = "common.vert";

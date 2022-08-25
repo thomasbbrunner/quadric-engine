@@ -1,6 +1,6 @@
 # quadric engine
 
-OpenGL-based engine for creative programming in C++17
+OpenGL-based engine for creative programming in C++17.
 
 <p align="center">
   <img width="400" height="300" src="demos/demo_cubeworld.gif" alt="Demo quadric engine">
@@ -9,11 +9,11 @@ OpenGL-based engine for creative programming in C++17
 ## Dependencies
 Following packages need to be installed:
 * libglvnd-dev
-* GLFW3 (libglfw3-dev)
+* GLFW3 (libglfw3-dev and libglfw3) **not** the wayland version!
 * GLM (libglm-dev)
 * eigen3 (libeigen3-dev)
 * glad (python3-glad)
-* gcc 7 (or greater)
+* gcc
 
 Optional:
 * glslang-tools (for GLSL code linting)
@@ -48,3 +48,6 @@ cd ../
     - Instead, allow the creation of a new geometry from merged geometries, which could then be used in a scene.
 * Re-add OpenGL ES support
 * Do proper C++ casting
+* Look into WebGPU
+* Don't append all geometries together, scenes should be composed of different geometries. Appending geometries should be done by creating another geometry.
+* Make code work properly under wayland
