@@ -15,6 +15,8 @@ void Scene::add_geometry(Geometry geometry)
     // TODO don't append all geometries together.
     // scene should be composed of different geometries.
     // appending geometries should be done by creating another geometry
+    // maybe not? scene becomes aglomerate of geometryes, we can draw multiple
+    // scenes at the same time
     this->geometry.vertex_coordinates_mesh.insert(
         this->geometry.vertex_coordinates_mesh.end(),
         geometry.vertex_coordinates_mesh.begin(),
@@ -43,7 +45,7 @@ void Scene::add_geometry(Geometry geometry)
         max_index = 0;
     }
 
-    quad::math::add_to_each(&geometry.vertex_indices_mesh, max_index);
+    qe::math::add_to_each(&geometry.vertex_indices_mesh, max_index);
 
     this->geometry.vertex_indices_mesh.insert(
         this->geometry.vertex_indices_mesh.end(),
@@ -60,7 +62,7 @@ void Scene::add_geometry(Geometry geometry)
         max_index = 0;
     }
 
-    quad::math::add_to_each(&geometry.vertex_indices_contour, max_index);
+    qe::math::add_to_each(&geometry.vertex_indices_contour, max_index);
 
     this->geometry.vertex_indices_contour.insert(
         this->geometry.vertex_indices_contour.end(),

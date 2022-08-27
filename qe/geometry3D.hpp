@@ -4,6 +4,7 @@
 #include "math.hpp"
 #include "error.hpp"
 #include "geometry.hpp"
+#include "math.hpp"
 #include "print.hpp"
 
 #include <glm/glm.hpp>
@@ -121,7 +122,7 @@ public:
         // Last vertex
         vertex_coordinates_mesh.push_back(glm::vec3(0.0, -1.0f, 0.0));
 
-        quad::math::multiply_by_scalar(&vertex_coordinates_mesh, d);
+        qe::math::multiply_by_scalar(&vertex_coordinates_mesh, d);
 
         // Indices top layer
         for (unsigned int i = 1; i <= horizontal_poly; i++)
@@ -390,11 +391,11 @@ public:
             }
         }
 
-        // quad::math::normalize(&vertex_coordinates_mesh);
+        // qe::math::normalize(&vertex_coordinates_mesh);
         printf("%lu\n", vertex_indices_mesh.size());
-        quad::print::array(vertex_indices_mesh, 3);
+        qe::print::array(vertex_indices_mesh, 3);
 
-        quad::math::multiply_by_scalar(&vertex_coordinates_mesh, 10.0f);
+        qe::math::multiply_by_scalar(&vertex_coordinates_mesh, 10.0f);
 
         vertex_coordinates_dots = vertex_coordinates_mesh;
         vertex_coordinates_mesh.clear();
@@ -451,7 +452,7 @@ public:
         for (unsigned int reps = 0; reps < 1; reps++)
         {
             // Normalizing vertices
-            quad::math::normalize(&vertex_coordinates_mesh);
+            qe::math::normalize(&vertex_coordinates_mesh);
 
             // Creating new vertices
             std::vector<glm::vec3> vertices_new;
@@ -490,7 +491,7 @@ public:
             vertex_coordinates_mesh.insert(vertex_coordinates_mesh.end(), vertices_new.begin(), vertices_new.end());
 
             // Normalizing vertices
-            quad::math::normalize(&vertex_coordinates_mesh);
+            qe::math::normalize(&vertex_coordinates_mesh);
 
             vertex_coordinates_dots = vertex_coordinates_mesh;
 
@@ -570,7 +571,7 @@ public:
             }
 
             printf("Size: %lu\n", vertex_indices_mesh.size());
-            quad::print::array(vertex_indices_mesh, 3);
+            qe::print::array(vertex_indices_mesh, 3);
 
             // Remove repeated
             // for (unsigned int n = 0; n < 2; n++)
@@ -609,14 +610,14 @@ public:
             // }
 
             printf("Size: %lu\n", vertex_indices_mesh.size());
-            quad::print::array(vertex_indices_mesh, 3);
+            qe::print::array(vertex_indices_mesh, 3);
         }
 
         // vertex_coordinates_mesh = vertex_coordinates_mesh_backup;
         // vertex_indices_mesh = vertex_indices_mesh_backup;
 
         // Normalizing vertices
-        quad::math::normalize(&vertex_coordinates_mesh);
+        qe::math::normalize(&vertex_coordinates_mesh);
 
         // Multiplying by size
         glm::mat3 trans(d);

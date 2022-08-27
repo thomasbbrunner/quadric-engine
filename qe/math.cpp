@@ -9,7 +9,7 @@
 #include <vector>
 #include <random>
 
-namespace quad
+namespace qe
 {
 namespace math
 {
@@ -31,6 +31,16 @@ float random(float min, float max)
     // double in [1, 2). Each call to dis(gen) generates a new random double
 
     return dis(gen);
+}
+
+int choice(std::vector<int> vec)
+{
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+    std::vector<int> out;
+    std::sample(vec.begin(), vec.end(), std::back_inserter(out), 1, gen);
+
+    return out.at(0);
 }
 
 void normalize(std::vector<glm::vec3> *vertices)

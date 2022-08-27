@@ -16,7 +16,7 @@ public:
                 std::string details = "")
         : std::runtime_error(message)
     {
-        quad::print::error(message, function_name, details);
+        qe::print::error(message, function_name, details);
     }
 };
 } // namespace quad

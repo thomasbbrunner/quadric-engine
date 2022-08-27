@@ -4,21 +4,6 @@
 #include "error.hpp"
 #include "print.hpp"
 
-#ifdef OPENGL_ES // Including files for OpenGL ES
-
-#include <GLES3/gl3.h>
-#include <emscripten/emscripten.h>
-#include <GLFW/glfw3.h>
-/* main loop for OpenGL ES
-#ifdef OPENGL_ES
-    emscripten_set_main_loop(loop, 0, opengl.running());
-#else
-*/
-
-#else // Including files for OpenGL
-
-#endif
-
 namespace qe
 {
     namespace api
@@ -38,20 +23,17 @@ namespace qe
 
         GLFWwindow *init_window(unsigned int window_width, unsigned int window_height, unsigned int msaa_samples)
         {
-            quad::print::info("Initialising quadric-engine");
+            qe::print::info("Initialising quadric-engine");
 
             // Initialising GLFW
             glfwInit();
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-            if (msaa_samples)
-            {
-                glfwWindowHint(GLFW_SAMPLES, msaa_samples);
-            }
+            glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 
             // Creating window
-            GLFWwindow *window = glfwCreateWindow(window_width, window_height, "OpenGL", NULL, NULL); // Fullscreen: glfwGetPrimaryMonitor()
+            GLFWwindow *window = glfwCreateWindow(window_width, window_height, "quadric-engine", NULL, NULL); // Fullscreen: glfwGetPrimaryMonitor()
             if (window == NULL)
             {
                 throw quad::fatal_error("Failed to create GLFW window");
@@ -77,6 +59,7 @@ namespace qe
             // Enable MSAA
             if (msaa_samples)
             {
+                glfwWindowHint(GLFW_SAMPLES, msaa_samples);
                 glEnable(GL_MULTISAMPLE);
                 glEnable(GL_LINE_SMOOTH);
             }
@@ -97,7 +80,7 @@ namespace qe
                 "\n  GLSL version:   " + reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)) +
                 "\n  Vendor:         " + reinterpret_cast<const char *>(glGetString(GL_VENDOR)) +
                 "\n  Renderer:       " + reinterpret_cast<const char *>(glGetString(GL_RENDERER))};
-            quad::print::info(info_msg);
+            qe::print::info(info_msg);
 
             return window;
         }
@@ -140,7 +123,7 @@ namespace qe
 
         void terminate()
         {
-            quad::print::info("Terminating API");
+            qe::print::info("Terminating API");
             glfwTerminate();
         }
 
@@ -153,7 +136,7 @@ namespace qe
         {
             if (GLenum error = glGetError() != GL_NO_ERROR)
             {
-                quad::print::error("OpenGL error " + std::to_string(error));
+                qe::print::error("OpenGL error " + std::to_string(error));
             }
         }
 

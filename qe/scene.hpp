@@ -24,7 +24,7 @@ public:
     void generate_buffers();
 
     // TODO remove this absurdity of a NULL pointer
-    // and remove default value for time 
+    // and remove default value for time
     void update_shader(Lighting *lighting = NULL, float time = 0.0);
 
     void draw(enum Drawer::Type type, float line_thickness = 1.0)

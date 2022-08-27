@@ -16,7 +16,7 @@ constexpr char YELLOW[] = "\033[33m";
 constexpr char BLUE[] = "\033[34m";
 }; // namespace color
 
-namespace quad
+namespace qe
 {
 namespace print
 {

@@ -5,7 +5,7 @@ project(quadric-engine)
 
 # CMake settings
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -O1") # -g -Og
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3") # -g -Og
 
 # Executables
 message(STATUS "Looking for main file in ${PROJECT_SOURCE_DIR}")

@@ -5,13 +5,15 @@
 
 #include <vector>
 
-namespace quad
+namespace qe
 {
 namespace math
 {
 void add_to_each(std::vector<unsigned int> *vec, unsigned int value);
 
 float random(float min, float max);
+
+int choice(std::vector<int> vec);
 
 void normalize(std::vector<glm::vec3> *vertices);
 

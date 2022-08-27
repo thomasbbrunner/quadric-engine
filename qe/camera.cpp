@@ -13,6 +13,13 @@ void Camera::update(float time, GLFWwindow *window, double mouse_x_coo, double m
 
     if (type_ == Type::STATIC)
     {
+        view_ = glm::lookAt(position_, position_ + front_, up_);
+        aspect = glm::scale(glm::mat4(1.0), glm::vec3((float)qe::api::get_window_height(window) / (float)qe::api::get_window_width(window), 1.0f, 1.0f));
+        proj = glm::perspective<float>(glm::radians(fov), 1.0f, 1.0f, 1000.0f);
+        // proj = glm::ortho<float>(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 1000.0f);
+    }
+    else if (type_ == Type::MOUSE)
+    {
         float xoffset = mouse_x_coo - this->mouse_last_x;
         float yoffset = this->mouse_last_y - mouse_y_coo;
         this->mouse_last_x = mouse_x_coo;
@@ -31,9 +38,9 @@ void Camera::update(float time, GLFWwindow *window, double mouse_x_coo, double m
             this->pitch = -89.0f;
 
         glm::vec3 front;
-        front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
-        front.y = sin(glm::radians(this->pitch));
-        front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+        front.x = glm::cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+        front.y = glm::sin(glm::radians(this->pitch));
+        front.z = glm::sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
         this->front_ = glm::normalize(front);
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

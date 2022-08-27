@@ -17,6 +17,7 @@ public:
 
     enum class Type
     {
+        MOUSE,
         STATIC,
         ROTATE,
         ROTATE_AROUND,
@@ -24,11 +25,16 @@ public:
         SPLINE,
     };
 
-    void update(float time, GLFWwindow *window, double mouse_x_coo = 0.0, double mouse_y_coo = 0.0);
+    void update(float time, GLFWwindow *window, double mouse_x_coo, double mouse_y_coo);
 
     void set_position(glm::vec3 pos)
     {
         position_ = pos;
+    }
+
+    void set_front(glm::vec3 front)
+    {
+        front_ = front;
     }
 
     void set_type(enum Type type)
