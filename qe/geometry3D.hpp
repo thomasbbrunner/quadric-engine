@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "math.hpp"
+#include "eclipsia2.hpp"
 #include "error.hpp"
 #include "geometry.hpp"
 #include "math.hpp"

@@ -20,7 +20,7 @@ float bring_vel = 5.0;
 
 float bring_timecoeff = 1.0; // Mess around! (coefficient for relative velocity between wave and mesh)
 
-int tube_dx = 50; // Size of mesh (dx)
+int tube_dx = 400; // Size of mesh (dx)
 float tube_timeq = 10.0; // Time coefficient for how fast to do transition
 float tube_timed = 1.0; // Time delay until start of animation
 
@@ -112,12 +112,12 @@ vec3 tube(vec3 newcoords)
     tube_r = tube_dx/(4.0*M_PI) / 0.5;
     float q = 2.0*M_PI;
     // A' (x',y',z') = ( R*cos(x*(2Pi/L)) , R*sin(x*(2Pi/L)) , z*(H'/H))
-    return vec3(tube_r*cos(newcoords.x*(q/tube_dx) - M_PI/2.0), tube_r*sin(newcoords.x*(q/tube_dx) - M_PI/2.0) + tube_r, newcoords.z);
+    return vec3(tube_r*cos(newcoords.x*(q/tube_dx) - M_PI/2.0), tube_r*sin(newcoords.x*(q/tube_dx) - M_PI/2.0) + 0.3*tube_r, newcoords.z);
 }
 
 // NOISE -----------------------------------------------------------------------
 
-#include "noise.vert"
+// #include "common_noise.vert"
 
 float hash(vec2 p) 
 { 
@@ -141,9 +141,12 @@ float perlin(vec2 x)
 	return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
 }
 
-vec3 noise(vec3 newcoords)
+vec3 noise(vec3 newcoords, float intensity)
 {
-    newcoords.y += perlin(vec2(newcoords.x, newcoords.z - bring_vel * bring_timecoeff * time) / 2.0);
+    // "bring"
+    // newcoords.y += intensity*perlin(vec2(newcoords.x, newcoords.z - bring_vel * bring_timecoeff * time) / 2.0);
+    // "time"
+    newcoords.y += intensity*cnoise(vec3(newcoords.x/3, newcoords.z/3, time/2));
 
     return newcoords;
 }
@@ -152,7 +155,7 @@ vec3 noise(vec3 newcoords)
 
 vec3 wave(vec3 newcoords)
 {
-    newcoords.y += 0.2 * sin(time) * sin(newcoords.x + M_PI/2.0) + 0.15 * sin(time) * cos(newcoords.z-bring_vel*bring_timecoeff*time);
+    newcoords.y += 1.0 * sin(time) * sin(newcoords.x + M_PI/2.0) + 0.15 * sin(time) * cos(newcoords.z-bring_vel*bring_timecoeff*time);
 
     return newcoords;
 }
